@@ -1,5 +1,128 @@
+:root {
+  --primary-color: #ffd29f;
+  --secondary-color: #ee3535;
+  --terciary-color: #ffe7e7;
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+@font-face {
+  font-family: 'Sugo-Pro';
+  src: url('../fonts/Sugo-Pro-Display-Regular-trial.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.dongle-regular {
+  font-family: "Dongle", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+h5{
+    font-family: 'Sugo-Pro', sans-serif;
+    text-transform: uppercase;
+}
+
+p{
+    font-family: 'Dongle', sans-serif;
+}
+
 #img-resize img{
     height: 100px;
     width: auto;
     object-fit: fill;
+}
+
+html {
+  scrollbar-width: thin;
+}
+
+#scrollbar::-webkit-scrollbar {
+    /* width: 10px;
+    height: 10px; */
+    border-radius: 34px;
+}
+
+/* Track */
+#scrollbar::-webkit-scrollbar-track {
+    background: #7faaec;
+    border-radius: 8px;
+}
+
+/* Handle */
+#scrollbar::-webkit-scrollbar-thumb {
+    background: #fc0000;
+    border-radius: 8px;
+    transition: all 0.4s;
+    -moz-transition: all 0.4s;
+    -webkit-transition: all 0.4s;
+}
+
+/* Handle on hover */
+#scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #555;
+    border-radius: 16px;
+}
+
+.navbar{
+    background-color: var(--primary-color);
+}
+
+.bgImage{
+    position: absolute;
+    background-image: url(../images/AAAHHH.png);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 300px;
+    width: 100%;
+    filter: blur(10px);
+    z-index: -1;
+}
+
+.callToAction{
+    height: 300px;
+    text-shadow: white 1px 0 10px;
+    align-items: center;
+}
+
+.callToAction h5{
+    vertical-align: middle;
+    text-align: center;
+}
+
+.callToAction > p:first-of-type{
+    position: absolute;
+    left: 60%;
+    background-color: var(--secondary-color);
+    text-shadow: none;
+    color: white;
+    transform: rotate(-8deg);
+}
+
+.callToAction p{
+    line-height:1;
+}
+
+.mainPart{
+    background-color: var(--terciary-color);
+}
+
+main{
+    padding: 0;
+    margin: 0;
+}
+
+.card {
+    transition: 0.2s ease-out;
+}
+
+.card:hover {
+    scale: 1.03;
+    box-shadow: 0px 5px 4px var(--secondary-color);
 }

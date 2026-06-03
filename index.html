@@ -5,28 +5,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./styles/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dongle&display=swap" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <!-- Font Awesome pour les icônes -->
         <script src="https://kit.fontawesome.com/4b69bc6b92.js" crossorigin="anonymous"></script>
+    <!-- Bootstrap Icons  -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <title>PopCo</title>
 </head>
 
 <body>
     <header>
         <div class="container-fluid p-0">
-                <nav class="navbar navbar-expand bg-body-tertiary">
-                    <div class="container-fluid ">
+                <nav class="navbar navbar-expand  rounded-bottom-5 ">
+                    <div class="container-fluid">
                         <a class="navbar-brand" href="./index.html">
-                            <img src="assets/PopCo_logo.png" alt="..." width="80" height="80">
+                            <img src="assets/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
                         </a>
                         <div class="collapse navbar-collapse justify-content-between">
                             <ul class="navbar-nav mb-2 mb-lg-0 d-none d-md-flex">
-                                <li class="nav-item">
-                                    <a class="nav-link" href="./soiree.html">Les soirées</a>
+                                <li class="nav-item active">
+                                    <a class="nav-link" href="./index.html">Acceuil</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#">Créer une soirée</a>
+                                    <a class="nav-link" href="./soirees.html">Les soirées</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="./soiree_create.html">Créer une soirée</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="...">Films proposés</a>
                                 </li>
                             </ul>
                             <ul class="navbar-nav mb-2 mb-lg-0 gap-2 me-0 d-none d-md-flex">
@@ -37,313 +48,364 @@
                                     <a class="btn btn-warning" href="#">Créer un compte</a>
                                 </li>
                             </ul>
-                    </div>
-
-                    <button class="btn btn-primary d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#staticBackdrop" aria-controls="staticBackdrop">
-                    Menu
-                    </button>
-
-                    <div class="offcanvas-md offcanvas-end" data-bs-backdrop="static" tabindex="-1" id="staticBackdrop" aria-labelledby="staticBackdropLabel">
-                        <div class="offcanvas-header">
-                            <h5 class="offcanvas-title" id="staticBackdropLabel">Menu</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                         </div>
-                        <div class="offcanvas-body">
-                            <div>
-                                
+
+                        <a class="fs-1 d-block d-md-none text-success" data-bs-toggle="offcanvas" href="#menu_phone" aria-controls="offcanvasExample">
+                        <i class="bi bi-list"></i>
+                        </a>
+                        <div class="offcanvas-md d-md-none offcanvas-end" tabindex="-1" id="menu_phone" aria-labelledby="menu_phoneLabel">
+                            <div class="offcanvas-header">
+                                <h5 class="offcanvas-title" id="menu_phoneLabel">PopCo</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#menu_phone" aria-label="Close"></button>
+                            </div>
+                            <div class="offcanvas-body d-flex flex-column justify-content-between px-0">
+                                <ul class="list-group">
+                                    <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
+                                        Acceuil
+                                    </a>
+                                    <a href="#" class="list-group-item list-group-item-action">
+                                        Les soirées
+                                    </a>
+                                    <a href="#" class="list-group-item list-group-item-action">
+                                        Créer une soirée
+                                    </a>
+                                    <a href="#" class="list-group-item list-group-item-action">
+                                        Films proposés
+                                    </a>
+                                </ul>
+
+                                <div class="container-fluid d-md-flex justify-content-end gap-2">
+                                    <a class="btn btn-primary" href="#">Se connecter</a>
+                                    <a class="btn btn-warning" href="#">Créer un compte</a>
+                                </div>
                             </div>
                         </div>
+
                     </div>
                 </nav>
         </div>
     </header>
 
-    <main class="mb-5">
-        <div class="text-center my-5 py-5">
-            <h5>Organisez des soirées de fifou dingo !!</h5>
-        </div>
-        <h5 class="ms-4">Dernières soirées omg</h5>
+    <main class="container-fluid px-0">
+        <div class="bgImage"></div>
+        <div class="text-center py-5 callToAction">
+            <h5 class="fs-1">Organisez des soirées inoublouable !!</h5>
+            <p class="px-3 fs-3">Déjà 39 soirées créées !</p>
 
-        <div class="container-fluid overflow-x-scroll">
-            <div id ="img-resize" class="row row-cols-2 row-cols-md-5 mx-3 my-3 g-5 flex-nowrap gap-3">
-                    <div class="card p-0 m-0">
-                        <img src="./images/rella_16th_birthday_edit.jpg" class="card-img-top object-fit-cover" alt="...">
-
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
-                        </div>
-                        <div class="card-footer p-0 border-0">
-                            <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
-                        </div>
-                    </div>
-            
-                    <div class="card p-0 m-0">
-                        <img src="./images/AAAHHH.png" class="card-img-top object-fit-cover" alt="...">
-
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
-                        </div>
-                        <div class="card-footer p-0 border-0">
-                            <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
-                        </div>
-                    </div>
-
-                    <div class="card p-0 m-0">
-                        <img src="./images/chippies.png" class="card-img-top object-fit-cover" alt="...">
-
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
-                        </div>
-                        <div class="card-footer p-0 border-0">
-                            <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
-                        </div>
-                    </div>
-
-                    <div class="card p-0 m-0">
-                        <img src="./images/looking_into_my_soul.png" class="card-img-top object-fit-cover" alt="...">
-
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
-                        </div>
-                        <div class="card-footer p-0 border-0">
-                            <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
-                        </div>
-                    </div>
-
-                    <div class="card p-0 m-0">
-                        <img src="./images/miku_sunset.png" class="card-img-top object-fit-cover" alt="...">
-
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
-                        </div>
-                        <div class="card-footer p-0 border-0">
-                            <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
-                        </div>
-                    </div>
-
-                    <div class="card p-0 m-0">
-                        <img src="./images/yuri_time.png" class="card-img-top object-fit-cover" alt="...">
-
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
-                        </div>
-                        <div class="card-footer p-0 border-0">
-                            <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
-                        </div>
-                    </div>
-
-                    <div class="card p-0 m-0">
-                        <img src="./images/miku_sunset.png" class="card-img-top object-fit-cover" alt="...">
-
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
-                        </div>
-                        <div class="card-footer p-0 border-0">
-                            <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
-                        </div>
-                    </div>
-            </div>
+            <p class="mt-5 fs-4">
+                Grâce à PopCo, trouvez des soirées où regarder de bons films ! <br/>
+                Rien de plus simple : cherchez une soirée, connectez-vous, votez le film qui vous intéresse le plus,<br/>
+                et le film qui remporte le plus de voix sera diffusé !<br/>
+            </p>
         </div>
 
-        <h5 class="ms-4 mt-5">Soirée populaire woooo</h5>
-        <div class="container-fluid overflow-x-scroll">
-            <div id ="img-resize" class="row row-cols-2 row-cols-md-5 mx-3 my-3 g-5 flex-nowrap gap-3">
-                    <div class="card p-0 m-0">
-                        <img src="./images/rella_16th_birthday_edit.jpg" class="card-img-top object-fit-cover" alt="...">
+        <div class="mainPart py-5">
 
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
-                        </div>
-                        <div class="card-footer p-0 border-0">
-                            <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
-                        </div>
+            <h5 class="ms-5 fs-3">Les soirées récemment ajoutées !</h5>
+            <div class="row mx-3">
+                <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
+                    <div id ="img-resize" class="row row-cols-2 row-cols-md-5 ms-1 my-3 g-5 flex-nowrap gap-3">
+                            <div class="card p-0 m-0">
+                                <img src="./images/rella_16th_birthday_edit.jpg" class="card-img-top object-fit-cover" alt="...">
+    
+                                <div class="card-body">
+                                    <h5 class="card-title">Card title</h5>
+                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
+                                </div>
+                                <div class="card-footer p-0 border-0">
+                                    <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
+                                </div>
+                            </div>
+                    
+                            <div class="card p-0 m-0">
+                                <img src="./images/AAAHHH.png" class="card-img-top object-fit-cover" alt="...">
+    
+                                <div class="card-body">
+                                    <h5 class="card-title">Card title</h5>
+                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
+                                </div>
+                                <div class="card-footer p-0 border-0">
+                                    <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
+                                </div>
+                            </div>
+    
+                            <div class="card p-0 m-0">
+                                <img src="./images/chippies.png" class="card-img-top object-fit-cover" alt="...">
+    
+                                <div class="card-body">
+                                    <h5 class="card-title">Card title</h5>
+                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
+                                </div>
+                                <div class="card-footer p-0 border-0">
+                                    <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
+                                </div>
+                            </div>
+    
+                            <div class="card p-0 m-0">
+                                <img src="./images/looking_into_my_soul.png" class="card-img-top object-fit-cover" alt="...">
+    
+                                <div class="card-body">
+                                    <h5 class="card-title">Card title</h5>
+                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
+                                </div>
+                                <div class="card-footer p-0 border-0">
+                                    <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
+                                </div>
+                            </div>
+    
+                            <div class="card p-0 m-0">
+                                <img src="./images/miku_sunset.png" class="card-img-top object-fit-cover" alt="...">
+    
+                                <div class="card-body">
+                                    <h5 class="card-title">Card title</h5>
+                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
+                                </div>
+                                <div class="card-footer p-0 border-0">
+                                    <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
+                                </div>
+                            </div>
+    
+                            <div class="card p-0 m-0">
+                                <img src="./images/yuri_time.png" class="card-img-top object-fit-cover" alt="...">
+    
+                                <div class="card-body">
+                                    <h5 class="card-title">Card title</h5>
+                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
+                                </div>
+                                <div class="card-footer p-0 border-0">
+                                    <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
+                                </div>
+                            </div>
+    
+                            <div class="card p-0 m-0">
+                                <img src="./images/miku_sunset.png" class="card-img-top object-fit-cover" alt="...">
+    
+                                <div class="card-body">
+                                    <h5 class="card-title">Card title</h5>
+                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
+                                </div>
+                                <div class="card-footer p-0 border-0">
+                                    <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
+                                </div>
+                            </div>
                     </div>
-            
-                    <div class="card p-0 m-0">
-                        <img src="./images/AAAHHH.png" class="card-img-top object-fit-cover" alt="...">
-
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
-                        </div>
-                        <div class="card-footer p-0 border-0">
-                            <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
-                        </div>
-                    </div>
-
-                    <div class="card p-0 m-0">
-                        <img src="./images/chippies.png" class="card-img-top object-fit-cover" alt="...">
-
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
-                        </div>
-                        <div class="card-footer p-0 border-0">
-                            <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
-                        </div>
-                    </div>
-
-                    <div class="card p-0 m-0">
-                        <img src="./images/looking_into_my_soul.png" class="card-img-top object-fit-cover" alt="...">
-
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
-                        </div>
-                        <div class="card-footer p-0 border-0">
-                            <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
-                        </div>
-                    </div>
-
-                    <div class="card p-0 m-0">
-                        <img src="./images/miku_sunset.png" class="card-img-top object-fit-cover" alt="...">
-
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
-                        </div>
-                        <div class="card-footer p-0 border-0">
-                            <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
-                        </div>
-                    </div>
-
-                    <div class="card p-0 m-0">
-                        <img src="./images/yuri_time.png" class="card-img-top object-fit-cover" alt="...">
-
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
-                        </div>
-                        <div class="card-footer p-0 border-0">
-                            <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
-                        </div>
-                    </div>
-
-                    <div class="card p-0 m-0">
-                        <img src="./images/miku_sunset.png" class="card-img-top object-fit-cover" alt="...">
-
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
-                        </div>
-                        <div class="card-footer p-0 border-0">
-                            <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
-                        </div>
-                    </div>
+                </div>
             </div>
-        </div>
 
-        <h5 class="ms-4 mt-5">Horreur</h5>
-        <div class="container-fluid overflow-x-scroll">
-            <div id ="img-resize" class="row row-cols-2 row-cols-md-5 mx-3 my-3 g-5 flex-nowrap gap-3">
-                    <div class="card p-0 m-0">
-                        <img src="./images/rella_16th_birthday_edit.jpg" class="card-img-top object-fit-cover" alt="...">
-
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
-                        </div>
-                        <div class="card-footer p-0 border-0">
-                            <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
-                        </div>
+            <h5 class="ms-5 mt-4 fs-3">Les soirées populaires :fire:</h5>
+            <div class="row mx-3">
+                <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
+                    <div id ="img-resize" class="row row-cols-2 row-cols-md-5 ms-1 my-3 g-5 flex-nowrap gap-3">
+                            <div class="card p-0 m-0">
+                                <img src="./images/rella_16th_birthday_edit.jpg" class="card-img-top object-fit-cover" alt="...">
+    
+                                <div class="card-body">
+                                    <h5 class="card-title">Card title</h5>
+                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
+                                </div>
+                                <div class="card-footer p-0 border-0">
+                                    <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
+                                </div>
+                            </div>
+                    
+                            <div class="card p-0 m-0">
+                                <img src="./images/AAAHHH.png" class="card-img-top object-fit-cover" alt="...">
+    
+                                <div class="card-body">
+                                    <h5 class="card-title">Card title</h5>
+                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
+                                </div>
+                                <div class="card-footer p-0 border-0">
+                                    <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
+                                </div>
+                            </div>
+    
+                            <div class="card p-0 m-0">
+                                <img src="./images/chippies.png" class="card-img-top object-fit-cover" alt="...">
+    
+                                <div class="card-body">
+                                    <h5 class="card-title">Card title</h5>
+                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
+                                </div>
+                                <div class="card-footer p-0 border-0">
+                                    <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
+                                </div>
+                            </div>
+    
+                            <div class="card p-0 m-0">
+                                <img src="./images/looking_into_my_soul.png" class="card-img-top object-fit-cover" alt="...">
+    
+                                <div class="card-body">
+                                    <h5 class="card-title">Card title</h5>
+                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
+                                </div>
+                                <div class="card-footer p-0 border-0">
+                                    <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
+                                </div>
+                            </div>
+    
+                            <div class="card p-0 m-0">
+                                <img src="./images/miku_sunset.png" class="card-img-top object-fit-cover" alt="...">
+    
+                                <div class="card-body">
+                                    <h5 class="card-title">Card title</h5>
+                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
+                                </div>
+                                <div class="card-footer p-0 border-0">
+                                    <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
+                                </div>
+                            </div>
+    
+                            <div class="card p-0 m-0">
+                                <img src="./images/yuri_time.png" class="card-img-top object-fit-cover" alt="...">
+    
+                                <div class="card-body">
+                                    <h5 class="card-title">Card title</h5>
+                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
+                                </div>
+                                <div class="card-footer p-0 border-0">
+                                    <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
+                                </div>
+                            </div>
+    
+                            <div class="card p-0 m-0">
+                                <img src="./images/miku_sunset.png" class="card-img-top object-fit-cover" alt="...">
+    
+                                <div class="card-body">
+                                    <h5 class="card-title">Card title</h5>
+                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
+                                </div>
+                                <div class="card-footer p-0 border-0">
+                                    <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
+                                </div>
+                            </div>
                     </div>
-            
-                    <div class="card p-0 m-0">
-                        <img src="./images/AAAHHH.png" class="card-img-top object-fit-cover" alt="...">
-
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
-                        </div>
-                        <div class="card-footer p-0 border-0">
-                            <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
-                        </div>
-                    </div>
-
-                    <div class="card p-0 m-0">
-                        <img src="./images/chippies.png" class="card-img-top object-fit-cover" alt="...">
-
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
-                        </div>
-                        <div class="card-footer p-0 border-0">
-                            <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
-                        </div>
-                    </div>
-
-                    <div class="card p-0 m-0">
-                        <img src="./images/looking_into_my_soul.png" class="card-img-top object-fit-cover" alt="...">
-
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
-                        </div>
-                        <div class="card-footer p-0 border-0">
-                            <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
-                        </div>
-                    </div>
-
-                    <div class="card p-0 m-0">
-                        <img src="./images/miku_sunset.png" class="card-img-top object-fit-cover" alt="...">
-
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
-                        </div>
-                        <div class="card-footer p-0 border-0">
-                            <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
-                        </div>
-                    </div>
-
-                    <div class="card p-0 m-0">
-                        <img src="./images/yuri_time.png" class="card-img-top object-fit-cover" alt="...">
-
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
-                        </div>
-                        <div class="card-footer p-0 border-0">
-                            <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
-                        </div>
-                    </div>
-
-                    <div class="card p-0 m-0">
-                        <img src="./images/miku_sunset.png" class="card-img-top object-fit-cover" alt="...">
-
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
-                        </div>
-                        <div class="card-footer p-0 border-0">
-                            <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
-                        </div>
-                    </div>
+                </div>
             </div>
+
+            <h5 class="ms-5 mt-4  fs-3">Thème film d'Horreur</h5>
+            <div class="row mx-3">
+                <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
+                    <div id ="img-resize" class="row row-cols-2 row-cols-md-5 ms-1 my-3 g-5 flex-nowrap gap-3">
+                            <div class="card p-0 m-0">
+                                <img src="./images/rella_16th_birthday_edit.jpg" class="card-img-top object-fit-cover" alt="...">
+    
+                                <div class="card-body">
+                                    <h5 class="card-title">Card title</h5>
+                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
+                                </div>
+                                <div class="card-footer p-0 border-0">
+                                    <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
+                                </div>
+                            </div>
+                    
+                            <div class="card p-0 m-0">
+                                <img src="./images/AAAHHH.png" class="card-img-top object-fit-cover" alt="...">
+    
+                                <div class="card-body">
+                                    <h5 class="card-title">Card title</h5>
+                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
+                                </div>
+                                <div class="card-footer p-0 border-0">
+                                    <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
+                                </div>
+                            </div>
+    
+                            <div class="card p-0 m-0">
+                                <img src="./images/chippies.png" class="card-img-top object-fit-cover" alt="...">
+    
+                                <div class="card-body">
+                                    <h5 class="card-title">Card title</h5>
+                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
+                                </div>
+                                <div class="card-footer p-0 border-0">
+                                    <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
+                                </div>
+                            </div>
+    
+                            <div class="card p-0 m-0">
+                                <img src="./images/looking_into_my_soul.png" class="card-img-top object-fit-cover" alt="...">
+    
+                                <div class="card-body">
+                                    <h5 class="card-title">Card title</h5>
+                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
+                                </div>
+                                <div class="card-footer p-0 border-0">
+                                    <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
+                                </div>
+                            </div>
+    
+                            <div class="card p-0 m-0">
+                                <img src="./images/miku_sunset.png" class="card-img-top object-fit-cover" alt="...">
+    
+                                <div class="card-body">
+                                    <h5 class="card-title">Card title</h5>
+                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
+                                </div>
+                                <div class="card-footer p-0 border-0">
+                                    <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
+                                </div>
+                            </div>
+    
+                            <div class="card p-0 m-0">
+                                <img src="./images/yuri_time.png" class="card-img-top object-fit-cover" alt="...">
+    
+                                <div class="card-body">
+                                    <h5 class="card-title">Card title</h5>
+                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
+                                </div>
+                                <div class="card-footer p-0 border-0">
+                                    <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
+                                </div>
+                            </div>
+    
+                            <div class="card p-0 m-0">
+                                <img src="./images/miku_sunset.png" class="card-img-top object-fit-cover" alt="...">
+    
+                                <div class="card-body">
+                                    <h5 class="card-title">Card title</h5>
+                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
+                                </div>
+                                <div class="card-footer p-0 border-0">
+                                    <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+            
+            
         </div>
 
     </main>
 
-    <footer class="container-fluid bg-body-tertiary"><!-- Voir sujet -->
-        <div class="row g-1"><!-- Ligne avec gouttière verticale de 1 -->
-            <div class="col-lg-6 py-3 text-start d-none d-lg-block">
-                <!-- Texte souligné dans le span -->
-                <span class="text-decoration-underline">Webmaster</span> : impa@chateau-hyrule.hy
+
+    <footer class="container-fluid py-3"><!-- Voir sujet -->
+        <div class="row g-1 d-flex align-items-center"><!-- Ligne avec gouttière verticale de 1 -->
+            <div class="col-4 fs-2 ps-4">
+                <a href="" target="_blank" class="text-decoration-none text-danger">
+                    <i class="fab fa-instagram"></i><!-- Icône Instagram -->
+                </a>
+                <a href="" target="_blank" class="text-decoration-none">
+                    <i class="fab fa-facebook"></i><!-- Icône Facebook -->
+                </a>
+                <a href="" target="_blank" class="text-decoration-none">
+                    <i class="fab fa-discord"></i><!-- Icône Discord -->
+                </a>
+                
+                
+                
             </div>
-            <div class="col-lg-6">
-                <i class="fab fa-instagram"></i><!-- Icône Instagram -->
-                <i class="fab fa-facebook"></i><!-- Icône Facebook -->
-                <i class="fab fa-discord"></i><!-- Icône Discord -->
+            <div class="col-4 text-center">
+                <img src="assets/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
             </div>
+            <div class="col-4 py-3 text-start d-none d-lg-block text-end pe-4">
+                <a href="">Mentions légales</a>
+            </div>
+
         </div>
     </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
