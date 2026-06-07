@@ -1,28 +1,20 @@
-:root {
-  --primary-color: #ffd29f;
-  --subtle-primary-color: #FFFBF6;
-  --secondary-color: #ee3535;
-  --subtle-secondary-color: #EC7B75;
-  --terciary-color: #292019;
-}
 
-.primary_color_popco{background-color: var(--primary-color);}
-.subtle-primary-color_popco{background-color: var(--subtle-primary-color);}
-.secondary_color_popco{background: var(--secondary-color);}
-.subtle-secondary-color_popco{background-color: var(--subtle-secondary-color);}
-.terciary_color_popco{background: var(--terciary-color);}
-.btn_secondary_color_color{--bs-btn-color: var(--secondary-color);}
-
-.bootstrap_nav_item_color{color: var(--terciary-color);}
 *{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+}
+
 @font-face {
-  font-family: 'Sugo-Pro';
-  src: url('../fonts/Sugo-Pro-Display-Regular-trial.ttf') format('truetype');
+  font-family: 'Sigmar';
+  src: url('../assets/fonts/Sigmar-Regular.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
@@ -34,7 +26,7 @@
 }
 
 h5{
-    font-family: 'Sugo-Pro', sans-serif;
+    font-family: 'Sigmar', sans-serif;
     text-transform: uppercase;
     color: var(--subtle-primary-color) !important;
 }
@@ -45,6 +37,7 @@ h5{
 
 p{
     font-family: 'Dongle', sans-serif;
+    font-size: 1.25em;
 }
 
 #img-resize img{
@@ -63,13 +56,13 @@ html {
 
 /* Track */
 #scrollbar::-webkit-scrollbar-track {
-    background: #7faaec;
+    background: #55473C;
     border-radius: 8px;
 }
 
 /* Handle */
 #scrollbar::-webkit-scrollbar-thumb {
-    background: #fc0000;
+    background: #ee3535;
     border-radius: 8px;
     transition: all 0.4s;
     -moz-transition: all 0.4s;
@@ -78,7 +71,7 @@ html {
 
 /* Handle on hover */
 #scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #555;
+    background: #EC7B75;
     border-radius: 16px;
 }
 
@@ -88,14 +81,14 @@ html {
 
 .bgImage{
     position: absolute;
-    background-image: url(../images/AAAHHH.png);
+    background-image: url(../assets/images/miku_sunset.png);
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     height: 300px;
     width: 100%;
     filter: blur(10px) brightness(0.6);
-    z-index: -1;
+    z-index: -2;
 }
 
 .callToAction{
@@ -125,7 +118,7 @@ html {
 }
 
 .mainPart{
-    background-color: var(--terciary-color);
+    background-color: #292019;
     padding-bottom: 300px;
 }
 
@@ -152,3 +145,10 @@ html {
     width: 400px;
 }
 
+#formulaireVote p{
+    color:  var(--subtle-primary-color);
+}
+
+main {
+  flex: 1; /* Pousse le footer vers le bas */
+}

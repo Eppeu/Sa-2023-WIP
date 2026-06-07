@@ -1,0 +1,25 @@
+{
+  "name": "sa-2023-wip",
+  "version": "1.0.0",
+  "description": "Code source du site web d’organisation pour la saé 2023",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "sass": "sass sass/main.scss styles/main.css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Eppeu/Sa-2023-WIP.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Eppeu/Sa-2023-WIP/issues"
+  },
+  "homepage": "https://github.com/Eppeu/Sa-2023-WIP#readme",
+  "dependencies": {
+    "bootstrap": "^5.3.8"
+  }
+}

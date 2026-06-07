@@ -1,0 +1,51 @@
+@import "../node_modules/bootstrap/scss/functions";
+@import "../node_modules/bootstrap/scss/variables";
+
+$custom_color: (
+    "ctm-red": #ee3535,
+    "ctm-red-subtle": #EC7B75,
+    "ctm-primary-color": #ffd29f,
+    "ctm-primary-color-subtle": #FFFBF6,
+    "ctm-secondary-color": #ee3535,
+    "ctm-secondary-color-subtle": #EC7B75,
+    "ctm-terciary-color": #292019,
+    "ctm-terciary-color-subtle": #55473C
+);
+$theme-colors: map-merge($theme-colors, $custom_color);
+
+@import "../node_modules/bootstrap/scss/bootstrap";
+
+.btn-ctm-red {
+    @include button-variant(
+        $background: map-get($theme-colors, "ctm-red"),
+        $border: map-get($theme-colors, "ctm-red"),
+        $color: #FFFBF6,
+        $hover-color: #FFFBF6,
+        $active-color: #FFFBF6
+    );
+}
+
+.btn-ctm-red-subtle {
+    @include button-variant(
+        $background: map-get($theme-colors, "ctm-red-subtle"),
+        $border: map-get($theme-colors, "ctm-red-subtle"),
+        $color: #FFFBF6,
+        $hover-color: #FFFBF6,
+        $active-color: #FFFBF6
+    );
+}
+
+.list-group-item-ctm-terciary-color-subtle {
+    color: #55473C;
+    &.list-group-item-action:hover,
+    &.list-group-item-action:focus {
+        color: #a1a1a1;
+    }
+    &.active {
+        color: #e7aa5f;
+    }
+}
+
+.bg-ctm-terciary-color {
+    color: #FFFBF6
+}
