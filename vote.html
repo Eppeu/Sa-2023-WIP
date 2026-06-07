@@ -12,10 +12,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <!-- Font Awesome pour les icônes -->
         <script src="https://kit.fontawesome.com/4b69bc6b92.js" crossorigin="anonymous"></script>
-    <title>Créer une soirée</title>
+    <title>Les soirées</title>
 </head>
 
-<body  class="terciary_color_popco">
+<body class="terciary_color_popco">
     <header>
         <div class="container-fluid p-0">
                 <nav class="navbar navbar-expand  rounded-bottom-5 ">
@@ -88,82 +88,48 @@
     </header>
 
     <main>
-        <div class="text-center my-5 py-5">
-            <h5>Créez une nouvelle soirée !</h5>
-        </div>
-        <h5 class="ms-4">Entrez les informations de votre soirée</h5>
+        <div class="container my-5" id="formulaireVote">
+            <h5 class="fs-3">Votez pour le film que vous aimeriez voir !</h5>
+            <p>Ci-dessous le choix de films que l'organisateur de soirée à décider à sélectionner pour la soirée du jour mois année à heure heure</p>
 
-        <div class="container my-5">
-
+            <p>Pour la soirée [soirée], vous avec le choix entre les films suivant, veuillez en choisir un.</p>
             <form>
-                <div class="mb-3">
-                    <label for="" class="form-label">Nom de la soirée</label>
-                    <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" maxlength="30" placeholder="Soirée film d'horreur">
+                <div class="container d-flex justify-content-between flex-wrap">
+                    <div class="row">
+                        <input type="radio" class="btn-check" id="btn-check-1" autocomplete="off" name="vote">
+                        <label class="btn btn-lg" for="btn-check-1">
+                            <figure>
+                                <img src="./images/rin_smile.png" class="figure-img img-fluid rounded" alt="...">
+                                <figcaption class="figure-caption">Film 1 d'action de fifou</figcaption>
+                            </figure>
+                        </div>
+                        </label>
+    
+                    <div class="row">
+                        <input type="radio" class="btn-check" id="btn-check-2" autocomplete="off" name="vote">
+                        <label class="btn btn-lg" for="btn-check-2">
+                            <figure class="align-content-center">
+                                <img src="./images/miku_sunset.png" class="figure-img img-fluid rounded" alt="...">
+                                <figcaption class="figure-caption">Film 2 incroyable</figcaption>
+                            </figure>
+                        </div>
+                        </label>
+    
+                    <div class="row">
+                        <input type="radio" class="btn-check" id="btn-check-3" autocomplete="off" name="vote">
+                        <label class="btn btn-lg" for="btn-check-3">
+    
+                            <figure class="align-content-center">
+                                <img src="./images/AAAHHH.png" class="figure-img img-fluid rounded" alt="...">
+                                <figcaption class="figure-caption">Film 3 qui rend chockbar :0</figcaption>
+                            </figure>
+                        </div>
+                        </label>
+                    </div>
                 </div>
-
-                <div class="mb-3">
-
-                    <label for="genre_movie">Genre de la soirée</label>
-                    <select class="form-select" aria-label="genre_movie">
-                    <option selected>Choisissez un genre de soirée</option>
-                    <option value="">Sans genre</option>
-                    <option value="horror">Horreur</option>
-                    <option value="sf">Sci-Fi</option>
-                    <option value="miku">Miku</option>
-                    <option value="fantasy">Fanstastique</option>
-                    <option value="sh">Superhero</option>
-                    <option value="Animation">Animation</option>
-                    </select>
-                </div>
-
-
-                <div class="mb-3">
-                    <label for="formFile" class="form-label">Recherchez les films que vous voulez donner à choisir aux participants</label>
-                    <input class="form-control mb-5" type="search" placeholder="Search" aria-label="Search"/>
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </div>
-
-                <div class="mb-3">
-                    <label for="range4" class="form-label mt-3">Nombre de personnes à inviter</label>
-                    <div id="" class="form-text mb-3">Indiquez le nombre de personnes maximum de la soirée</div>
-                    <input type="range" class="form-range" min="0" max="100" value="5" id="range4">
-                    <output for="range4" id="rangeValue" aria-hidden="true"></output>
-                    <script>
-                        // This is an example script, please modify as needed
-                        const rangeInput = document.getElementById('range4');
-                        const rangeOutput = document.getElementById('rangeValue');
-                        // Set initial value
-                        rangeOutput.textContent = rangeInput.value;
-                        rangeInput.addEventListener('input', function() {
-                            rangeOutput.textContent = this.value;
-                        });
-                    </script>
-                </div>
-
-                <div class="mb-3">
-                    <label for="start" class="">Date de la soirée :</label>
-                    <input type="datetime-local" id="start" name="trip-start" value="2026-06-01" min="2026-06-01" max="2099-12-31" />
-                </div>
-
-                <div class="mb-3">
-                    <label for="start" class="">Date de de fin de la soirée :</label>
-                    <input type="datetime-local" id="start" name="trip-start" value="2026-06-01" min="2026-06-01" max="2099-12-31" />
-                </div>
-
-                <div class="mb-3">
-                    <label for="" class="form-label">Propositions de lieux où la soirée va se dérouler</label>
-                    <input type="password" class="form-control" id="">
-                </div>
-
-                <div class="mb-3">
-                    <label for="formFile" class="form-label">Choisissez une image de fond pour votre soirée</label>
-                    <div id="emailHelp" class="form-text mb-3">Cette image accompagnera la présentation de votre soirée, pour donner l'ambiance que vous voulez transmettre  Veuillez ne pas mettre d'image offensante</div>
-                    <input class="form-control" type="file" id="formFile">
-                </div>
-
-                <button type="submit" class="btn btn-primary">Submit</button>
+    
+                <button type="submit" class="btn btn-primary mt-3">Voter</button>
             </form>
-
         </div>
     </main>
 

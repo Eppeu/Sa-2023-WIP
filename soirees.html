@@ -5,6 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./styles/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dongle&display=swap" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <!-- Font Awesome pour les icônes -->
@@ -12,45 +15,108 @@
     <title>Les soirées</title>
 </head>
 
-<body>
+<body class="terciary_color_popco">
     <header>
         <div class="container-fluid p-0">
-            <nav class="navbar navbar-expand bg-body-tertiary">
-                <div class="container-fluid ">
-                    <a class="navbar-brand" href="./index.html">
-                        <img src="assets/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
-                    </a>
-                    <div class="collapse navbar-collapse justify-content-between">
-                        <ul class="navbar-nav mb-2 mb-lg-0">
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Les soirées</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="./soiree_create.html">Créer une soirée</a>
-                            </li>
-                        </ul>
-                        <ul class="navbar-nav mb-2 mb-lg-0 gap-2 me-0">
-                            <li class="nav-item">
-                                <a class="btn btn-primary" href="#">Se connecter</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="btn btn-warning" href="#">Créer un compte</a>
-                            </li>
-                        </ul>
+                <nav class="navbar navbar-expand  rounded-bottom-5 ">
+                    <div class="container-fluid">
+                        <a class="navbar-brand" href="./index.html">
+                            <img src="assets/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
+                        </a>
+                        <div class="collapse navbar-collapse justify-content-between">
+                            <ul class="navbar-nav mb-2 mb-lg-0 d-none d-md-flex">
+                                <li class="nav-item active">
+                                    <a class="nav-link" href="./index.html">Acceuil</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="./soirees.html">Les soirées</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="./soiree_create.html">Créer une soirée</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="./films.html">Films proposés</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="./vote.html">Voter</a>
+                                </li>
+                            </ul>
+                            <ul class="navbar-nav mb-2 mb-lg-0 gap-2 me-0 d-none d-md-flex">
+                                <li class="nav-item">
+                                    <a class="btn btn-primary" href="#">Se connecter</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="btn btn-warning" href="#">Créer un compte</a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <a class="fs-1 d-block d-md-none text-success" data-bs-toggle="offcanvas" href="#menu_phone" aria-controls="offcanvasExample">
+                        <i class="bi bi-list"></i>
+                        </a>
+                        <div class="offcanvas-md d-md-none offcanvas-end" tabindex="-1" id="menu_phone" aria-labelledby="menu_phoneLabel">
+                            <div class="offcanvas-header">
+                                <h5 class="offcanvas-title" id="menu_phoneLabel">PopCo</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#menu_phone" aria-label="Close"></button>
+                            </div>
+                            <div class="offcanvas-body d-flex flex-column justify-content-between px-0">
+                                <ul class="list-group">
+                                    <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
+                                        Acceuil
+                                    </a>
+                                    <a href="#" class="list-group-item list-group-item-action">
+                                        Les soirées
+                                    </a>
+                                    <a href="#" class="list-group-item list-group-item-action">
+                                        Créer une soirée
+                                    </a>
+                                    <a href="#" class="list-group-item list-group-item-action">
+                                        Films proposés
+                                    </a>
+                                </ul>
+
+                                <div class="container-fluid d-md-flex justify-content-end gap-2">
+                                    <a class="btn btn-primary" href="#">Se connecter</a>
+                                    <a class="btn btn-warning" href="#">Créer un compte</a>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
-                </div>
-            </nav>
+                </nav>
         </div>
     </header>
 
-    <main>
-        <div class="text-center my-5 py-5">
-            <h5>Organisez des soirées de fifou dingo !!</h5>
+    <main class="container-fluid px-0">
+        <div class="bgImage"></div>
+        <div class="text-center py-5 callToAction">
+            <h5 class="fs-1">Retrouvez toutes les soirées ici !</h5>
         </div>
-        <h5 class="ms-4">Dernières soirées omg</h5>
 
-        <div class="container">
-            <div id ="img-resize" class="row row-cols-5 mx-3 my-3 g-5">
+        <div class="mainPart py-5">
+            <div class="row">
+                <div class="col-8">
+                    <h5 class="ms-5 fs-3">Dernières soirées omg</h5>
+                </div>
+                <div class="col-auto">
+                    <select class="form-select ms-2" aria-label="Default select example">
+                        <option selected>Trier par genre...</option>
+                        <option value="1">Action</option>
+                        <option value="2">Fantastique</option>
+                        <option value="3">Horreur</option>
+                    </select>
+                </div>
+                <div class="col-auto p-0">
+                    <select class="form-select ms-2" aria-label="Default select example">
+                        <option selected>Trier par date...</option>
+                        <option value="1">Action</option>
+                        <option value="2">Fantastique</option>
+                        <option value="3">Horreur</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id ="img-resize" class="row row-cols-5 mx-3 mb-3 pt-3 g-5">
                 <div class="col-12 col-sm-6 col-lg-4 col-xl-3" >
                     <div class="card p-0 h-auto">
                         <img src="./images/rella_16th_birthday_edit.jpg" class="card-img-top object-fit-cover" alt="...">
@@ -150,63 +216,29 @@
                 </div>
             </div>
         </div>
-
-        <div class="container my-5">
-            <h5>Votez pour le film que vous aimeriez voir !</h5>
-            <form>
-                <div>
-                    <input type="checkbox" class="btn-check" id="btn-check-2" autocomplete="off">
-                    <label class="btn w-25 btn-lg" for="btn-check-2">
-
-                        <div class="card text-bg-dark">
-                        <img src="./images/rin_smile.png" class="card-img" alt="...">
-                         <div class="card-img-overlay">
-                            <h5 class="card-text">Film 1 d'action de fifou</h5>
-                            <p class="card-text">Synopsis à couper le souffe !</p>
-                         </div>
-                    </div>
-                    </label>
-    
-                    <input type="checkbox" class="btn-check" id="btn-check-3" autocomplete="off">
-                    <label class="btn w-25 btn-lg" for="btn-check-3">
-
-                        <div class="card text-bg-dark">
-                        <img src="./images/miku_sunset.png" class="card-img" alt="...">
-                         <div class="card-img-overlay">
-                            <h5 class="card-text">Film 2 incroyable</h5>
-                            <p class="card-text">Synopsis de fou furieux</p>
-                         </div>
-                    </div>
-                    </label>
-    
-                    <input type="checkbox" class="btn-check" id="btn-check-4" autocomplete="off">
-                    <label class="btn w-25 btn-lg" for="btn-check-4">
-
-                        <div class="card text-bg-dark">
-                        <img src="./images/AAAHHH.png" class="card-img" alt="...">
-                         <div class="card-img-overlay">
-                            <h5 class="card-text">Film 3 qui rend chockbar :0</h5>
-                            <p class="card-text">Synopsis qui semble banale mais qui ne l'est pas...!</p>
-                         </div>
-                    </div>
-                    </label>
-                </div>
-    
-                <button type="submit" class="btn btn-primary mt-3">Voter</button>
-            </form>
-        </div>
     </main>
 
-    <footer class="container-fluid bg-body-tertiary">
-        <div class="row g-1">
-            <div class="col-lg-6 py-3 text-start d-none d-lg-block">
-                <span class="text-decoration-underline">Webmaster</span> : impa@chateau-hyrule.hy
+    <footer id="footer_popco" class="container-fluid py-3 rounded-top-5"><!-- Voir sujet -->
+        <div class="row g-1 d-flex align-items-center"><!-- Ligne avec gouttière verticale de 1 -->
+            <div class="col-4 fs-2 ps-4">
+                <a href="" target="_blank" class="text-decoration-none text-danger">
+                    <i class="fab fa-instagram"></i><!-- Icône Instagram -->
+                </a>
+                <a href="" target="_blank" class="text-decoration-none">
+                    <i class="fab fa-facebook"></i><!-- Icône Facebook -->
+                </a>
+                <a href="" target="_blank" class="text-decoration-none">
+                    <i class="fab fa-discord"></i><!-- Icône Discord -->
+                </a>
+                
             </div>
-            <div class="col-lg-6">
-                <i class="fab fa-instagram"></i>
-                <i class="fab fa-facebook"></i>
-                <i class="fab fa-discord"></i>
+            <div class="col-4 text-center">
+                <img src="assets/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
             </div>
+            <div class="col-4 py-3 text-start d-none d-lg-block text-end pe-4">
+                <a href="#" class="text-decoration-none">Mentions légales</a>
+            </div>
+
         </div>
     </footer>
 </body>
