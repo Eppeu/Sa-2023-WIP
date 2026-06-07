@@ -1,15 +1,19 @@
 :root {
   --primary-color: #ffd29f;
+  --subtle-primary-color: #FFFBF6;
   --secondary-color: #ee3535;
-  --terciary-color: #ffe7e7;
-  --bs-navitem-color: #000000A6;
+  --subtle-secondary-color: #EC7B75;
+  --terciary-color: #292019;
 }
 
-.secondary_color_popco{background-color: var(--secondary-color);}
 .primary_color_popco{background-color: var(--primary-color);}
-.terciary_color_popco{background-color: var(--terciary-color);}
+.subtle-primary-color_popco{background-color: var(--subtle-primary-color);}
+.secondary_color_popco{background: var(--secondary-color);}
+.subtle-secondary-color_popco{background-color: var(--subtle-secondary-color);}
+.terciary_color_popco{background: var(--terciary-color);}
+.btn_secondary_color_color{--bs-btn-color: var(--secondary-color);}
 
-.bootstrap_nav_item_color{color: var(--bs-navitem-color);}
+.bootstrap_nav_item_color{color: var(--terciary-color);}
 *{
     margin: 0;
     padding: 0;
@@ -32,6 +36,11 @@
 h5{
     font-family: 'Sugo-Pro', sans-serif;
     text-transform: uppercase;
+    color: var(--subtle-primary-color) !important;
+}
+
+.card-title {
+    color: var(--terciary-color) !important;
 }
 
 p{
@@ -85,7 +94,7 @@ html {
     background-repeat: no-repeat;
     height: 300px;
     width: 100%;
-    filter: blur(10px);
+    filter: blur(10px) brightness(0.6);
     z-index: -1;
 }
 
@@ -98,6 +107,7 @@ html {
 .callToAction h5{
     vertical-align: middle;
     text-align: center;
+    color: var(--subtle-primary-color);
 }
 
 .sticker{
@@ -111,6 +121,7 @@ html {
 
 .callToAction p{
     line-height:1;
+    color: var(--subtle-primary-color);
 }
 
 .mainPart{
@@ -136,12 +147,8 @@ html {
     box-shadow: 0px 5px 10px #d4b086;
 }
 
-#formulaireVote figure{
+#formulaireVote img {
     height: 200px;
-    width: auto;
+    width: 400px;
 }
 
-
-#formulaireVote img{
-    object-fit: cover;
-}

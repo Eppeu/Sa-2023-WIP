@@ -13,10 +13,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <!-- Font Awesome pour les icônes -->
         <script src="https://kit.fontawesome.com/4b69bc6b92.js" crossorigin="anonymous"></script>
-    <title>Créer une soirée</title>
+    <title>Les soirées</title>
 </head>
 
-<body  class="terciary_color_popco">
+<body class="terciary_color_popco">
     <header>
         <div class="container-fluid p-0">
                 <nav class="navbar navbar-expand  rounded-bottom-5 ">
@@ -91,83 +91,121 @@
         </div>
     </header>
 
-    <main>
-        <div class="text-center my-5 py-5">
-            <h5>Créez une nouvelle soirée !</h5>
+    <main class="container-fluid px-0">
+        <div class="bgImage"></div>
+        <div class="text-center py-5 callToAction">
+            <h5 class="fs-1">Bonjour [nom d'utilisateur] !</h5>
         </div>
-        <h5 class="ms-4">Entrez les informations de votre soirée</h5>
 
-        <div class="container my-5">
-
-            <form>
-                <div class="mb-3">
-                    <label for="" class="form-label">Nom de la soirée</label>
-                    <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" maxlength="30" placeholder="Soirée film d'horreur">
+        <div class="mainPart py-5">
+            <div class="row">
+                <div class="ms-5 col-12">
+                    <h5 class="fs-3">Vos informations</h5>
+                    <p class="mt-5">Nom : nom</p>
+                    <p>Prénom : prénom</p>
+                    <p>email : email.***@gmail.com</p>
+                    <h5 class="mt-5 fs-3">Les soirées auxquelles vous êtes inscrit(e)</h5>
                 </div>
 
-                <div class="mb-3">
+            <div id ="img-resize" class="row row-cols-5 mx-3 mb-3 pt-3 g-5">
+                <div class="col-12 col-sm-6 col-lg-4 col-xl-3" >
+                    <div class="card p-0 h-auto">
+                        <img src="./images/rella_16th_birthday_edit.jpg" class="card-img-top object-fit-cover" alt="...">
 
-                    <label for="genre_movie">Genre de la soirée</label>
-                    <select class="form-select" aria-label="genre_movie">
-                    <option selected>Choisissez un genre de soirée</option>
-                    <option value="">Sans genre</option>
-                    <option value="horror">Horreur</option>
-                    <option value="sf">Sci-Fi</option>
-                    <option value="miku">Miku</option>
-                    <option value="fantasy">Fanstastique</option>
-                    <option value="sh">Superhero</option>
-                    <option value="Animation">Animation</option>
-                    </select>
+                        <div class="card-body subtle-primary-color_popco">
+                            <h5 class="card-title">Card title</h5>
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
+                        </div>
+                        <div class="card-footer p-0 border-0">
+                            <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                    <div class="card p-0 h-auto">
+                        <img src="./images/AAAHHH.png" class="card-img-top object-fit-cover" alt="...">
+
+                        <div class="card-body subtle-primary-color_popco">
+                            <h5 class="card-title">Card title</h5>
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
+                        </div>
+                        <div class="card-footer p-0 border-0">
+                            <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
+                        </div>
+                    </div>
                 </div>
 
+                <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                    <div class="card p-0 h-auto">
+                        <img src="./images/chippies.png" class="card-img-top object-fit-cover" alt="...">
 
-                <div class="mb-3">
-                    <label for="formFile" class="form-label">Recherchez les films que vous voulez donner à choisir aux participants</label>
-                    <input class="form-control mb-5" type="search" placeholder="Search" aria-label="Search"/>
-                    <button class="btn btn-outline-success" type="submit">Search</button>
+                        <div class="card-body subtle-primary-color_popco">
+                            <h5 class="card-title">Card title</h5>
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
+                        </div>
+                        <div class="card-footer p-0 border-0">
+                            <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="mb-3">
-                    <label for="range4" class="form-label mt-3">Nombre de personnes à inviter</label>
-                    <div id="" class="form-text mb-3">Indiquez le nombre de personnes maximum de la soirée</div>
-                    <input type="range" class="form-range" min="0" max="100" value="5" id="range4">
-                    <output for="range4" id="rangeValue" aria-hidden="true"></output>
-                    <script>
-                        // This is an example script, please modify as needed
-                        const rangeInput = document.getElementById('range4');
-                        const rangeOutput = document.getElementById('rangeValue');
-                        // Set initial value
-                        rangeOutput.textContent = rangeInput.value;
-                        rangeInput.addEventListener('input', function() {
-                            rangeOutput.textContent = this.value;
-                        });
-                    </script>
+                <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                    <div class="card p-0 h-auto">
+                        <img src="./images/looking_into_my_soul.png" class="card-img-top object-fit-cover" alt="...">
+
+                        <div class="card-body subtle-primary-color_popco">
+                            <h5 class="card-title">Card title</h5>
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
+                        </div>
+                        <div class="card-footer p-0 border-0">
+                            <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="mb-3">
-                    <label for="start" class="">Date de la soirée :</label>
-                    <input type="datetime-local" id="start" name="trip-start" value="2026-06-01" min="2026-06-01" max="2099-12-31" />
+                <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                    <div class="card p-0 h-auto">
+                        <img src="./images/miku_sunset.png" class="card-img-top object-fit-cover" alt="...">
+
+                        <div class="card-body subtle-primary-color_popco">
+                            <h5 class="card-title">Card title</h5>
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
+                        </div>
+                        <div class="card-footer p-0 border-0">
+                            <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="mb-3">
-                    <label for="start" class="">Date de de fin de la soirée :</label>
-                    <input type="datetime-local" id="start" name="trip-start" value="2026-06-01" min="2026-06-01" max="2099-12-31" />
+                <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                    <div class="card p-0 h-auto">
+                        <img src="./images/yuri_time.png" class="card-img-top object-fit-cover" alt="...">
+
+                        <div class="card-body subtle-primary-color_popco">
+                            <h5 class="card-title">Card title</h5>
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
+                        </div>
+                        <div class="card-footer p-0 border-0">
+                            <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="mb-3">
-                    <label for="" class="form-label">Propositions de lieux où la soirée va se dérouler</label>
-                    <input type="password" class="form-control" id="">
+                <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                    <div class="card p-0 h-auto">
+                        <img src="./images/miku_sunset.png" class="card-img-top object-fit-cover" alt="...">
+
+                        <div class="card-body subtle-primary-color_popco">
+                            <h5 class="card-title">Card title</h5>
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
+                        </div>
+                        <div class="card-footer p-0 border-0">
+                            <a href="#" class="btn btn-primary py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
+                        </div>
+                    </div>
                 </div>
-
-                <div class="mb-3">
-                    <label for="formFile" class="form-label">Choisissez une image de fond pour votre soirée</label>
-                    <div id="emailHelp" class="form-text mb-3">Cette image accompagnera la présentation de votre soirée, pour donner l'ambiance que vous voulez transmettre  Veuillez ne pas mettre d'image offensante</div>
-                    <input class="form-control" type="file" id="formFile">
-                </div>
-
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </form>
-
+            </div>
         </div>
     </main>
 

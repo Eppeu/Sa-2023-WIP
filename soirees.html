@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Dongle&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" sizes="32x32" href="./assets/PopCo_favicon.ico">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <!-- Font Awesome pour les icônes -->
@@ -36,6 +37,9 @@
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="./films.html">Films proposés</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="./utilisateur.html">Utilisateur</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="./vote.html">Voter</a>
@@ -121,7 +125,7 @@
                     <div class="card p-0 h-auto">
                         <img src="./images/rella_16th_birthday_edit.jpg" class="card-img-top object-fit-cover" alt="...">
 
-                        <div class="card-body">
+                        <div class="card-body subtle-primary-color_popco">
                             <h5 class="card-title">Card title</h5>
                             <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
                         </div>
@@ -135,7 +139,7 @@
                     <div class="card p-0 h-auto">
                         <img src="./images/AAAHHH.png" class="card-img-top object-fit-cover" alt="...">
 
-                        <div class="card-body">
+                        <div class="card-body subtle-primary-color_popco">
                             <h5 class="card-title">Card title</h5>
                             <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
                         </div>
@@ -149,7 +153,7 @@
                     <div class="card p-0 h-auto">
                         <img src="./images/chippies.png" class="card-img-top object-fit-cover" alt="...">
 
-                        <div class="card-body">
+                        <div class="card-body subtle-primary-color_popco">
                             <h5 class="card-title">Card title</h5>
                             <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
                         </div>
@@ -163,7 +167,7 @@
                     <div class="card p-0 h-auto">
                         <img src="./images/looking_into_my_soul.png" class="card-img-top object-fit-cover" alt="...">
 
-                        <div class="card-body">
+                        <div class="card-body subtle-primary-color_popco">
                             <h5 class="card-title">Card title</h5>
                             <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
                         </div>
@@ -177,7 +181,7 @@
                     <div class="card p-0 h-auto">
                         <img src="./images/miku_sunset.png" class="card-img-top object-fit-cover" alt="...">
 
-                        <div class="card-body">
+                        <div class="card-body subtle-primary-color_popco">
                             <h5 class="card-title">Card title</h5>
                             <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
                         </div>
@@ -191,7 +195,7 @@
                     <div class="card p-0 h-auto">
                         <img src="./images/yuri_time.png" class="card-img-top object-fit-cover" alt="...">
 
-                        <div class="card-body">
+                        <div class="card-body subtle-primary-color_popco">
                             <h5 class="card-title">Card title</h5>
                             <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
                         </div>
@@ -205,7 +209,7 @@
                     <div class="card p-0 h-auto">
                         <img src="./images/miku_sunset.png" class="card-img-top object-fit-cover" alt="...">
 
-                        <div class="card-body">
+                        <div class="card-body subtle-primary-color_popco">
                             <h5 class="card-title">Card title</h5>
                             <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
                         </div>
@@ -224,10 +228,10 @@
                 <a href="" target="_blank" class="text-decoration-none text-danger">
                     <i class="fab fa-instagram"></i><!-- Icône Instagram -->
                 </a>
-                <a href="" target="_blank" class="text-decoration-none">
+                <a href="" target="_blank" class="text-decoration-none text-danger">
                     <i class="fab fa-facebook"></i><!-- Icône Facebook -->
                 </a>
-                <a href="" target="_blank" class="text-decoration-none">
+                <a href="" target="_blank" class="text-decoration-none text-danger">
                     <i class="fab fa-discord"></i><!-- Icône Discord -->
                 </a>
                 
@@ -235,10 +239,59 @@
             <div class="col-4 text-center">
                 <img src="assets/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
             </div>
-            <div class="col-4 py-3 text-start d-none d-lg-block text-end pe-4">
-                <a href="#" class="text-decoration-none">Mentions légales</a>
-            </div>
+            <div class="col-4 py-3 text-start d-lg-block text-end pe-4">
+                <a class="text-decoration-none bootstrap_nav_item_color" data-bs-toggle="modal" href="#popco_ml" role="button">
+                Mention légales
+                </a>
+                <div class="modal fade" id="popco_ml" tabindex="-1" aria-labelledby="popco_mlLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="popco_mlLabel">MENTIONS LÉGALES</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body text-center lh-sm">
+                            <p>
+                                Conformément aux dispositions de la loi n° 2004-575 du 21 juin 2004 pour la confiance en l'économie numérique, il est précisé aux utilisateurs du site PopCo l'identité des différents intervenants dans le cadre de sa réalisation et de son suivi.
+                            </p>
+                            
+                            <h5>Edition du site</h5>
+                            
+                            <p>
+                                Le présent site, accessible à l’URL https://PopCo.fr (le « Site »), est édité par :<br>
+                                Astrid CALAIS, résidant Tarbes 65000, de nationalité Française (France), né(e) le 20/10/2003,
+                            </p>
 
+                            <h5>Hébergement</h5>
+                            
+                            <p>
+                                Le Site est hébergé par la société IUT de Tarbes, situé 1 Rue Lautréamont, 65000 Tarbes, (contact téléphonique ou email : +33562444200).
+                            </p>
+
+                            <h5>Directeur de publication</h5>
+
+                            <p>
+                                Le Directeur de la publication du Site est Astrid CALAIS.
+                            </p>
+
+                            <h5>Nous contacter</h5>
+
+                            <p>
+                                Par téléphone : +33739393939<br>
+                                Par email : astrid.migu@cfm.fr<br>
+                                Par courrier : Tarbes 65000<br><br>
+                                Génération des mentions légales par Legalstart.
+                            </p>
+
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </footer>
 </body>
