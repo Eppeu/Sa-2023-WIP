@@ -37,41 +37,51 @@ $soireesHorreur = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE gen
 </head>
 
 <body class="bg-ctm-terciary-color">
-    <header>
+    <header> 
         <div class="container-fluid p-0">
                 <nav id="header_popco" class="navbar navbar-expand bg-ctm-primary-color rounded-bottom-5 ">
                     <div class="container-fluid">
                         <a class="navbar-brand" href="./index.php">
                             <img src="./assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
+                            <!-- Insertion d'une icône du logo PopCo -->
                         </a>
                         <div class="collapse navbar-collapse justify-content-between">
+                            <!-- navbar sous mode collapse avec justify content between -->
                             <ul class="navbar-nav mb-2 mb-lg-0 d-none d-md-flex">
                                 <li class="nav-item active">
-                                    <a class="nav-link" href="./index.php">Acceuil</a>
+                                    <!-- item de navigation actif -->
+                                    <a class="nav-link" href="./index.php">Accueil</a>
+                                    <!-- lien de navigation -->
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./soirees.html">Les soirées</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="./soirees.php">Les soirées</a>
+                                    <!-- lien de navigation -->
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./soiree_create.html">Créer une soirée</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="./soiree_create.php">Créer une soirée</a>
+                                    <!-- lien de navigation -->
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./films.html">Films proposés</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="./films.php">Films proposés</a>
+                                    <!-- lien de navigation -->
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./utilisateur.html">Utilisateur</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="./utilisateur.php">Utilisateur</a>
+                                    <!-- lien de navigation -->
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./vote.html">Vote</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="./vote.php">Vote</a>
+                                    <!-- lien de navigation -->
                                 </li>
                             </ul>
                             <ul class="navbar-nav mb-2 mb-lg-0 gap-2 me-0 d-none d-md-flex">
                                 <li class="nav-item">
-                                    <a class="btn btn-ctm-red-subtle" href="./connexion.html">Se connecter</a>
+                                    <a class="btn btn-ctm-red-subtle" href="./connexion.php">Se connecter</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="btn btn-ctm-red" href="./new_account.html">Créer un compte</a>
+                                    <a class="btn btn-ctm-red" href="./new_account.php">Créer un compte</a>
                                 </li>
+                                <!-- Boutons Rouges (un de couleur légère et l'autre non) pour créer un compte et se connecter -->
                             </ul>
                         </div>
 
@@ -86,28 +96,35 @@ $soireesHorreur = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE gen
                             <div class="offcanvas-body d-flex flex-column justify-content-between px-0">
                                 <ul class="list-group">
                                     <a href="./index.php" class="list-group-item list-group-item-action active list-group-item-ctm-terciary-color-subtle" aria-current="true">
-                                        Acceuil
+                                        Accueil
+                                        <!-- list group actif -->
                                     </a>
-                                    <a href="./soirees.html" class="list-group-item list-group-item-action">
+                                    <a href="./soirees.php" class="list-group-item list-group-item-action">
                                         Les soirées
+                                        <!-- list group actif -->
                                     </a>
-                                    <a href="./soiree_create.html" class="list-group-item list-group-item-action">
+                                    <a href="./soiree_create.php" class="list-group-item list-group-item-action">
                                         Créer une soirée
+                                        <!-- list group actif -->
                                     </a>
-                                    <a href="./films.html" class="list-group-item list-group-item-action">
+                                    <a href="./films.php" class="list-group-item list-group-item-action">
                                         Films proposés
+                                        <!-- list group actif -->
                                     </a>
-                                    <a href="./utilisateur.html" class="list-group-item list-group-item-action">
+                                    <a href="./utilisateur.php" class="list-group-item list-group-item-action">
                                         Utilisateur
+                                        <!-- list group actif -->
                                     </a>
-                                    <a href="./vote.html" class="list-group-item list-group-item-action">
+                                    <a href="./vote.php" class="list-group-item list-group-item-action">
                                         Voter
+                                        <!-- list group actif -->
                                     </a>
                                 </ul>
 
                                 <div class="container-fluid d-md-flex justify-content-end gap-2">
-                                    <a class="btn btn-ctm-red-subtle" href="./connexion.html">Se connecter</a>
-                                    <a class="btn btn-ctm-red" href="./new_account.html">Créer un compte</a>
+                                    <a class="btn btn-ctm-red-subtle" href="./connexion.php">Se connecter</a>
+                                    <a class="btn btn-ctm-red" href="./new_account.php">Créer un compte</a>
+                                    <!-- Bouton rouge pour se connecter / créer un compte -->
                                 </div>
                             </div>
                         </div>
@@ -121,7 +138,7 @@ $soireesHorreur = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE gen
     <main class="container-fluid px-0">
         <div class="bgImage"></div>
         <div class="text-center py-5 callToAction">
-            <h5 class="fs-1">Organisez des soirées inoublouable !!</h5>
+            <h5 class="fs-1">Organisez des soirées inoubliables !!</h5>
             <p class="px-3 fs-3 sticker bg-ctm-red">Déjà <?php echo $count; ?> soirées créées !</p>
 
             <p class="mt-5 fs-4">
@@ -134,6 +151,7 @@ $soireesHorreur = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE gen
         <div class="mainPart py-5 z-0">
 
             <h5 class="ms-5 fs-3 text-ctm-primary-color-subtle">Les soirées récemment ajoutées !</h5>
+            <!-- Titre h5 -->
             
             <div class="row mx-3">
                 <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
@@ -230,7 +248,7 @@ $soireesHorreur = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE gen
             </div>
             <div class="col-4 py-3 text-start d-lg-block text-end pe-4">
                 <a class="text-decoration-none link-ctm-terciary-color-subtle" data-bs-toggle="modal" href="#popco_ml" role="button">
-                Mention légales
+                Mentions légales
                 </a>
                 <div class="modal fade" id="popco_ml" tabindex="-1" aria-labelledby="popco_mlLabel" aria-hidden="true">
                     <div class="modal-dialog">

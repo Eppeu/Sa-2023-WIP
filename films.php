@@ -47,34 +47,35 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                     <div class="container-fluid">
                         <a class="navbar-brand" href="./index.php">
                             <img src="./assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
+                            <!-- Insertion d'une icône du logo PopCo -->
                         </a>
                         <div class="collapse navbar-collapse justify-content-between">
                             <ul class="navbar-nav mb-2 mb-lg-0 d-none d-md-flex">
                                 <li class="nav-item active">
-                                    <a class="nav-link" href="./index.php">Acceuil</a>
+                                    <a class="nav-link" href="./index.php">Accueil</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./soirees.html">Les soirées</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="./soirees.php">Les soirées</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./soiree_create.html">Créer une soirée</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="./soiree_create.php">Créer une soirée</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./films.html">Films proposés</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="./films.php">Films proposés</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./utilisateur.html">Utilisateur</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="./utilisateur.php">Utilisateur</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./vote.html">Vote</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="./vote.php">Vote</a>
                                 </li>
                             </ul>
                             <ul class="navbar-nav mb-2 mb-lg-0 gap-2 me-0 d-none d-md-flex">
                                 <li class="nav-item">
-                                    <a class="btn btn-ctm-red-subtle" href="./connexion.html">Se connecter</a>
+                                    <a class="btn btn-ctm-red-subtle" href="./connexion.php">Se connecter</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="btn btn-ctm-red" href="./new_account.html">Créer un compte</a>
+                                    <a class="btn btn-ctm-red" href="./new_account.php">Créer un compte</a>
                                 </li>
                             </ul>
                         </div>
@@ -90,21 +91,21 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                             <div class="offcanvas-body d-flex flex-column justify-content-between px-0">
                                 <ul class="list-group">
                                     <a href="./index.php" class="list-group-item list-group-item-action" aria-current="true">
-                                        Acceuil
+                                        Accueil
                                     </a>
-                                    <a href="./soirees.html" class="list-group-item list-group-item-action">
+                                    <a href="./soirees.php" class="list-group-item list-group-item-action">
                                         Les soirées
                                     </a>
-                                    <a href="./soiree_create.html" class="list-group-item list-group-item-action">
+                                    <a href="./soiree_create.php" class="list-group-item list-group-item-action">
                                         Créer une soirée
                                     </a>
-                                    <a href="./films.html" class="list-group-item list-group-item-action active list-group-item-ctm-terciary-color-subtle">
+                                    <a href="./films.php" class="list-group-item list-group-item-action active list-group-item-ctm-terciary-color-subtle">
                                         Films proposés
                                     </a>
-                                    <a href="./utilisateur.html" class="list-group-item list-group-item-action">
+                                    <a href="./utilisateur.php" class="list-group-item list-group-item-action">
                                         Utilisateur
                                     </a>
-                                    <a href="./vote.html" class="list-group-item list-group-item-action">
+                                    <a href="./vote.php" class="list-group-item list-group-item-action">
                                         Voter
                                     </a>
                                 </ul>
@@ -157,7 +158,7 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                 </div>
             </div>
 
-            <h5 class="ms-5 mt-4 fs-3">Les films fantastique</h5>
+            <h5 class="ms-5 mt-4 fs-3">Les films fantastiques</h5>
             <div class="row mx-3">
                 <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
                     <div id ="img-resize" class="row row-cols-2 row-cols-md-5 ms-1 my-3 g-5 flex-nowrap gap-3">
@@ -232,7 +233,7 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                 </div>
             </div>
 
-            <h5 class="ms-5 mt-4 fs-3">Les films historique</h5>
+            <h5 class="ms-5 mt-4 fs-3">Les films historiques</h5>
             <div class="row mx-3">
                 <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
                     <div id ="img-resize" class="row row-cols-2 row-cols-md-5 ms-1 my-3 g-5 flex-nowrap gap-3">
@@ -307,7 +308,7 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                 </div>
             </div>
 
-            <h5 class="ms-5 mt-4 fs-3">Les films de SF</h5>
+            <h5 class="ms-5 mt-4 fs-3">Les films de Science Fiction</h5>
             <div class="row mx-3">
                 <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
                     <div id ="img-resize" class="row row-cols-2 row-cols-md-5 ms-1 my-3 g-5 flex-nowrap gap-3">
@@ -355,7 +356,7 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
             </div>
             <div class="col-4 py-3 text-start d-lg-block text-end pe-4">
                 <a class="text-decoration-none link-ctm-terciary-color-subtle" data-bs-toggle="modal" href="#popco_ml" role="button">
-                Mention légales
+                Mentions légales
                 </a>
                 <div class="modal fade" id="popco_ml" tabindex="-1" aria-labelledby="popco_mlLabel" aria-hidden="true">
                     <div class="modal-dialog">

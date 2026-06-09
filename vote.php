@@ -1,3 +1,25 @@
+<?php
+require_once './bdd/bdd_connexion.php';
+$bdd = connectBDS();
+
+$allSoirees = $bdd->query('SELECT * FROM film');
+
+$soireesHorreur_sort = $bdd->query("SELECT * FROM film WHERE genre = 'horreur'; ");
+$soireesAction_sort = $bdd->query("SELECT * FROM film WHERE genre = 'action'; ");
+$soireesFanstastique_sort = $bdd->query("SELECT * FROM film WHERE genre = 'fantastique'; ");
+$soireesAnimation_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Animation'; ");
+$soireesComedy_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Comédie'; ");
+$soireesHistorique_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Historique'; ");
+$soireesThriller_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Thriller'; ");
+
+
+// Documentaty is broken for some reasons (Please Check this Astrid !), Wrong Token or invalid expression 
+// $soireesDocumentaire_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Documentaire'; "); 
+
+$soireesRomance_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Romance'; ");
+$soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction'; ");
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -29,30 +51,30 @@
                         <div class="collapse navbar-collapse justify-content-between">
                             <ul class="navbar-nav mb-2 mb-lg-0 d-none d-md-flex">
                                 <li class="nav-item active">
-                                    <a class="nav-link" href="./index.php">Acceuil</a>
+                                    <a class="nav-link" href="./index.php">Accueil</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./soirees.html">Les soirées</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="./soirees.php">Les soirées</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./soiree_create.html">Créer une soirée</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="./soiree_create.php">Créer une soirée</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./films.html">Films proposés</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="./films.php">Films proposés</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./utilisateur.html">Utilisateur</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="./utilisateur.php">Utilisateur</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./vote.html">Vote</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="./vote.php">Vote</a>
                                 </li>
                             </ul>
                             <ul class="navbar-nav mb-2 mb-lg-0 gap-2 me-0 d-none d-md-flex">
                                 <li class="nav-item">
-                                    <a class="btn btn-ctm-red-subtle" href="./connexion.html">Se connecter</a>
+                                    <a class="btn btn-ctm-red-subtle" href="./connexion.php">Se connecter</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="btn btn-ctm-red" href="./new_account.html">Créer un compte</a>
+                                    <a class="btn btn-ctm-red" href="./new_account.php">Créer un compte</a>
                                 </li>
                             </ul>
                         </div>
@@ -68,21 +90,21 @@
                             <div class="offcanvas-body d-flex flex-column justify-content-between px-0">
                                 <ul class="list-group">
                                     <a href="./index.php" class="list-group-item list-group-item-action" aria-current="true">
-                                        Acceuil
+                                        Accueil
                                     </a>
-                                    <a href="./soirees.html" class="list-group-item list-group-item-action">
+                                    <a href="./soirees.php" class="list-group-item list-group-item-action">
                                         Les soirées
                                     </a>
-                                    <a href="./soiree_create.html" class="list-group-item list-group-item-action">
+                                    <a href="./soiree_create.php" class="list-group-item list-group-item-action">
                                         Créer une soirée
                                     </a>
-                                    <a href="./films.html" class="list-group-item list-group-item-action">
+                                    <a href="./films.php" class="list-group-item list-group-item-action">
                                         Films proposés
                                     </a>
-                                    <a href="./utilisateur.html" class="list-group-item list-group-item-action">
+                                    <a href="./utilisateur.php" class="list-group-item list-group-item-action">
                                         Utilisateur
                                     </a>
-                                    <a href="./vote.html" class="list-group-item list-group-item-action active list-group-item-ctm-terciary-color-subtle">
+                                    <a href="./vote.php" class="list-group-item list-group-item-action active list-group-item-ctm-terciary-color-subtle">
                                         Voter
                                     </a>
                                 </ul>
@@ -164,7 +186,7 @@
             </div>
             <div class="col-4 py-3 text-start d-lg-block text-end pe-4">
                 <a class="text-decoration-none link-ctm-terciary-color-subtle" data-bs-toggle="modal" href="#popco_ml" role="button">
-                Mention légales
+                Mentions légales
                 </a>
                 <div class="modal fade" id="popco_ml" tabindex="-1" aria-labelledby="popco_mlLabel" aria-hidden="true">
                     <div class="modal-dialog">

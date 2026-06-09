@@ -1,25 +1,3 @@
-<?php
-require_once './bdd/bdd_connexion.php';
-$bdd = connectBDS();
-
-$allSoirees = $bdd->query('SELECT * FROM film');
-
-$soireesHorreur_sort = $bdd->query("SELECT * FROM film WHERE genre = 'horreur'; ");
-$soireesAction_sort = $bdd->query("SELECT * FROM film WHERE genre = 'action'; ");
-$soireesFanstastique_sort = $bdd->query("SELECT * FROM film WHERE genre = 'fantastique'; ");
-$soireesAnimation_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Animation'; ");
-$soireesComedy_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Comédie'; ");
-$soireesHistorique_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Historique'; ");
-$soireesThriller_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Thriller'; ");
-
-
-// Documentaty is broken for some reasons (Please Check this Astrid !), Wrong Token or invalid expression 
-// $soireesDocumentaire_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Documentaire'; "); 
-
-$soireesRomance_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Romance'; ");
-$soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction'; ");
-?>
-
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -37,46 +15,50 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
         <script src="https://kit.fontawesome.com/4b69bc6b92.js" crossorigin="anonymous"></script>
     <!-- Bootstrap Icons  -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <title>Les soirées</title>
+    <title>PopCo</title>
 </head>
 
 <body class="bg-ctm-terciary-color">
     <header>
         <div class="container-fluid p-0">
                 <nav id="header_popco" class="navbar navbar-expand bg-ctm-primary-color rounded-bottom-5 ">
+                    <!-- création de barre de navigation -->
                     <div class="container-fluid">
                         <a class="navbar-brand" href="./index.php">
                             <img src="./assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
                         </a>
+                        <!-- insertion du logo menant vers la page d'accueil -->
                         <div class="collapse navbar-collapse justify-content-between">
                             <ul class="navbar-nav mb-2 mb-lg-0 d-none d-md-flex">
                                 <li class="nav-item active">
-                                    <a class="nav-link" href="./index.php">Acceuil</a>
+                                    <a class="nav-link" href="./index.php">Accueil</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./soirees.html">Les soirées</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="./soirees.php">Les soirées</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./soiree_create.html">Créer une soirée</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="./soiree_create.php">Créer une soirée</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./films.html">Films proposés</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="./films.php">Films proposés</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./utilisateur.html">Utilisateur</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="./utilisateur.php">Utilisateur</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./vote.html">Vote</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="./vote.php">Vote</a>
                                 </li>
                             </ul>
+                            <!-- lien dans la barre de navigation menant au autre pages -->
                             <ul class="navbar-nav mb-2 mb-lg-0 gap-2 me-0 d-none d-md-flex">
                                 <li class="nav-item">
-                                    <a class="btn btn-ctm-red-subtle" href="./connexion.html">Se connecter</a>
+                                    <a class="btn btn-ctm-red-subtle" href="./connexion.php">Se connecter</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="btn btn-ctm-red" href="./new_account.html">Créer un compte</a>
+                                    <a class="btn btn-ctm-red" href="./new_account.php">Créer un compte</a>
                                 </li>
                             </ul>
+                            <!-- bouton de connexion et de création de compte -->
                         </div>
 
                         <a class="fs-1 d-block d-md-none text-success" data-bs-toggle="offcanvas" href="#menu_phone" aria-controls="offcanvasExample">
@@ -85,34 +67,36 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                         <div class="offcanvas-md d-md-none offcanvas-end bg-ctm-terciary-color" tabindex="-1" id="menu_phone" aria-labelledby="menu_phoneLabel">
                             <div class="offcanvas-header">
                                 <h5 class="offcanvas-title" id="menu_phoneLabel">PopCo</h5>
-                                <button type="button" class="btn-close btn-ctm-primary-color-subtle" data-bs-dismiss="offcanvas" data-bs-target="#menu_phone" aria-label="Close"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#menu_phone" aria-label="Close"></button>
                             </div>
+                            <!-- affichage de téléphone avec menu burger -->
                             <div class="offcanvas-body d-flex flex-column justify-content-between px-0">
                                 <ul class="list-group">
-                                    <a href="./index.php" class="list-group-item list-group-item-action" aria-current="true">
-                                        Acceuil
+                                    <a href="./index.php" class="list-group-item list-group-item-action active list-group-item-ctm-terciary-color-subtle" aria-current="true">
+                                        Accueil
                                     </a>
-                                    <a href="./soirees.html" class="list-group-item list-group-item-action">
+                                    <a href="./soirees.php" class="list-group-item list-group-item-action">
                                         Les soirées
                                     </a>
-                                    <a href="./soiree_create.html" class="list-group-item list-group-item-action">
+                                    <a href="./soiree_create.php" class="list-group-item list-group-item-action">
                                         Créer une soirée
                                     </a>
-                                    <a href="./films.html" class="list-group-item list-group-item-action">
+                                    <a href="./films.php" class="list-group-item list-group-item-action">
                                         Films proposés
                                     </a>
-                                    <a href="./utilisateur.html" class="list-group-item list-group-item-action">
+                                    <a href="./utilisateur.php" class="list-group-item list-group-item-action">
                                         Utilisateur
                                     </a>
-                                    <a href="./vote.html" class="list-group-item list-group-item-action active list-group-item-ctm-terciary-color-subtle">
+                                    <a href="./vote.php" class="list-group-item list-group-item-action">
                                         Voter
                                     </a>
                                 </ul>
-
+                                <!-- lien vers les autres pages affichage de téléphone -->
                                 <div class="container-fluid d-md-flex justify-content-end gap-2">
-                                    <a class="btn btn-ctm-red-subtle" href="./connexion.html">Se connecter</a>
-                                    <a class="btn btn-ctm-red" href="./new_account.html">Créer un compte</a>
+                                    <a class="btn btn-ctm-red-subtle" href="./connexion.php">Se connecter</a>
+                                    <a class="btn btn-ctm-red" href="./new_account.php">Créer un compte</a>
                                 </div>
+                                <!-- bouton de connexion et de création de compte de téléphone -->
                             </div>
                         </div>
 
@@ -122,51 +106,44 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
     </header>
 
     <main>
-        <div class="container my-5" id="formulaireVote">
-            <h5 class="fs-3">Votez pour le film que vous aimeriez voir !</h5>
-            <p>Ci-dessous le choix de films que l'organisateur de soirée à décider à sélectionner pour la soirée du jour mois année à heure heure</p>
-
-            <p>Pour la soirée [soirée], vous avec le choix entre les films suivant, veuillez en choisir un.</p>
-            <form>
-                <div class="container d-flex justify-content-between flex-wrap">
-                    <div class="col-12 col-md-6 col-lg-4">
-                        <input type="radio" class="btn-check" id="btn-check-1" autocomplete="off" name="vote">
-                        <label class="btn btn-lg" for="btn-check-1">
-                            <figure>
-                                <img src="./assets/images/rin_smile.png" class="figure-img img-fluid object-fit-cover" alt="...">
-                                <figcaption class="figure-caption text-ctm-primary-color-subtle">Film 1</figcaption>
-                            </figure>
-                        </label>
-                    </div>
-    
-                    <div class="col-12 col-md-6 col-lg-4">
-                        <input type="radio" class="btn-check" id="btn-check-2" autocomplete="off" name="vote">
-                        <label class="btn btn-lg" for="btn-check-2">
-                            <figure class="align-content-center">
-                                <img src="./assets/images/miku_sunset.png" class="figure-img img-fluid object-fit-cover" alt="...">
-                                <figcaption class="figure-caption text-ctm-primary-color-subtle">Film 2</figcaption>
-                            </figure>
-                        </label>
-                    </div>
-    
-                    <div class="col-12 col-md-6 offset-md-3 col-lg-4 offset-lg-0">
-                        <input type="radio" class="btn-check" id="btn-check-3" autocomplete="off" name="vote">
-                        <label class="btn btn-lg" for="btn-check-3">
-    
-                            <figure class="align-content-center">
-                                <img src="./assets/images/AAAHHH.png" class="figure-img img-fluid object-fit-cover" alt="...">
-                                <figcaption class="figure-caption text-ctm-primary-color-subtle">Film 3</figcaption>
-                            </figure>
-                        </label>
-                    </div>
-                    <button type="submit" class="btn btn-ctm-red mt-3 container-fluid mb-5 p-3">Voter</button>
-                </div>
-            </div>
-    
-            </form>
+        <div class="text-center my-5 py-5">
+            <h5>Créer un compte</h5>
         </div>
-    </main>
+        <div class="container my-5">
 
+            <form method="POST" action="./utilisateur_create.php" class="form">
+                <div class="mb-3">
+                    <label for="nom" class="form-label">Nom</label>
+                    <input type="text" class="form-control" name="nom" maxlength="30" placeholder="Doe">
+                </div>
+
+                <div class="mb-3">
+                    <label for="prenom" class="form-label">Prénom</label>
+                    <input type="text" class="form-control" name="prenom" maxlength="30" placeholder="John">
+                </div>
+
+                <div class="mb-3">
+                    <label for="e-mail" class="form-label">E-mail</label>
+                    <input type="text" class="form-control" name="e-mail" maxlength="30" placeholder="E-mail">
+                </div>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label">Mot de Passe</label>
+                    <input type="password" class="form-control" name="password" maxlength="30" placeholder="Password">
+                </div>
+
+                <div class="mb-3">
+                    <label for="passwordConfirm" class="form-label">Mot de Passe</label>
+                    <input type="password" class="form-control" name="passwordConfirm" maxlength="30" placeholder="Password">
+                </div>
+
+                <button type="submit" class="btn btn-ctm-red container-fluid p-3" name="submit">Créer le compte</button>
+            </form>
+
+        </div>
+
+    </main>
+    <!-- FOOTER -->
     <footer id="footer_popco" class="container-fluid py-3 rounded-top-5 bg-ctm-primary-color">
         <div class="row g-1 d-flex align-items-center">
             <div class="col-4 fs-2 ps-4">
@@ -181,13 +158,16 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                 </a>
                 
             </div>
+            <!-- icone lien vers les réseaux sociaux -->
             <div class="col-4 text-center">
                 <img src="./assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
             </div>
+            <!-- logo bas de page ramenant a la page d'accueil -->
             <div class="col-4 py-3 text-start d-lg-block text-end pe-4">
                 <a class="text-decoration-none link-ctm-terciary-color-subtle" data-bs-toggle="modal" href="#popco_ml" role="button">
-                Mention légales
+                Mentions légales
                 </a>
+                <!-- bouton pop up mentions légales -->
                 <div class="modal fade" id="popco_ml" tabindex="-1" aria-labelledby="popco_mlLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content bg-ctm-terciary-color">
@@ -195,6 +175,7 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                             <h1 class="modal-title fs-5" id="popco_mlLabel">MENTIONS LÉGALES</h1>
                             <button type="button" class="btn-close link-ctm-primary-color-subtle" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
+                        <!-- mise en forme des mentions légales -->
                         <div class="modal-body text-center lh-sm">
                             <p>
                                 Conformément aux dispositions de la loi n° 2004-575 du 21 juin 2004 pour la confiance en l'économie numérique, il est précisé aux utilisateurs du site PopCo l'identité des différents intervenants dans le cadre de sa réalisation et de son suivi.
@@ -220,9 +201,11 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                                 Génération des mentions légales par Legalstart.
                             </p>
                         </div>
+                        <!-- contenus des mentions légales -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-ctm-secondary-color-subtle" data-bs-dismiss="modal">Close</button>
                         </div>
+                        <!-- bouton de fermeture des mentions légales -->
                         </div>
                     </div>
                 </div>
@@ -232,3 +215,4 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+</html>

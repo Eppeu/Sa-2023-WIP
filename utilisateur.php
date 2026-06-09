@@ -1,3 +1,12 @@
+<!-- CONNEXION A LA BASE DE DONNEE-->
+<?php
+require_once './bdd/bdd_connexion.php';
+$bdd = connectBDS();
+
+// Sélection de tous les soirées (films)
+$allUtilisateur = $bdd->query('SELECT * FROM utilisateur');
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -22,39 +31,43 @@
     <header>
         <div class="container-fluid p-0">
                 <nav id="header_popco" class="navbar navbar-expand bg-ctm-primary-color rounded-bottom-5 ">
+                    <!-- création de barre de navigation -->
                     <div class="container-fluid">
                         <a class="navbar-brand" href="./index.php">
                             <img src="./assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
                         </a>
+                        <!-- insertion du logo menant vers la page d'accueil -->
                         <div class="collapse navbar-collapse justify-content-between">
                             <ul class="navbar-nav mb-2 mb-lg-0 d-none d-md-flex">
                                 <li class="nav-item active">
-                                    <a class="nav-link" href="./index.php">Acceuil</a>
+                                    <a class="nav-link" href="./index.php">Accueil</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./soirees.html">Les soirées</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="./soirees.php">Les soirées</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./soiree_create.html">Créer une soirée</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="./soiree_create.php">Créer une soirée</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./films.html">Films proposés</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="./films.php">Films proposés</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./utilisateur.html">Utilisateur</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="./utilisateur.php">Utilisateur</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./vote.html">Vote</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="./vote.php">Vote</a>
                                 </li>
                             </ul>
+                            <!-- lien dans la barre de navigation menant au autre pages -->
                             <ul class="navbar-nav mb-2 mb-lg-0 gap-2 me-0 d-none d-md-flex">
                                 <li class="nav-item">
-                                    <a class="btn btn-ctm-red-subtle" href="./connexion.html">Se connecter</a>
+                                    <a class="btn btn-ctm-red-subtle" href="./connexion.php">Se connecter</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="btn btn-ctm-red" href="./new_account.html">Créer un compte</a>
+                                    <a class="btn btn-ctm-red" href="./new_account.php">Créer un compte</a>
                                 </li>
                             </ul>
+                            <!-- bouton de connexion et de création de compte -->
                         </div>
 
                         <a class="fs-1 d-block d-md-none text-success" data-bs-toggle="offcanvas" href="#menu_phone" aria-controls="offcanvasExample">
@@ -65,32 +78,34 @@
                                 <h5 class="offcanvas-title" id="menu_phoneLabel">PopCo</h5>
                                 <button type="button" class="btn-close btn-ctm-primary-color-subtle" data-bs-dismiss="offcanvas" data-bs-target="#menu_phone" aria-label="Close"></button>
                             </div>
+                            <!-- affichage de téléphone avec menu burger -->
                             <div class="offcanvas-body d-flex flex-column justify-content-between px-0">
                                 <ul class="list-group">
                                     <a href="./index.php" class="list-group-item list-group-item-action" aria-current="true">
-                                        Acceuil
+                                        Accueil
                                     </a>
-                                    <a href="./soirees.html" class="list-group-item list-group-item-action">
+                                    <a href="./soirees.php" class="list-group-item list-group-item-action">
                                         Les soirées
                                     </a>
-                                    <a href="./soiree_create.html" class="list-group-item list-group-item-action">
+                                    <a href="./soiree_create.php" class="list-group-item list-group-item-action">
                                         Créer une soirée
                                     </a>
-                                    <a href="./films.html" class="list-group-item list-group-item-action">
+                                    <a href="./films.php" class="list-group-item list-group-item-action">
                                         Films proposés
                                     </a>
-                                    <a href="./utilisateur.html" class="list-group-item list-group-item-action active list-group-item-ctm-terciary-color-subtle">
+                                    <a href="./utilisateur.php" class="list-group-item list-group-item-action active list-group-item-ctm-terciary-color-subtle">
                                         Utilisateur
                                     </a>
-                                    <a href="./vote.html" class="list-group-item list-group-item-action">
+                                    <a href="./vote.php" class="list-group-item list-group-item-action">
                                         Voter
                                     </a>
                                 </ul>
-
+                                <!-- lien vers les autres pages affichage de téléphone -->
                                 <div class="container-fluid d-md-flex justify-content-end gap-2">
-                                    <a class="btn btn-ctm-red-subtle" href="./connexion.html">Se connecter</a>
-                                    <a class="btn btn-ctm-red" href="./new_account.html">Créer un compte</a>
+                                    <a class="btn btn-ctm-red-subtle" href="./connexion.php">Se connecter</a>
+                                    <a class="btn btn-ctm-red" href="./new_account.php">Créer un compte</a>
                                 </div>
+                                <!-- bouton de connexion et de création de compte de téléphone -->
                             </div>
                         </div>
 
@@ -104,7 +119,7 @@
         <div class="text-center py-5 callToAction">
             <h5 class="fs-1">Bonjour [nom d'utilisateur] !</h5>
         </div>
-
+        <!-- affichage de la page avec texte -->
         <div class="mainPart py-5">
             <div class="row m-0">
                 <div class="ms-5 col-11">
@@ -114,7 +129,7 @@
                     <p>email : email.***@gmail.com</p>
                     <h5 class="mt-5 fs-3">Les soirées auxquelles vous êtes inscrit(e)</h5>
                 </div>
-
+                <!-- affiche les informations de l'utilisateur -->
             <div id ="img-resize" class="row row-cols-5 mx-0 mb-3 pt-3 g-5">
                 <div class="col-12 col-sm-6 col-lg-4 col-xl-3" >
                     <div class="card p-0 h-auto">
@@ -213,6 +228,7 @@
                         </div>
                     </div>
                 </div>
+                <!-- carte des soirée ou l'utilisateur participe -->
             </div>
         </div>
     </main>
@@ -231,13 +247,16 @@
                 </a>
                 
             </div>
+            <!-- icone lien vers les réseaux sociaux -->
             <div class="col-4 text-center">
                 <img src="./assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
             </div>
+            <!-- logo bas de page ramenant a la page d'accueil -->
             <div class="col-4 py-3 text-start d-lg-block text-end pe-4">
                 <a class="text-decoration-none link-ctm-terciary-color-subtle" data-bs-toggle="modal" href="#popco_ml" role="button">
-                Mention légales
+                Mentions légales
                 </a>
+                <!-- bouton pop up mentions légales -->
                 <div class="modal fade" id="popco_ml" tabindex="-1" aria-labelledby="popco_mlLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content bg-ctm-terciary-color">
@@ -245,6 +264,7 @@
                             <h1 class="modal-title fs-5" id="popco_mlLabel">MENTIONS LÉGALES</h1>
                             <button type="button" class="btn-close link-ctm-primary-color-subtle" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
+                        <!-- mise en forme des mentions légales -->
                         <div class="modal-body text-center lh-sm">
                             <p>
                                 Conformément aux dispositions de la loi n° 2004-575 du 21 juin 2004 pour la confiance en l'économie numérique, il est précisé aux utilisateurs du site PopCo l'identité des différents intervenants dans le cadre de sa réalisation et de son suivi.
@@ -270,9 +290,11 @@
                                 Génération des mentions légales par Legalstart.
                             </p>
                         </div>
+                        <!-- contenus des mentions légales -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-ctm-secondary-color-subtle" data-bs-dismiss="modal">Close</button>
                         </div>
+                        <!-- bouton de fermeture des mentions légales -->
                         </div>
                     </div>
                 </div>
