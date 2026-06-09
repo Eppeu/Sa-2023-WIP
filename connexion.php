@@ -1,3 +1,75 @@
+<?php
+session_start();
+if (isset($_POST['valider'])) {
+    if (!empty($_POST['identifiant']) and !empty($_POST['mdp'])) {
+        require_once './bdd/bdd_connexion.php';
+
+        $id = htmlspecialchars($_POST['identifiant']);
+        $mdp = htmlspecialchars($_POST['mdp']);
+        $captcha = htmlspecialchars($_POST['captcha']);
+
+        $bdd = connectBDS(); // Connexion à la BDD
+
+        // Vérifie si le captcha fonctionne
+        if ($_SESSION['captcha'] === $captcha) {
+            // Récupération du mot de passe haché de l'utilisateur depuis la base de données
+            $query = $bdd->prepare("SELECT mdpUser FROM utilisateur WHERE nomUser=:idSaisi");
+            $query->bindParam(':idSaisi', $id);
+            $query->execute();
+            // Vérification du mot de passe
+            if ($row = $query->fetch()) {
+                $hashedMdp = $row['mdpUser'];
+                if (password_verify($mdp, $hashedMdp)) {
+                    $query2 = $bdd->prepare("SELECT nomUser, roleUser FROM utilisateur WHERE nomUser=:idSaisi");
+                    $query2->bindParam(':idSaisi', $id);
+                    $query2->execute();
+                    $info = $query2->fetch();
+
+                    $nomUser = $info['nomUser'];
+                    $role = $info['roleUser'];
+
+                    // session_start();
+                    $_SESSION['nomUser'] = $nomUser;
+                    $_SESSION['roleUser'] = $role;
+
+                    echo $nomUser;
+                    echo '<br>';
+                    echo $role;
+
+                    header('Location: ../ACCUEIL/VIDEO/videos.php');
+                } else {
+                    echo "
+                    <div class='modal'>
+                        <p>Identifiant ou mot de passe invalide</p>
+                    </div>";
+                }
+            } else {
+                echo "
+                <div class='modal'>
+                    <p>Identifiant ou mot de passe invalide</p>
+                </div>";
+            }
+        } else {
+            echo "
+            <div class='modal'>
+                <p>Captcha invalide</p>
+            </div>";
+        }
+    } else {
+        echo "Veuillez compléter tous les champs.";
+    }
+}
+
+$characts = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+$characts .= '123456789';
+$code_aleatoire = '';
+for ($i = 0; $i < 4; $i++) {
+    $code_aleatoire .= substr($characts, rand() % (strlen($characts)), 1);
+}
+
+$_SESSION['captcha'] = $code_aleatoire;
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 
