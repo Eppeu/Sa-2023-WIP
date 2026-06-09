@@ -1,3 +1,21 @@
+<!-- CONNEXION A LA BASE DE DONNEE-->
+<?php
+require_once './bdd/bdd_connexion.php';
+$bdd = connectBDS();
+
+// Sélection de tous les soirées (films)
+$allSoirees = $bdd->query('SELECT * FROM film LIMIT 10');
+
+// Comptage du nombre de soirées (films)
+$countSoirees = $bdd->prepare('SELECT * FROM film');
+$countSoirees->execute();
+$count = $countSoirees->rowCount();
+
+$soireesPopulaire = $bdd->query("SELECT * FROM film WHERE dateSortie > '2000-01-01'; ");
+$soireesHorreur = $bdd->query("SELECT * FROM film WHERE genre = 'horreur'; ");
+
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -15,7 +33,7 @@
         <script src="https://kit.fontawesome.com/4b69bc6b92.js" crossorigin="anonymous"></script>
     <!-- Bootstrap Icons  -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <title>Les soirées</title>
+    <title>PopCo - Accueil</title>
 </head>
 
 <body class="bg-ctm-terciary-color">
@@ -23,13 +41,13 @@
         <div class="container-fluid p-0">
                 <nav id="header_popco" class="navbar navbar-expand bg-ctm-primary-color rounded-bottom-5 ">
                     <div class="container-fluid">
-                        <a class="navbar-brand" href="./index.html">
+                        <a class="navbar-brand" href="./index.php">
                             <img src="./assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
                         </a>
                         <div class="collapse navbar-collapse justify-content-between">
                             <ul class="navbar-nav mb-2 mb-lg-0 d-none d-md-flex">
                                 <li class="nav-item active">
-                                    <a class="nav-link" href="./index.html">Acceuil</a>
+                                    <a class="nav-link" href="./index.php">Acceuil</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link bootstrap_nav_item_color" href="./soirees.html">Les soirées</a>
@@ -63,14 +81,14 @@
                         <div class="offcanvas-md d-md-none offcanvas-end bg-ctm-terciary-color" tabindex="-1" id="menu_phone" aria-labelledby="menu_phoneLabel">
                             <div class="offcanvas-header">
                                 <h5 class="offcanvas-title" id="menu_phoneLabel">PopCo</h5>
-                                <button type="button" class="btn-close btn-ctm-primary-color-subtle" data-bs-dismiss="offcanvas" data-bs-target="#menu_phone" aria-label="Close"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#menu_phone" aria-label="Close"></button>
                             </div>
                             <div class="offcanvas-body d-flex flex-column justify-content-between px-0">
                                 <ul class="list-group">
-                                    <a href="./index.html" class="list-group-item list-group-item-action" aria-current="true">
+                                    <a href="./index.php" class="list-group-item list-group-item-action active list-group-item-ctm-terciary-color-subtle" aria-current="true">
                                         Acceuil
                                     </a>
-                                    <a href="./soirees.html" class="list-group-item list-group-item-action active list-group-item-ctm-terciary-color-subtle">
+                                    <a href="./soirees.html" class="list-group-item list-group-item-action">
                                         Les soirées
                                     </a>
                                     <a href="./soiree_create.html" class="list-group-item list-group-item-action">
@@ -88,8 +106,8 @@
                                 </ul>
 
                                 <div class="container-fluid d-md-flex justify-content-end gap-2">
-                                    <a class="btn btn-ctm-red-subtle" href="#">Se connecter</a>
-                                    <a class="btn btn-ctm-red" href="#">Créer un compte</a>
+                                    <a class="btn btn-ctm-red-subtle" href="./connexion.html">Se connecter</a>
+                                    <a class="btn btn-ctm-red" href="./new_account.html">Créer un compte</a>
                                 </div>
                             </div>
                         </div>
@@ -98,132 +116,95 @@
                 </nav>
         </div>
     </header>
+
     
     <main class="container-fluid px-0">
         <div class="bgImage"></div>
         <div class="text-center py-5 callToAction">
-            <h5 class="fs-1">Retrouvez toutes les soirées ici !</h5>
+            <h5 class="fs-1">Organisez des soirées inoublouable !!</h5>
+            <p class="px-3 fs-3 sticker bg-ctm-red">Déjà <?php echo $count; ?> soirées créées !</p>
+
+            <p class="mt-5 fs-4">
+                Grâce à PopCo, trouvez des soirées où regarder de bons films ! <br/>
+                Rien de plus simple : cherchez une soirée, connectez-vous, votez le film qui vous intéresse le plus,<br/>
+                et le film qui remporte le plus de voix sera diffusé !<br/>
+            </p>
         </div>
 
-        <div class="mainPart py-5">
-            <div class="row m-0">
-                <div class="col-8">
-                    <h5 class="ms-5 fs-3">Les dernières soirées ajoutées</h5>
-                </div>
-                <div class="col-auto">
-                    <select class="form-select ms-2" aria-label="Default select example">
-                        <option selected>Trier par genre...</option>
-                        <option value="1">Action</option>
-                        <option value="2">Fantastique</option>
-                        <option value="3">Horreur</option>
-                    </select>
-                </div>
-                <div class="col-auto p-0">
-                    <select class="form-select ms-2" aria-label="Default select example">
-                        <option selected>Trier par date...</option>
-                        <option value="1">Action</option>
-                        <option value="2">Fantastique</option>
-                        <option value="3">Horreur</option>
-                    </select>
+        <div class="mainPart py-5 z-0">
+
+            <h5 class="ms-5 fs-3 text-ctm-primary-color-subtle">Les soirées récemment ajoutées !</h5>
+            
+            <div class="row mx-3">
+                <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
+                    <div id ="img-resize" class="row row-cols-2 row-cols-md-5 ms-1 my-3 g-5 flex-nowrap gap-3">
+                        <?php
+                        while($allSoireesInfos = $allSoirees->fetch()){
+                        ?>
+                            <div class="card p-0 m-0">
+                                <img src="./assets/images/rella_16th_birthday_edit.jpg" class="card-img-top object-fit-cover" alt="...">
+
+                                <div class="card-body bg-ctm-primary-color-subtle">
+                                    <h5 class="card-title"><?= $allSoireesInfos['nom_film'];?></h5>
+                                    <p class="card-text lh-1"><?= $allSoireesInfos['synopsis'];?><p>
+                                </div>
+                                <div class="card-footer p-0 border-0">
+                                    <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En voir plus</a>
+                                </div>
+                            </div>
+                        <?php
+                        }
+                        ?>
+                    </div>
                 </div>
             </div>
 
-            <div id ="img-resize" class="row row-cols-5 mx-0 mb-3 pt-3 g-5">
-                <div class="col-12 col-sm-6 col-lg-4 col-xl-3" >
-                    <div class="card p-0 h-auto">
-                        <img src="./assets/images/rella_16th_birthday_edit.jpg" class="card-img-top object-fit-cover" alt="...">
+            <h5 class="ms-5 mt-4 fs-3">Les soirées populaires :fire:</h5>
+            <div class="row mx-3">
+                <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
+                    <div id ="img-resize" class="row row-cols-2 row-cols-md-5 ms-1 my-3 g-5 flex-nowrap gap-3">
+                        <?php
+                        while($soireesPopulaireInfos = $soireesPopulaire->fetch()){
+                        ?>
+                            <div class="card p-0 m-0">
+                                <img src="./assets/images/rella_16th_birthday_edit.jpg" class="card-img-top object-fit-cover" alt="...">
 
-                        <div class="card-body bg-ctm-primary-color-subtle">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text lh-1">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
-                        </div>
-                        <div class="card-footer p-0 border-0">
-                            <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
-                        </div>
+                                <div class="card-body bg-ctm-primary-color-subtle">
+                                    <h5 class="card-title"><?= $soireesPopulaireInfos['nom_film'];?></h5>
+                                    <p class="card-text lh-1"><?= $soireesPopulaireInfos['synopsis'];?><p>
+                                </div>
+                                <div class="card-footer p-0 border-0">
+                                    <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En voir plus</a>
+                                </div>
+                            </div>
+                        <?php
+                        }
+                        ?>
                     </div>
                 </div>
-            
-                <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-                    <div class="card p-0 h-auto">
-                        <img src="./assets/images/AAAHHH.png" class="card-img-top object-fit-cover" alt="...">
+            </div>
 
-                        <div class="card-body bg-ctm-primary-color-subtle">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text lh-1">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
-                        </div>
-                        <div class="card-footer p-0 border-0">
-                            <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
-                        </div>
-                    </div>
-                </div>
+            <h5 class="ms-5 mt-4  fs-3">Thème film d'Horreur</h5>
+            <div class="row mx-3">
+                <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
+                    <div id ="img-resize" class="row row-cols-2 row-cols-md-5 ms-1 my-3 g-5 flex-nowrap gap-3">
+                        <?php
+                        while($soireesHorreurInfos = $soireesHorreur->fetch()){
+                        ?>
+                            <div class="card p-0 m-0">
+                                <img src="./assets/images/rella_16th_birthday_edit.jpg" class="card-img-top object-fit-cover" alt="...">
 
-                <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-                    <div class="card p-0 h-auto">
-                        <img src="./assets/images/chippies.png" class="card-img-top object-fit-cover" alt="...">
-
-                        <div class="card-body bg-ctm-primary-color-subtle">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text lh-1">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
-                        </div>
-                        <div class="card-footer p-0 border-0">
-                            <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-                    <div class="card p-0 h-auto">
-                        <img src="./assets/images/looking_into_my_soul.png" class="card-img-top object-fit-cover" alt="...">
-
-                        <div class="card-body bg-ctm-primary-color-subtle">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text lh-1">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
-                        </div>
-                        <div class="card-footer p-0 border-0">
-                            <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-                    <div class="card p-0 h-auto">
-                        <img src="./assets/images/miku_sunset.png" class="card-img-top object-fit-cover" alt="...">
-
-                        <div class="card-body bg-ctm-primary-color-subtle">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text lh-1">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
-                        </div>
-                        <div class="card-footer p-0 border-0">
-                            <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-                    <div class="card p-0 h-auto">
-                        <img src="./assets/images/yuri_time.png" class="card-img-top object-fit-cover" alt="...">
-
-                        <div class="card-body bg-ctm-primary-color-subtle">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text lh-1">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
-                        </div>
-                        <div class="card-footer p-0 border-0">
-                            <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-                    <div class="card p-0 h-auto">
-                        <img src="./assets/images/miku_sunset.png" class="card-img-top object-fit-cover" alt="...">
-
-                        <div class="card-body bg-ctm-primary-color-subtle">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text lh-1">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
-                        </div>
-                        <div class="card-footer p-0 border-0">
-                            <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
-                        </div>
+                                <div class="card-body bg-ctm-primary-color-subtle">
+                                    <h5 class="card-title"><?= $soireesHorreurInfos['nom_film'];?></h5>
+                                    <p class="card-text lh-1"><?= $soireesHorreurInfos['synopsis'];?><p>
+                                </div>
+                                <div class="card-footer p-0 border-0">
+                                    <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En voir plus</a>
+                                </div>
+                            </div>
+                        <?php
+                        }
+                        ?>
                     </div>
                 </div>
             </div>
@@ -295,3 +276,4 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+</html>
