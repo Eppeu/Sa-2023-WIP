@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS vote (
 CREATE TABLE IF NOT EXISTS film (
     idFilm INT AUTO_INCREMENT PRIMARY KEY  NOT NULL,
     nom_film VARCHAR(200) NOT NULL,
-    synopsis VARCHAR(200) NOT NULL,
+    synopsis TEXT NOT NULL,
     genre VARCHAR(200) NOT NULL,
     dateSortie DATE NOT NULL,
     pathImage VARCHAR(200) NOT NULL
@@ -66,5 +66,6 @@ CREATE TABLE IF NOT EXISTS soiree (
     idVoteFilm INT,
     idVoteLieu INT,
     FOREIGN KEY (idVoteFilm) REFERENCES vote(idVote),
-    FOREIGN KEY (idVoteLieu) REFERENCES vote(idVote)
+    FOREIGN KEY (idVoteLieu) REFERENCES vote(idVote),
+    FOREIGN KEY (filmChoisi) REFERENCES film(idFilm)
 );

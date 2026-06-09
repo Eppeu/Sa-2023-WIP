@@ -1,3 +1,10 @@
+<?php
+require_once './bdd/bdd_connexion.php';
+$bdd = connectBDS();
+
+$allSoirees = $bdd->query('SELECT * FROM film');
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -111,6 +118,10 @@
                 <div class="mb-3">
                     <label for="" class="form-label">Nom de la soirée</label>
                     <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" maxlength="30" placeholder="Soirée film d'horreur">
+                </div>
+
+                <div id="dynamic_search" class="my-3">
+                    
                 </div>
 
                 <div class="mb-3">

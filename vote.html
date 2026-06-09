@@ -1,3 +1,25 @@
+<?php
+require_once './bdd/bdd_connexion.php';
+$bdd = connectBDS();
+
+$allSoirees = $bdd->query('SELECT * FROM film');
+
+$soireesHorreur_sort = $bdd->query("SELECT * FROM film WHERE genre = 'horreur'; ");
+$soireesAction_sort = $bdd->query("SELECT * FROM film WHERE genre = 'action'; ");
+$soireesFanstastique_sort = $bdd->query("SELECT * FROM film WHERE genre = 'fantastique'; ");
+$soireesAnimation_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Animation'; ");
+$soireesComedy_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Comédie'; ");
+$soireesHistorique_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Historique'; ");
+$soireesThriller_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Thriller'; ");
+
+
+// Documentaty is broken for some reasons (Please Check this Astrid !), Wrong Token or invalid expression 
+// $soireesDocumentaire_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Documentaire'; "); 
+
+$soireesRomance_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Romance'; ");
+$soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction'; ");
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 
