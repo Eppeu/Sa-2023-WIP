@@ -1,6 +1,4 @@
 <?php
-// var_dump(function_exists('mysqli_connect'));
-
 include("db_infos.php");
 
 if(isset($_POST['result_search'])) {
@@ -10,8 +8,8 @@ if(isset($_POST['result_search'])) {
     $sql_command= "SELECT * FROM film WHERE MATCH(nom_film) AGAINST (? IN NATURAL LANGUAGE MODE)";
 
     $exeCom = mysqli_prepare($connect,$sql_command);
-    mysqli_stmt_bind_param($exeCom, 'ss', $result_get);
-    mysqi_stmt_execute($exeCom);
+    mysqli_stmt_bind_param($exeCom, 's', $result_get);
+    mysqli_stmt_execute($exeCom);
 
     $query_db = mysqli_query($connect, $exeCom); 
 

@@ -148,7 +148,7 @@ $allSoirees = $bdd->query('SELECT * FROM film');
 
                 <div class="mb-3">
                     <!-- Partie sur la recherche des films -->
-                    <label for="formFile" class="form-label">Recherchez les films que vous voulez donner à choisir aux participants</label>
+                    <label for="formFile" class="form-label">Recherchez les films que vous voulez donner à choisir aux participants (3 maximum)</label>
                     <input class="form-control mb-5" id="livesearch" type="text" placeholder="Search" aria-label="Search"/>
                 </div>
 
@@ -185,6 +185,10 @@ $allSoirees = $bdd->query('SELECT * FROM film');
                 </script>
 
                 <div id="dynamic_search" class="row mx-3">
+
+                </div>
+
+                <div class ="row">
 
                 </div>
 
