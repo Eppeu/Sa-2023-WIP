@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 require_once './bdd/bdd_connexion.php';
 $bdd = connectBDS();
 
@@ -41,7 +43,8 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
 </head>
 
 <body  class="bg-ctm-terciary-color">
-    <header>
+    <header> 
+         <!-- Header contenant le menu de navigation version pour écran normal et version pour écran réduit -->
         <div class="container-fluid p-0">
                 <nav id="header_popco" class="navbar navbar-expand bg-ctm-primary-color rounded-bottom-5 ">
                     <div class="container-fluid">
@@ -50,73 +53,103 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                             <!-- Insertion de l'icône du logo PopCo -->
                         </a>
                         <div class="collapse navbar-collapse justify-content-between">
+                            <!-- navbar sous mode collapse avec justify content between -->
                             <ul class="navbar-nav mb-2 mb-lg-0 d-none d-md-flex">
-                                <!-- class de la barre de navigation (navbar) avec une marge de bas de 2 et de 0 à partir du breakpoint large -->
+                                 <!-- class de la barre de navigation (navbar) avec une marge de bas de 2 et de 0 à partir du breakpoint large -->
                                 <li class="nav-item active">
+                                    <!-- item de navigation actif -->
                                     <a class="nav-link" href="./index.php">Accueil</a>
+                                    <!-- lien de navigation -->
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./soirees.php">Les soirées</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="./soirees.php">Soirées</a>
+                                    <!-- lien de navigation -->
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link bootstrap_nav_item_color" href="./films.php">Films</a>
+                                    <!-- lien de navigation -->
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link bootstrap_nav_item_color" href="./soiree_create.php">Créer une soirée</a>
+                                    <!-- lien de navigation -->
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./films.php">Films proposés</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./utilisateur.php">Utilisateur</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./vote.php">Vote</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="./vote.php">Vote TEMP</a>
+                                    <!-- lien de navigation -->
                                 </li>
                             </ul>
-                            <!-- lien dans la barre de navigation menant au autre pages -->
-                            <ul class="navbar-nav mb-2 mb-lg-0 gap-2 me-0 d-none d-md-flex">
-                                <li class="nav-item">
-                                    <a class="btn btn-ctm-red-subtle" href="./connexion.php">Se connecter</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="btn btn-ctm-red" href="./new_account.php">Créer un compte</a>
-                                </li>
-                            </ul>
+
+                            <?php
+                            if(isset($_SESSION['nom_utilisateur'])) {
+                                ?>
+                                <ul class="navbar-nav mb-2 mb-lg-0 gap-2 me-0 d-none d-md-flex">
+                                    <li class="nav-item">
+                                        <a class="btn btn-ctm-red-subtle" href="./utilisateur.php">Votre profil</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="btn btn-ctm-red" href="./deconnexion.php">Se déconnecter</a>
+                                    </li>
+                                    <!-- Boutons Rouges (un de couleur légère et l'autre non) pour créer un compte et se connecter -->
+                                </ul>
+                                <?php
+                            }else{
+                                ?>
+                                <ul class="navbar-nav mb-2 mb-lg-0 gap-2 me-0 d-none d-md-flex">
+                                    <li class="nav-item">
+                                        <a class="btn btn-ctm-red-subtle" href="./connexion.php">Se connecter</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="btn btn-ctm-red" href="./new_account.php">Créer un compte</a>
+                                    </li>
+                                </ul>
+                                <!-- Boutons Rouges (un de couleur légère et l'autre non) pour créer un compte et se connecter -->
+                                
                         </div>
-                        <!-- les liens vers le pages dans le menu de navigation et des boutons pour la connexion et la création d'un compte -->
+                        <?php
+                            }
+                            ?>
+
                         <a class="fs-1 d-block d-md-none text-success" data-bs-toggle="offcanvas" href="#menu_phone" aria-controls="offcanvasExample">
                         <i class="bi bi-list link-ctm-terciary-color"></i>
                         </a>
                         <div class="offcanvas-md d-md-none offcanvas-end bg-ctm-terciary-color" tabindex="-1" id="menu_phone" aria-labelledby="menu_phoneLabel">
-                            <!-- ajout de la class offcanvas pour créer le menu burger (sur la version réduite du site) -->
                             <div class="offcanvas-header">
                                 <h5 class="offcanvas-title" id="menu_phoneLabel">PopCo</h5>
-                                <button type="button" class="btn-close btn-ctm-primary-color-subtle" data-bs-dismiss="offcanvas" data-bs-target="#menu_phone" aria-label="Close"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#menu_phone" aria-label="Close"></button>
+                                <!-- ajout de la class offcanvas pour créer le menu burger (sur la version réduite du site) -->
                             </div>
                             <div class="offcanvas-body d-flex flex-column justify-content-between px-0">
                                 <ul class="list-group">
-                                    <a href="./index.php" class="list-group-item list-group-item-action" aria-current="true">
+                                    <a href="./index.php" class="list-group-item list-group-item-action active list-group-item-ctm-terciary-color-subtle" aria-current="true">
                                         Accueil
+                                        <!-- list group actif -->
                                     </a>
                                     <a href="./soirees.php" class="list-group-item list-group-item-action">
                                         Les soirées
+                                        <!-- list group actif -->
                                     </a>
                                     <a href="./soiree_create.php" class="list-group-item list-group-item-action">
                                         Créer une soirée
+                                        <!-- list group actif -->
                                     </a>
-                                    <a href="./films.php" class="list-group-item list-group-item-action active list-group-item-ctm-terciary-color-subtle">
+                                    <a href="./films.php" class="list-group-item list-group-item-action">
                                         Films proposés
+                                        <!-- list group actif -->
                                     </a>
                                     <a href="./utilisateur.php" class="list-group-item list-group-item-action">
                                         Utilisateur
+                                        <!-- list group actif -->
                                     </a>
                                     <a href="./vote.php" class="list-group-item list-group-item-action">
                                         Voter
+                                        <!-- list group actif -->
                                     </a>
                                 </ul>
-                                <!-- les liens vers le pages dans le menu de navigation version burger-->
+
                                 <div class="container-fluid d-md-flex justify-content-end gap-2">
                                     <a class="btn btn-ctm-red-subtle" href="./connexion.php">Se connecter</a>
                                     <a class="btn btn-ctm-red" href="./new_account.php">Créer un compte</a>
-                                    <!-- boutons pour la connexion et la créationd'un compte -->
+                                    <!-- Bouton rouge pour se connecter / créer un compte -->
                                 </div>
                             </div>
                         </div>

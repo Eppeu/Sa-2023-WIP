@@ -16,9 +16,9 @@ CREATE SCHEMA IF NOT EXISTS `popco_bdd`;
 USE `popco_bdd`;
 
 -- Efface les tables contenant les données si besoin, A N'UTILISER QUE SI BESOIN
-DROP TABLE IF EXISTS `soiree`;
-DROP TABLE IF EXISTS `lieu`;
 DROP TABLE IF EXISTS `vote`;
+DROP TABLE IF EXISTS `lieu`;
+DROP TABLE IF EXISTS `soiree`;
 DROP TABLE IF EXISTS `film`;
 DROP TABLE IF EXISTS `utilisateur`;
 

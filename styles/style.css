@@ -152,3 +152,8 @@ html {
 main {
   flex: 1; /* Pousse le footer vers le bas */
 }
+
+.img-resize-choose {
+    height: 400px;
+    width: 250px;
+}

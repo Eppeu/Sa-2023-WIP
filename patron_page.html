@@ -1,11 +1,9 @@
-<?php
-session_start();
-
-require_once './bdd/bdd_connexion.php';
-$bdd = connectBDS();
-
-$allSoirees = $bdd->query('SELECT * FROM film');
-?>
+<!-- 
+Patron_page.html: 
+Page qui permet d'afficher la soirée. Elle prend les éléments du bouton cliqué dans index /
+soirée pour les remettres dans cette page.
+Si connecté, les utilisateurs peuvent voter pour une soirée pas encore commencé ou qui n'a pas encore de film / lieu défini.   
+-->
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -24,7 +22,7 @@ $allSoirees = $bdd->query('SELECT * FROM film');
         <script src="https://kit.fontawesome.com/4b69bc6b92.js" crossorigin="anonymous"></script>
     <!-- Bootstrap Icons  -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <title>Créer une soirée</title>
+    <title>PopCo - GET card element</title>
 </head>
 
 <body class="bg-ctm-terciary-color">
@@ -47,11 +45,7 @@ $allSoirees = $bdd->query('SELECT * FROM film');
                                     <!-- lien de navigation -->
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./soirees.php">Soirées</a>
-                                    <!-- lien de navigation -->
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./films.php">Films</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="./soirees.php">Les soirées</a>
                                     <!-- lien de navigation -->
                                 </li>
                                 <li class="nav-item">
@@ -59,7 +53,15 @@ $allSoirees = $bdd->query('SELECT * FROM film');
                                     <!-- lien de navigation -->
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./vote.php">Vote TEMP</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="./films.php">Films proposés</a>
+                                    <!-- lien de navigation -->
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link bootstrap_nav_item_color" href="./utilisateur.php">Utilisateur</a>
+                                    <!-- lien de navigation -->
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link bootstrap_nav_item_color" href="./vote.php">Vote</a>
                                     <!-- lien de navigation -->
                                 </li>
                             </ul>
@@ -145,129 +147,35 @@ $allSoirees = $bdd->query('SELECT * FROM film');
     </header>
 
     <main>
-        <div class="text-center my-5 py-5">
-            <h5>Créez une nouvelle soirée !</h5>
+
+    <div class="container d-flex flex-column mx-5 px-5 my-5">
+
+        <div class="row align-items-start">
+            <div class="col-4">
+                <img src="./assets/images/chippies.png" class="img-resize-choose rounded-2 object-fit-cover" alt="...">
+            </div>
+            <div class="col-4 d-inline">
+                <h1>DB Name</h1>
+            </div>
+            <div class="col-4 d-inline">
+                <h3>DB Genre</h3>
+            </div>
         </div>
-        <h5 class="ms-5">Entrez les informations de votre soirée</h5>
-
-        <div class="container my-5">
-
-            <form>
-                <!-- partie formulaire -->
-                <div class="mb-3">
-                    <label for="" class="form-label">Nom de la soirée</label>
-                    <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" maxlength="30" placeholder="Soirée film d'horreur">
-                </div>
-
-                <div class="mb-3">
-                    <!-- choix du genre de la soirée avec les propositions en formulaire de sélection -->
-                    <label for="genre_movie">Genre de la soirée</label>
-                    <select class="form-select" aria-label="genre_movie">
-                    <option selected>Choisissez un genre de soirée</option>
-                    <option value="">Sans genre</option>
-                    <option value="horror">Horreur</option>
-                    <option value="sf">Science Fiction</option>
-                    <option value="Romance">Romance</option>
-                    <option value="fantasy">Fantastique</option>
-                    <option value="action">Action</option>
-                    <option value="Animation">Animation</option>
-                    <option value="thriller">Thriller</option>
-                    <option value="comedie">Comédie</option>
-                    <option value="doc">Documentaire</option>
-                    <option value="historique">Historique</option>
-                    </select>
-                </div>
-
-
-                <div class="mb-3">
-                    <!-- Partie sur la recherche des films -->
-                    <label for="formFile" class="form-label">Recherchez les films que vous voulez donner à choisir aux participants (3 maximum)</label>
-                    <input class="form-control mb-5" id="livesearch" type="text" placeholder="Search" aria-label="Search"/>
-                </div>
-
-                <script>
-                $(document).ready(function(){
-                    
-
-                    $("#livesearch").keyup(function() {
-                        var result = $("#livesearch").val();
-                        
-                        if(result != "") {
-                            $.ajax({
-                                url: "livesearch.php",
-                                type: "POST",
-                                data:{result_search:result},
-                                success: function(data) {
-                                    $("#dynamic_search").html(data)
-                                }
-                            });
-                        }
-
-                        if ($("#livesearch").val() == "") {
-                            $("#dynamic_search").html("");
-                        }
-                    });
-
-                    $("#livesearch").change(function(){
-                        if ($("#livesearch").val() == "") {
-                            $("#dynamic_search").html("");
-                        }
-                    });
-
-                });
-                </script>
-
-                <div id="dynamic_search" class="row mx-3">
-
-                </div>
-
-                <div class ="row">
-
-                </div>
-
-                <div class="mb-3">
-                    <label for="range4" class="form-label mt-3">Nombre de personnes à inviter</label>
-                    <div id="" class="form-text mb-3">Indiquez le nombre de personnes maximum de la soirée</div>
-                    <input type="range" class="form-range" min="0" max="100" value="5" id="range4">
-                    <output for="range4" id="rangeValue" aria-hidden="true"></output>
-                    <script>
-                        // This is an example script, please modify as needed
-                        const rangeInput = document.getElementById('range4');
-                        const rangeOutput = document.getElementById('rangeValue');
-                        // Set initial value
-                        rangeOutput.textContent = rangeInput.value;
-                        rangeInput.addEventListener('input', function() {
-                            rangeOutput.textContent = this.value;
-                        });
-                    </script>
-                </div>
-                <!-- partie pour mettre les dates grâce à un calendrier -->
-                <div class="mb-3">
-                    <label for="start" class="">Date de la soirée :</label>
-                    <input type="datetime-local" id="start" name="trip-start" value="2026-06-01" min="2026-06-01" max="2099-12-31" />
-                </div>
-
-                <div class="mb-3">
-                    <label for="start" class="">Date de fin de la soirée :</label>
-                    <input type="datetime-local" id="start" name="trip-start" value="2026-06-01" min="2026-06-01" max="2099-12-31" />
-                </div>
-
-                <div class="mb-3">
-                    <label for="" class="form-label">Propositions de lieux où la soirée va se dérouler</label>
-                    <input type="password" class="form-control" id="">
-                </div>
-
-                <div class="mb-3">
-                    <label for="formFile" class="form-label">Choisissez une image de fond pour votre soirée</label>
-                    <div id="emailHelp" class="form-text mb-3">Cette image accompagnera la présentation de votre soirée, pour donner l'ambiance que vous voulez transmettre  Veuillez ne pas mettre d'image offensante</div>
-                    <input class="form-control" type="file" id="formFile">
-                </div>
-
-                <button type="submit" class="btn btn-primary">Submit</button>
-                <!-- bouton pour soumettre la soirée -->
-            </form>
-
+        <div class="row">
+            <div class="col-4 my-3">
+                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nihil, illo.</p>
+            </div>
+            <div class="col-4 align-self-stretch">
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur officiis eos voluptatem, harum natus, magnam magni perferendis dolorem illum sapiente optio quibusdam quasi quisquam ipsa nesciunt voluptatibus suscipit ipsum debitis ad alias libero enim animi. Dolor quis ipsam aspernatur, molestias corrupti sequi esse cupiditate architecto illum dolorem quod ex unde.</p>
+            </div>
         </div>
+        <div class="row">
+            <div class="col-8">
+                <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-1">Voter !</a>
+            </div>
+        </div>
+    </div>
+
     </main>
     <!-- Footer avec les liens vers instagram, discord, facebook, mentions légales -->
     <footer id="footer_popco" class="container-fluid py-3 rounded-top-5 bg-ctm-primary-color">
@@ -286,14 +194,14 @@ $allSoirees = $bdd->query('SELECT * FROM film');
             </div>
             <div class="col-4 text-center">
                 <img src="./assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
-                <!--Insertion de l'icône du logo PopCo -->
+                <!-- Insertion de l'icône du logo PopCo -->
             </div>
             <div class="col-4 py-3 text-start d-lg-block text-end pe-4">
                 <a class="text-decoration-none link-ctm-terciary-color-subtle" data-bs-toggle="modal" href="#popco_ml" role="button">
                 Mentions légales
                 </a>
-                <!-- partie mentions légales sous la forme d'un modal -->
                 <div class="modal fade" id="popco_ml" tabindex="-1" aria-labelledby="popco_mlLabel" aria-hidden="true">
+                    <!-- partie mentions légales sous la forme d'un modal -->
                     <div class="modal-dialog">
                         <div class="modal-content bg-ctm-terciary-color">
                         <div class="modal-header">
@@ -339,3 +247,4 @@ $allSoirees = $bdd->query('SELECT * FROM film');
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+</html>

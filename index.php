@@ -1,11 +1,6 @@
 <!-- CONNEXION A LA BASE DE DONNEE-->
 <?php
-error_reporting(0);
-
-if(!isset($_SESSION['nom_utilisateur'])) {
-    session_start();
-    $connecteeStatus = true;
-}
+session_start();
 
 require_once './bdd/bdd_connexion.php';
 $bdd = connectBDS();
@@ -63,7 +58,11 @@ $soireesHorreur = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE gen
                                     <!-- lien de navigation -->
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./soirees.php">Les soirées</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="./soirees.php">Soirées</a>
+                                    <!-- lien de navigation -->
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link bootstrap_nav_item_color" href="./films.php">Films</a>
                                     <!-- lien de navigation -->
                                 </li>
                                 <li class="nav-item">
@@ -71,23 +70,13 @@ $soireesHorreur = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE gen
                                     <!-- lien de navigation -->
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./films.php">Films proposés</a>
-                                    <!-- lien de navigation -->
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./utilisateur.php">Utilisateur</a>
-                                    <!-- lien de navigation -->
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./vote.php">Vote</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="./vote.php">Vote TEMP</a>
                                     <!-- lien de navigation -->
                                 </li>
                             </ul>
 
                             <?php
-                            if($connecteeStatus) {
-                                echo "connecté";
-                                
+                            if(isset($_SESSION['nom_utilisateur'])) {
                                 ?>
                                 <ul class="navbar-nav mb-2 mb-lg-0 gap-2 me-0 d-none d-md-flex">
                                     <li class="nav-item">
@@ -100,7 +89,6 @@ $soireesHorreur = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE gen
                                 </ul>
                                 <?php
                             }else{
-                                echo "pas connecté";
                                 ?>
                                 <ul class="navbar-nav mb-2 mb-lg-0 gap-2 me-0 d-none d-md-flex">
                                     <li class="nav-item">
@@ -109,12 +97,13 @@ $soireesHorreur = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE gen
                                     <li class="nav-item">
                                         <a class="btn btn-ctm-red" href="./new_account.php">Créer un compte</a>
                                     </li>
-                                    <!-- Boutons Rouges (un de couleur légère et l'autre non) pour créer un compte et se connecter -->
                                 </ul>
-                            <?php
+                                <!-- Boutons Rouges (un de couleur légère et l'autre non) pour créer un compte et se connecter -->
+                                
+                        </div>
+                        <?php
                             }
                             ?>
-                        </div>
 
                         <a class="fs-1 d-block d-md-none text-success" data-bs-toggle="offcanvas" href="#menu_phone" aria-controls="offcanvasExample">
                         <i class="bi bi-list link-ctm-terciary-color"></i>

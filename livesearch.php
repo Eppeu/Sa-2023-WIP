@@ -11,10 +11,11 @@ if(isset($_POST['result_search'])) {
     mysqli_stmt_bind_param($exeCom, 's', $result_get);
     mysqli_stmt_execute($exeCom);
 
-    $query_db = mysqli_query($connect, $exeCom); 
+    $query_db = mysqli_stmt_get_result($exeCom); 
+    echo $sql_command;
 
 
-    if (mysqli_num_rows($query_db) != 0) {
+    if ($query_db && mysqli_num_rows($query_db) > 0) {
     ?>
         <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
             <div id ="img-resize" class="row row-cols-2 row-cols-md-5 ms-1 my-3 g-5 flex-nowrap gap-3">
