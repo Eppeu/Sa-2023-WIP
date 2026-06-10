@@ -33,7 +33,7 @@ $allSoirees = $bdd->query('SELECT * FROM film');
                     <div class="container-fluid">
                         <a class="navbar-brand" href="./index.php">
                             <img src="./assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
-                            <!--Insertion d'une icône du logo PopCo -->
+                            <!--Insertion de l'icône du logo PopCo -->
                         </a>
                         <div class="collapse navbar-collapse justify-content-between">
                             <ul class="navbar-nav mb-2 mb-lg-0 d-none d-md-flex">
@@ -66,7 +66,7 @@ $allSoirees = $bdd->query('SELECT * FROM film');
                                 </li>
                             </ul>
                         </div>
-                        <!-- les liens vers le pages dans le menu de navigation -->
+                        <!-- les liens vers le pages dans le menu de navigation et des boutons pour la connexion et la création d'un compte -->
                         <a class="fs-1 d-block d-md-none text-success" data-bs-toggle="offcanvas" href="#menu_phone" aria-controls="offcanvasExample">
                         <i class="bi bi-list link-ctm-terciary-color"></i>
                         </a>
@@ -126,28 +126,6 @@ $allSoirees = $bdd->query('SELECT * FROM film');
                     <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" maxlength="30" placeholder="Soirée film d'horreur">
                 </div>
 
-                <script>
-                $(document).ready(function(){
-
-                })
-                </script>
-
-            <div id="dynamic_search" class="row mx-3">
-                <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
-                    <div id ="img-resize" class="row row-cols-2 row-cols-md-5 ms-1 my-3 g-5 flex-nowrap gap-3">
-                        <?php
-                        while($allSoireesInfos = $allSoirees->fetch()){
-                        ?>
-                            <div class="card p-0 m-0">
-                                <img src="./assets/images/yuri_time.png" class="card-img-top object-fit-cover" alt="...">
-                                <h5 class="card-text text-center align-text-bottom"><?= $allSoireesInfos['nom_film'];?></h5>
-                            </div>
-                        <?php
-                        }
-                        ?>
-                    </div>
-                </div>
-
                 <div class="mb-3">
                     <!-- choix du genre de la soirée avec les propositions en formulaire de sélection -->
                     <label for="genre_movie">Genre de la soirée</label>
@@ -171,8 +149,43 @@ $allSoirees = $bdd->query('SELECT * FROM film');
                 <div class="mb-3">
                     <!-- Partie sur la recherche des films -->
                     <label for="formFile" class="form-label">Recherchez les films que vous voulez donner à choisir aux participants</label>
-                    <input class="form-control mb-5" type="search" placeholder="Search" aria-label="Search"/>
-                    <button class="btn btn-outline-success" type="submit">Search</button>
+                    <input class="form-control mb-5" id="livesearch" type="text" placeholder="Search" aria-label="Search"/>
+                </div>
+
+                <script>
+                $(document).ready(function(){
+                    
+
+                    $("#livesearch").keyup(function() {
+                        var result = $("#livesearch").val();
+                        
+                        if(result != "") {
+                            $.ajax({
+                                url: "livesearch.php",
+                                type: "POST",
+                                data:{result_search:result},
+                                success: function(data) {
+                                    $("#dynamic_search").html(data)
+                                }
+                            });
+                        }
+
+                        if ($("#livesearch").val() == "") {
+                            $("#dynamic_search").html("");
+                        }
+                    });
+
+                    $("#livesearch").change(function(){
+                        if ($("#livesearch").val() == "") {
+                            $("#dynamic_search").html("");
+                        }
+                    });
+
+                });
+                </script>
+
+                <div id="dynamic_search" class="row mx-3">
+
                 </div>
 
                 <div class="mb-3">
@@ -198,7 +211,7 @@ $allSoirees = $bdd->query('SELECT * FROM film');
                 </div>
 
                 <div class="mb-3">
-                    <label for="start" class="">Date de de fin de la soirée :</label>
+                    <label for="start" class="">Date de fin de la soirée :</label>
                     <input type="datetime-local" id="start" name="trip-start" value="2026-06-01" min="2026-06-01" max="2099-12-31" />
                 </div>
 
@@ -236,7 +249,7 @@ $allSoirees = $bdd->query('SELECT * FROM film');
             </div>
             <div class="col-4 text-center">
                 <img src="./assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
-                <!-- image du logo -->
+                <!--Insertion de l'icône du logo PopCo -->
             </div>
             <div class="col-4 py-3 text-start d-lg-block text-end pe-4">
                 <a class="text-decoration-none link-ctm-terciary-color-subtle" data-bs-toggle="modal" href="#popco_ml" role="button">
@@ -249,6 +262,7 @@ $allSoirees = $bdd->query('SELECT * FROM film');
                         <div class="modal-header">
                             <h1 class="modal-title fs-5" id="popco_mlLabel">MENTIONS LÉGALES</h1>
                             <button type="button" class="btn-close link-ctm-primary-color-subtle" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <!-- bouton pour fermer les mentions légales (en forme de X)-->
                         </div>
                         <div class="modal-body text-center lh-sm">
                             <p>
@@ -277,7 +291,7 @@ $allSoirees = $bdd->query('SELECT * FROM film');
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-ctm-secondary-color-subtle" data-bs-dismiss="modal">Close</button>
-                            <!-- bouton pour fermer -->
+                            <!-- bouton pour fermer les mentions légales "Close"-->
                         </div>
                         </div>
                     </div>

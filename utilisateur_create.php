@@ -16,14 +16,13 @@ function add($ligne1, $ligne2, $ligne3, $ligne4, $ligne5){
 
             $creer = $bdd->prepare("INSERT INTO utilisateur (nom_utilisateur, prenom_utilisateur, email, motDePasse)VALUES(?, ?, ?, ?)");
             $creer->execute(array($info1, $info2, $info3, $password));
-            header('Location: ./connexion.html');
+            header('Location: ./connexion.php');
         }else{
             echo "Mot de passe incorrect";
             header('Location: ./new_account.php');
-            
         }
     }else{
-        echo "Veuillez compléter tous les champs.";
+        echo `HOOO Veuillez compléter tous les champs. info 1 : $info1, info 2 : $info2, info 3 : $info3, info 4 : $info4, info 5 : $info5, `;
     }
 }
 

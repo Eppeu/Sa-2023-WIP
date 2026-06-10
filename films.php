@@ -47,10 +47,11 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                     <div class="container-fluid">
                         <a class="navbar-brand" href="./index.php">
                             <img src="./assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
-                            <!-- Insertion d'une icône du logo PopCo -->
+                            <!-- Insertion de l'icône du logo PopCo -->
                         </a>
                         <div class="collapse navbar-collapse justify-content-between">
                             <ul class="navbar-nav mb-2 mb-lg-0 d-none d-md-flex">
+                                <!-- class de la barre de navigation (navbar) avec une marge de bas de 2 et de 0 à partir du breakpoint large -->
                                 <li class="nav-item active">
                                     <a class="nav-link" href="./index.php">Accueil</a>
                                 </li>
@@ -70,6 +71,7 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                                     <a class="nav-link bootstrap_nav_item_color" href="./vote.php">Vote</a>
                                 </li>
                             </ul>
+                            <!-- lien dans la barre de navigation menant au autre pages -->
                             <ul class="navbar-nav mb-2 mb-lg-0 gap-2 me-0 d-none d-md-flex">
                                 <li class="nav-item">
                                     <a class="btn btn-ctm-red-subtle" href="./connexion.php">Se connecter</a>
@@ -79,11 +81,12 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                                 </li>
                             </ul>
                         </div>
-
+                        <!-- les liens vers le pages dans le menu de navigation et des boutons pour la connexion et la création d'un compte -->
                         <a class="fs-1 d-block d-md-none text-success" data-bs-toggle="offcanvas" href="#menu_phone" aria-controls="offcanvasExample">
                         <i class="bi bi-list link-ctm-terciary-color"></i>
                         </a>
                         <div class="offcanvas-md d-md-none offcanvas-end bg-ctm-terciary-color" tabindex="-1" id="menu_phone" aria-labelledby="menu_phoneLabel">
+                            <!-- ajout de la class offcanvas pour créer le menu burger (sur la version réduite du site) -->
                             <div class="offcanvas-header">
                                 <h5 class="offcanvas-title" id="menu_phoneLabel">PopCo</h5>
                                 <button type="button" class="btn-close btn-ctm-primary-color-subtle" data-bs-dismiss="offcanvas" data-bs-target="#menu_phone" aria-label="Close"></button>
@@ -109,10 +112,11 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                                         Voter
                                     </a>
                                 </ul>
-
+                                <!-- les liens vers le pages dans le menu de navigation version burger-->
                                 <div class="container-fluid d-md-flex justify-content-end gap-2">
-                                    <a class="btn btn-ctm-red-subtle" href="./connexion.html">Se connecter</a>
-                                    <a class="btn btn-ctm-red" href="./new_account.html">Créer un compte</a>
+                                    <a class="btn btn-ctm-red-subtle" href="./connexion.php">Se connecter</a>
+                                    <a class="btn btn-ctm-red" href="./new_account.php">Créer un compte</a>
+                                    <!-- boutons pour la connexion et la créationd'un compte -->
                                 </div>
                             </div>
                         </div>
@@ -132,7 +136,7 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
         </div>
 
         <div class="mainPart py-5">
-
+            <!-- parties avec la liste des genres et leur film correspondant sous forme de card avec une barre de défilement -->
             <h5 class="ms-5 fs-3">Les films d'action</h5>
             <div class="row mx-3">
                 <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
@@ -148,7 +152,7 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                                     <p class="card-text lh-1"><?= $soireesAction_sortInfos['synopsis'];?><p>
                                 </div>
                                 <div class="card-footer p-0 border-0">
-                                    <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En voir plus</a>
+                                    <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
                                 </div>
                             </div>
                         <?php
@@ -157,7 +161,7 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                     </div>
                 </div>
             </div>
-
+            <!-- film d'action fin -->
             <h5 class="ms-5 mt-4 fs-3">Les films fantastiques</h5>
             <div class="row mx-3">
                 <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
@@ -173,7 +177,7 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                                     <p class="card-text lh-1"><?= $soireesFanstastique_sortInfos['synopsis'];?><p>
                                 </div>
                                 <div class="card-footer p-0 border-0">
-                                    <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En voir plus</a>
+                                    <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
                                 </div>
                             </div>
                         <?php
@@ -182,7 +186,7 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                     </div>
                 </div>
             </div>
-
+            <!-- film fantastiques fin-->
             <h5 class="ms-5 mt-4 fs-3">Les films d'animation</h5>
             <div class="row mx-3">
                 <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
@@ -198,7 +202,7 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                                     <p class="card-text lh-1"><?= $soireesAnimation_sortInfos['synopsis'];?><p>
                                 </div>
                                 <div class="card-footer p-0 border-0">
-                                    <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En voir plus</a>
+                                    <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
                                 </div>
                             </div>
                         <?php
@@ -207,7 +211,7 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                     </div>
                 </div>
             </div>
-
+            <!-- film d'animation fin -->
             <h5 class="ms-5 mt-4 fs-3">Les films de comédie</h5>
             <div class="row mx-3">
                 <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
@@ -223,7 +227,7 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                                     <p class="card-text lh-1"><?= $soireesComedy_sortInfos['synopsis'];?><p>
                                 </div>
                                 <div class="card-footer p-0 border-0">
-                                    <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En voir plus</a>
+                                    <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
                                 </div>
                             </div>
                         <?php
@@ -232,7 +236,7 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                     </div>
                 </div>
             </div>
-
+            <!-- film comédie fin -->
             <h5 class="ms-5 mt-4 fs-3">Les films historiques</h5>
             <div class="row mx-3">
                 <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
@@ -248,7 +252,7 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                                     <p class="card-text lh-1"><?= $soireesHistorique_sortInfos['synopsis'];?><p>
                                 </div>
                                 <div class="card-footer p-0 border-0">
-                                    <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En voir plus</a>
+                                    <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
                                 </div>
                             </div>
                         <?php
@@ -257,7 +261,7 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                     </div>
                 </div>
             </div>
-
+            <!-- film historique fin -->
             <h5 class="ms-5 mt-4 fs-3">Les films de thriller</h5>
             <div class="row mx-3">
                 <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
@@ -273,7 +277,7 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                                     <p class="card-text lh-1"><?= $soireesThriller_sortInfos['synopsis'];?><p>
                                 </div>
                                 <div class="card-footer p-0 border-0">
-                                    <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En voir plus</a>
+                                    <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
                                 </div>
                             </div>
                         <?php
@@ -282,7 +286,7 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                     </div>
                 </div>
             </div>
-
+            <!-- film thriller fin -->
             <h5 class="ms-5 mt-4 fs-3">Les films de Romance</h5>
             <div class="row mx-3">
                 <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
@@ -298,7 +302,7 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                                     <p class="card-text lh-1"><?= $soireesRomance_sortInfos['synopsis'];?><p>
                                 </div>
                                 <div class="card-footer p-0 border-0">
-                                    <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En voir plus</a>
+                                    <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
                                 </div>
                             </div>
                         <?php
@@ -307,7 +311,7 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                     </div>
                 </div>
             </div>
-
+            <!-- film romance fin -->
             <h5 class="ms-5 mt-4 fs-3">Les films de Science Fiction</h5>
             <div class="row mx-3">
                 <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
@@ -323,7 +327,7 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                                     <p class="card-text lh-1"><?= $soireesSF_sortInfos['synopsis'];?><p>
                                 </div>
                                 <div class="card-footer p-0 border-0">
-                                    <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En voir plus</a>
+                                    <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
                                 </div>
                             </div>
                         <?php
@@ -332,11 +336,11 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                     </div>
                 </div>
             </div>
-            
+            <!-- film science fiction fin -->
         </div>
 
     </main>
-
+    <!-- Footer avec les liens vers instagram, discord, facebook, mentions légales -->
     <footer id="footer_popco" class="container-fluid py-3 rounded-top-5 bg-ctm-primary-color">
         <div class="row g-1 d-flex align-items-center">
             <div class="col-4 fs-2 ps-4">
@@ -353,17 +357,20 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
             </div>
             <div class="col-4 text-center">
                 <img src="./assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
+                <!-- Insertion de l'icône du logo PopCo -->
             </div>
             <div class="col-4 py-3 text-start d-lg-block text-end pe-4">
                 <a class="text-decoration-none link-ctm-terciary-color-subtle" data-bs-toggle="modal" href="#popco_ml" role="button">
                 Mentions légales
                 </a>
+                <!-- partie mentions légales sous la forme d'un modal -->
                 <div class="modal fade" id="popco_ml" tabindex="-1" aria-labelledby="popco_mlLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content bg-ctm-terciary-color">
                         <div class="modal-header">
                             <h1 class="modal-title fs-5" id="popco_mlLabel">MENTIONS LÉGALES</h1>
                             <button type="button" class="btn-close link-ctm-primary-color-subtle" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <!-- bouton pour fermer les mentions légales (en forme de X)-->
                         </div>
                         <div class="modal-body text-center lh-sm">
                             <p>
@@ -392,6 +399,7 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-ctm-secondary-color-subtle" data-bs-dismiss="modal">Close</button>
+                            <!-- bouton pour fermer les mentions légales "Close"-->
                         </div>
                         </div>
                     </div>

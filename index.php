@@ -1,5 +1,12 @@
 <!-- CONNEXION A LA BASE DE DONNEE-->
 <?php
+error_reporting(0);
+
+if(!isset($_SESSION['nom_utilisateur'])) {
+    session_start();
+    $connecteeStatus = true;
+}
+
 require_once './bdd/bdd_connexion.php';
 $bdd = connectBDS();
 
@@ -38,16 +45,18 @@ $soireesHorreur = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE gen
 
 <body class="bg-ctm-terciary-color">
     <header> 
+         <!-- Header contenant le menu de navigation version pour écran normal et version pour écran réduit -->
         <div class="container-fluid p-0">
                 <nav id="header_popco" class="navbar navbar-expand bg-ctm-primary-color rounded-bottom-5 ">
                     <div class="container-fluid">
                         <a class="navbar-brand" href="./index.php">
                             <img src="./assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
-                            <!-- Insertion d'une icône du logo PopCo -->
+                            <!-- Insertion de l'icône du logo PopCo -->
                         </a>
                         <div class="collapse navbar-collapse justify-content-between">
                             <!-- navbar sous mode collapse avec justify content between -->
                             <ul class="navbar-nav mb-2 mb-lg-0 d-none d-md-flex">
+                                 <!-- class de la barre de navigation (navbar) avec une marge de bas de 2 et de 0 à partir du breakpoint large -->
                                 <li class="nav-item active">
                                     <!-- item de navigation actif -->
                                     <a class="nav-link" href="./index.php">Accueil</a>
@@ -74,15 +83,37 @@ $soireesHorreur = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE gen
                                     <!-- lien de navigation -->
                                 </li>
                             </ul>
-                            <ul class="navbar-nav mb-2 mb-lg-0 gap-2 me-0 d-none d-md-flex">
-                                <li class="nav-item">
-                                    <a class="btn btn-ctm-red-subtle" href="./connexion.php">Se connecter</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="btn btn-ctm-red" href="./new_account.php">Créer un compte</a>
-                                </li>
-                                <!-- Boutons Rouges (un de couleur légère et l'autre non) pour créer un compte et se connecter -->
-                            </ul>
+
+                            <?php
+                            if($connecteeStatus) {
+                                echo "connecté";
+                                
+                                ?>
+                                <ul class="navbar-nav mb-2 mb-lg-0 gap-2 me-0 d-none d-md-flex">
+                                    <li class="nav-item">
+                                        <a class="btn btn-ctm-red-subtle" href="./utilisateur.php">Votre profil</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="btn btn-ctm-red" href="./deconnexion.php">Se déconnecter</a>
+                                    </li>
+                                    <!-- Boutons Rouges (un de couleur légère et l'autre non) pour créer un compte et se connecter -->
+                                </ul>
+                                <?php
+                            }else{
+                                echo "pas connecté";
+                                ?>
+                                <ul class="navbar-nav mb-2 mb-lg-0 gap-2 me-0 d-none d-md-flex">
+                                    <li class="nav-item">
+                                        <a class="btn btn-ctm-red-subtle" href="./connexion.php">Se connecter</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="btn btn-ctm-red" href="./new_account.php">Créer un compte</a>
+                                    </li>
+                                    <!-- Boutons Rouges (un de couleur légère et l'autre non) pour créer un compte et se connecter -->
+                                </ul>
+                            <?php
+                            }
+                            ?>
                         </div>
 
                         <a class="fs-1 d-block d-md-none text-success" data-bs-toggle="offcanvas" href="#menu_phone" aria-controls="offcanvasExample">
@@ -92,6 +123,7 @@ $soireesHorreur = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE gen
                             <div class="offcanvas-header">
                                 <h5 class="offcanvas-title" id="menu_phoneLabel">PopCo</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#menu_phone" aria-label="Close"></button>
+                                <!-- ajout de la class offcanvas pour créer le menu burger (sur la version réduite du site) -->
                             </div>
                             <div class="offcanvas-body d-flex flex-column justify-content-between px-0">
                                 <ul class="list-group">
@@ -147,7 +179,7 @@ $soireesHorreur = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE gen
                 et le film qui remporte le plus de voix sera diffusé !<br/>
             </p>
         </div>
-
+        <!-- texte de présentation du site PopCo -->
         <div class="mainPart py-5 z-0">
 
             <h5 class="ms-5 fs-3 text-ctm-primary-color-subtle">Les soirées récemment ajoutées !</h5>
@@ -167,7 +199,7 @@ $soireesHorreur = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE gen
                                     <p class="card-text lh-1"><?= $allSoireesInfos['LEFT(synopsis, 200)'];?>...<p>
                                 </div>
                                 <div class="card-footer p-0 border-0">
-                                    <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En voir plus</a>
+                                    <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
                                 </div>
                             </div>
                         <?php
@@ -176,7 +208,7 @@ $soireesHorreur = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE gen
                     </div>
                 </div>
             </div>
-
+            <!-- card pour les soirées récemment ajoutées avec une barre de défilement -->
             <h5 class="ms-5 mt-4 fs-3">Les soirées populaires :fire:</h5>
             <div class="row mx-3">
                 <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
@@ -192,7 +224,7 @@ $soireesHorreur = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE gen
                                     <p class="card-text lh-1"><?= $soireesPopulaireInfos['LEFT(synopsis, 200)'];?>...<p>
                                 </div>
                                 <div class="card-footer p-0 border-0">
-                                    <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En voir plus</a>
+                                    <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
                                 </div>
                             </div>
                         <?php
@@ -201,7 +233,7 @@ $soireesHorreur = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE gen
                     </div>
                 </div>
             </div>
-
+            <!-- card pour les soirées populaires avec une barre de défilement-->
             <h5 class="ms-5 mt-4  fs-3">Thème film d'Horreur</h5>
             <div class="row mx-3">
                 <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
@@ -217,7 +249,7 @@ $soireesHorreur = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE gen
                                     <p class="card-text lh-1"><?= $soireesHorreurInfos['LEFT(synopsis, 200)'];?>...<p>
                                 </div>
                                 <div class="card-footer p-0 border-0">
-                                    <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En voir plus</a>
+                                    <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
                                 </div>
                             </div>
                         <?php
@@ -227,8 +259,9 @@ $soireesHorreur = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE gen
                 </div>
             </div>
         </div>
+        <!-- card pour le thème film d'horreur avec une barre de défilement -->
     </main>
-
+    <!-- Footer avec les liens vers instagram, discord, facebook, mentions légales -->
     <footer id="footer_popco" class="container-fluid py-3 rounded-top-5 bg-ctm-primary-color">
         <div class="row g-1 d-flex align-items-center">
             <div class="col-4 fs-2 ps-4">
@@ -245,17 +278,20 @@ $soireesHorreur = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE gen
             </div>
             <div class="col-4 text-center">
                 <img src="./assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
+                <!-- Insertion de l'icône du logo PopCo -->
             </div>
             <div class="col-4 py-3 text-start d-lg-block text-end pe-4">
                 <a class="text-decoration-none link-ctm-terciary-color-subtle" data-bs-toggle="modal" href="#popco_ml" role="button">
                 Mentions légales
                 </a>
                 <div class="modal fade" id="popco_ml" tabindex="-1" aria-labelledby="popco_mlLabel" aria-hidden="true">
+                    <!-- partie mentions légales sous la forme d'un modal -->
                     <div class="modal-dialog">
                         <div class="modal-content bg-ctm-terciary-color">
                         <div class="modal-header">
                             <h1 class="modal-title fs-5" id="popco_mlLabel">MENTIONS LÉGALES</h1>
                             <button type="button" class="btn-close link-ctm-primary-color-subtle" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <!-- bouton pour fermer les mentions légales (en forme de X)-->
                         </div>
                         <div class="modal-body text-center lh-sm">
                             <p>
@@ -284,6 +320,7 @@ $soireesHorreur = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE gen
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-ctm-secondary-color-subtle" data-bs-dismiss="modal">Close</button>
+                            <!-- bouton pour fermer les mentions légales "Close"-->
                         </div>
                         </div>
                     </div>

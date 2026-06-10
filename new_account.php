@@ -15,7 +15,7 @@
         <script src="https://kit.fontawesome.com/4b69bc6b92.js" crossorigin="anonymous"></script>
     <!-- Bootstrap Icons  -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <title>PopCo</title>
+    <title>Créer un compte</title>
 </head>
 
 <body class="bg-ctm-terciary-color">
@@ -30,6 +30,7 @@
                         <!-- insertion du logo menant vers la page d'accueil -->
                         <div class="collapse navbar-collapse justify-content-between">
                             <ul class="navbar-nav mb-2 mb-lg-0 d-none d-md-flex">
+                                <!-- class de la barre de navigation (navbar) avec une marge de bas de 2 et de 0 à partir du breakpoint large -->
                                 <li class="nav-item active">
                                     <a class="nav-link" href="./index.php">Accueil</a>
                                 </li>
@@ -112,6 +113,7 @@
         <div class="container my-5">
 
             <form method="POST" action="./utilisateur_create.php" class="form">
+                <!-- partie formulaire -->
                 <div class="mb-3">
                     <label for="nom" class="form-label">Nom</label>
                     <input type="text" class="form-control" name="nom" maxlength="30" placeholder="Doe">
@@ -133,17 +135,18 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="passwordConfirm" class="form-label">Mot de Passe</label>
+                    <label for="passwordConfirm" class="form-label">Confirmer le Mot de Passe</label>
                     <input type="password" class="form-control" name="passwordConfirm" maxlength="30" placeholder="Password">
                 </div>
 
                 <button type="submit" class="btn btn-ctm-red container-fluid p-3" name="submit">Créer le compte</button>
+                <!-- bouton de type submit pour la création du compte -->
             </form>
 
         </div>
 
     </main>
-    <!-- FOOTER -->
+    <!-- Footer avec les liens vers instagram, discord, facebook, mentions légales -->
     <footer id="footer_popco" class="container-fluid py-3 rounded-top-5 bg-ctm-primary-color">
         <div class="row g-1 d-flex align-items-center">
             <div class="col-4 fs-2 ps-4">
@@ -174,6 +177,7 @@
                         <div class="modal-header">
                             <h1 class="modal-title fs-5" id="popco_mlLabel">MENTIONS LÉGALES</h1>
                             <button type="button" class="btn-close link-ctm-primary-color-subtle" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <!-- bouton pour fermer les mentions légales (en forme de X)-->
                         </div>
                         <!-- mise en forme des mentions légales -->
                         <div class="modal-body text-center lh-sm">

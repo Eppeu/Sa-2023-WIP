@@ -1,10 +1,20 @@
 <!-- CONNEXION A LA BASE DE DONNEE-->
 <?php
+session_start();
+if(!$_SESSION['nom_utilisateur']) {
+    header('Location: ./connexion.php');
+}
+
 require_once './bdd/bdd_connexion.php';
 $bdd = connectBDS();
 
+
 // Sélection de tous les soirées (films)
-$allUtilisateur = $bdd->query('SELECT * FROM utilisateur');
+// $allUtilisateur = $bdd->query('SELECT * FROM utilisateur WHERE nom_utilisateur=""');
+
+$query = $bdd->prepare("SELECT * FROM utilisateur WHERE nom_utilisateur=:identifiant");
+$query->execute([':identifiant' => $_SESSION['nom_utilisateur']]);
+$infosUtilisateur = $query->fetch();
 ?>
 
 <!DOCTYPE html>
@@ -29,12 +39,14 @@ $allUtilisateur = $bdd->query('SELECT * FROM utilisateur');
 
 <body class="bg-ctm-terciary-color">
     <header>
+         <!-- Header contenant le menu de navigation version pour écran normal et version pour écran réduit -->
         <div class="container-fluid p-0">
                 <nav id="header_popco" class="navbar navbar-expand bg-ctm-primary-color rounded-bottom-5 ">
                     <!-- création de barre de navigation -->
                     <div class="container-fluid">
                         <a class="navbar-brand" href="./index.php">
                             <img src="./assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
+                            <!-- Insertion de l'icône du logo PopCo -->
                         </a>
                         <!-- insertion du logo menant vers la page d'accueil -->
                         <div class="collapse navbar-collapse justify-content-between">
@@ -117,16 +129,16 @@ $allUtilisateur = $bdd->query('SELECT * FROM utilisateur');
     <main class="container-fluid px-0">
         <div class="bgImage"></div>
         <div class="text-center py-5 callToAction">
-            <h5 class="fs-1">Bonjour [nom d'utilisateur] !</h5>
+            <h5 class="fs-1">Bonjour <?= $infosUtilisateur['nom_utilisateur'];?> !</h5>
         </div>
         <!-- affichage de la page avec texte -->
         <div class="mainPart py-5">
             <div class="row m-0">
                 <div class="ms-5 col-11">
                     <h5 class="fs-3">Vos informations</h5>
-                    <p class="mt-5">Nom : nom</p>
-                    <p>Prénom : prénom</p>
-                    <p>email : email.***@gmail.com</p>
+                    <p class="mt-5">Nom : <?= $infosUtilisateur['nom_utilisateur'];?></p>
+                    <p>Prénom : <?= $infosUtilisateur['prenom_utilisateur'];?></p>
+                    <p>email : <?= $infosUtilisateur['email'];?></p>
                     <h5 class="mt-5 fs-3">Les soirées auxquelles vous êtes inscrit(e)</h5>
                 </div>
                 <!-- affiche les informations de l'utilisateur -->
@@ -234,6 +246,7 @@ $allUtilisateur = $bdd->query('SELECT * FROM utilisateur');
     </main>
 
     <footer id="footer_popco" class="container-fluid py-3 rounded-top-5 bg-ctm-primary-color">
+        <!-- Footer avec les liens vers instagram, discord, facebook, mentions légales -->
         <div class="row g-1 d-flex align-items-center">
             <div class="col-4 fs-2 ps-4">
                 <a href="" target="_blank" class="text-decoration-none link-ctm-terciary-color-subtle">
@@ -250,6 +263,7 @@ $allUtilisateur = $bdd->query('SELECT * FROM utilisateur');
             <!-- icone lien vers les réseaux sociaux -->
             <div class="col-4 text-center">
                 <img src="./assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
+                <!-- Insertion de l'icône du logo PopCo -->
             </div>
             <!-- logo bas de page ramenant a la page d'accueil -->
             <div class="col-4 py-3 text-start d-lg-block text-end pe-4">
@@ -263,6 +277,7 @@ $allUtilisateur = $bdd->query('SELECT * FROM utilisateur');
                         <div class="modal-header">
                             <h1 class="modal-title fs-5" id="popco_mlLabel">MENTIONS LÉGALES</h1>
                             <button type="button" class="btn-close link-ctm-primary-color-subtle" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <!-- bouton pour fermer les mentions légales (en forme de X)-->
                         </div>
                         <!-- mise en forme des mentions légales -->
                         <div class="modal-body text-center lh-sm">

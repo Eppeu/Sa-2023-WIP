@@ -41,12 +41,14 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
 </head>
 <body class="bg-ctm-terciary-color">
     <header>
+        <!-- Header contenant le menu de navigation version pour écran normal et version pour écran réduit -->
         <div class="container-fluid p-0">
                 <nav id="header_popco" class="navbar navbar-expand bg-ctm-primary-color rounded-bottom-5 ">
                     <!-- création de barre de navigation -->
                     <div class="container-fluid">
                         <a class="navbar-brand" href="./index.php">
                             <img src="./assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
+                            <!-- Insertion de l'icône du logo PopCo -->
                         </a>
                         <!-- insertion du logo menant vers la page d'accueil -->
                         <div class="collapse navbar-collapse justify-content-between">
@@ -73,10 +75,10 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                             <!-- lien dans la barre de navigation menant au autre pages -->
                             <ul class="navbar-nav mb-2 mb-lg-0 gap-2 me-0 d-none d-md-flex">
                                 <li class="nav-item">
-                                    <a class="btn btn-ctm-red-subtle" href="./connexion.html">Se connecter</a>
+                                    <a class="btn btn-ctm-red-subtle" href="./connexion.php">Se connecter</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="btn btn-ctm-red" href="./new_account.html">Créer un compte</a>
+                                    <a class="btn btn-ctm-red" href="./new_account.php">Créer un compte</a>
                                 </li>
                             </ul>
                             <!-- bouton de connexion et de création de compte -->
@@ -114,8 +116,8 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                                 </ul>
                                 <!-- lien vers les autres pages affichage de téléphone -->
                                 <div class="container-fluid d-md-flex justify-content-end gap-2">
-                                    <a class="btn btn-ctm-red-subtle" href="./connexion.html">Se connecter</a>
-                                    <a class="btn btn-ctm-red" href="./new_account.html">Créer un compte</a>
+                                    <a class="btn btn-ctm-red-subtle" href="./connexion.php">Se connecter</a>
+                                    <a class="btn btn-ctm-red" href="./new_account.php">Créer un compte</a>
                                 </div>
                                 <!-- bouton de connexion et de création de compte de téléphone -->
                             </div>
@@ -229,6 +231,7 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
             <!-- icone lien vers les réseaux sociaux -->
             <div class="col-4 text-center">
                 <img src="./assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
+                <!-- Insertion de l'icône du logo PopCo -->
             </div>
             <!-- logo bas de page ramenant a la page d'accueil -->
             <div class="col-4 py-3 text-start d-lg-block text-end pe-4">
@@ -242,6 +245,7 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                         <div class="modal-header">
                             <h1 class="modal-title fs-5" id="popco_mlLabel">MENTIONS LÉGALES</h1>
                             <button type="button" class="btn-close link-ctm-primary-color-subtle" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <!-- bouton pour fermer les mentions légales (en forme de X)-->
                         </div>
                         <!-- mise en forme des mentions légales -->
                         <div class="modal-body text-center lh-sm">

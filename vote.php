@@ -42,14 +42,17 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
 
 <body class="bg-ctm-terciary-color">
     <header>
+         <!-- Header contenant le menu de navigation version pour écran normal et version pour écran réduit -->
         <div class="container-fluid p-0">
                 <nav id="header_popco" class="navbar navbar-expand bg-ctm-primary-color rounded-bottom-5 ">
                     <div class="container-fluid">
                         <a class="navbar-brand" href="./index.php">
                             <img src="./assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
+                            <!-- Insertion de l'icône du logo PopCo -->
                         </a>
                         <div class="collapse navbar-collapse justify-content-between">
                             <ul class="navbar-nav mb-2 mb-lg-0 d-none d-md-flex">
+                                <!-- class de la barre de navigation (navbar) avec une marge de bas de 2 et de 0 à partir du breakpoint large -->
                                 <li class="nav-item active">
                                     <a class="nav-link" href="./index.php">Accueil</a>
                                 </li>
@@ -78,11 +81,13 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                                 </li>
                             </ul>
                         </div>
-
+                        <!-- les liens vers le pages dans le menu de navigation et des boutons pour la connexion et la création d'un compte -->
                         <a class="fs-1 d-block d-md-none text-success" data-bs-toggle="offcanvas" href="#menu_phone" aria-controls="offcanvasExample">
                         <i class="bi bi-list link-ctm-terciary-color"></i>
                         </a>
                         <div class="offcanvas-md d-md-none offcanvas-end bg-ctm-terciary-color" tabindex="-1" id="menu_phone" aria-labelledby="menu_phoneLabel">
+                            <!-- ajout de la class offcanvas pour créer le menu burger (sur la version réduite du site) -->
+                            <div class="offcanvas-header">
                             <div class="offcanvas-header">
                                 <h5 class="offcanvas-title" id="menu_phoneLabel">PopCo</h5>
                                 <button type="button" class="btn-close btn-ctm-primary-color-subtle" data-bs-dismiss="offcanvas" data-bs-target="#menu_phone" aria-label="Close"></button>
@@ -108,10 +113,11 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                                         Voter
                                     </a>
                                 </ul>
-
+                                 <!-- les liens vers le pages dans le menu de navigation version burger-->
                                 <div class="container-fluid d-md-flex justify-content-end gap-2">
-                                    <a class="btn btn-ctm-red-subtle" href="./connexion.html">Se connecter</a>
-                                    <a class="btn btn-ctm-red" href="./new_account.html">Créer un compte</a>
+                                    <a class="btn btn-ctm-red-subtle" href="./connexion.php">Se connecter</a>
+                                    <a class="btn btn-ctm-red" href="./new_account.php">Créer un compte</a>
+                                    <!-- boutons pour la connexion et la créationd'un compte -->
                                 </div>
                             </div>
                         </div>
@@ -122,11 +128,12 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
     </header>
 
     <main>
+        <!-- partie du vote-->
         <div class="container my-5" id="formulaireVote">
             <h5 class="fs-3">Votez pour le film que vous aimeriez voir !</h5>
             <p>Ci-dessous le choix de films que l'organisateur de soirée à décider à sélectionner pour la soirée du jour mois année à heure heure</p>
 
-            <p>Pour la soirée [soirée], vous avec le choix entre les films suivant, veuillez en choisir un.</p>
+            <p>Pour la soirée [soirée], vous avez le choix entre les films suivants, veuillez en choisir un.</p>
             <form>
                 <div class="container d-flex justify-content-between flex-wrap">
                     <div class="col-12 col-md-6 col-lg-4">
@@ -138,6 +145,7 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                             </figure>
                         </label>
                     </div>
+                    <!-- premier bouton pour le choix 1 -->
     
                     <div class="col-12 col-md-6 col-lg-4">
                         <input type="radio" class="btn-check" id="btn-check-2" autocomplete="off" name="vote">
@@ -148,6 +156,7 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                             </figure>
                         </label>
                     </div>
+                    <!-- deuxième bouton pour le choix 2 -->
     
                     <div class="col-12 col-md-6 offset-md-3 col-lg-4 offset-lg-0">
                         <input type="radio" class="btn-check" id="btn-check-3" autocomplete="off" name="vote">
@@ -159,14 +168,16 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                             </figure>
                         </label>
                     </div>
+                    <!-- troisième bouton pour le choix 3 -->
                     <button type="submit" class="btn btn-ctm-red mt-3 container-fluid mb-5 p-3">Voter</button>
+                    <!-- bouton de type submit pour valider le vote -->
                 </div>
             </div>
     
             </form>
         </div>
     </main>
-
+    <!-- Footer avec les liens vers instagram, discord, facebook, mentions légales -->
     <footer id="footer_popco" class="container-fluid py-3 rounded-top-5 bg-ctm-primary-color">
         <div class="row g-1 d-flex align-items-center">
             <div class="col-4 fs-2 ps-4">
@@ -188,12 +199,14 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                 <a class="text-decoration-none link-ctm-terciary-color-subtle" data-bs-toggle="modal" href="#popco_ml" role="button">
                 Mentions légales
                 </a>
+                <!-- partie mentions légales sous la forme d'un modal -->
                 <div class="modal fade" id="popco_ml" tabindex="-1" aria-labelledby="popco_mlLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content bg-ctm-terciary-color">
                         <div class="modal-header">
                             <h1 class="modal-title fs-5" id="popco_mlLabel">MENTIONS LÉGALES</h1>
                             <button type="button" class="btn-close link-ctm-primary-color-subtle" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <!-- bouton pour fermer les mentions légales (en forme de X)-->
                         </div>
                         <div class="modal-body text-center lh-sm">
                             <p>
@@ -222,6 +235,7 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-ctm-secondary-color-subtle" data-bs-dismiss="modal">Close</button>
+                            <!-- bouton pour fermer les mentions légales "Close"-->
                         </div>
                         </div>
                     </div>
