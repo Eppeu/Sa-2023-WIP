@@ -187,7 +187,7 @@ $allSoirees = $bdd->query('SELECT * FROM film');
 
                 <script>
                 $(document).ready(function(){
-                    
+                    let movie_selection = 1;
 
                     $("#livesearch").keyup(function() {
                         var result = $("#livesearch").val();
@@ -214,6 +214,57 @@ $allSoirees = $bdd->query('SELECT * FROM film');
                         }
                     });
 
+                    $(document).on ("click", ".card-click", function(){
+                        switch (movie_selection) {
+                            case 1:
+                                $("#movie_select_1").html($(this).html()).addClass("card p-0 m-2");
+                                movie_selection++;
+                                break;
+                        
+                            case 2:
+                                $("#movie_select_2").html($(this).html()).addClass("card p-0 m-2");
+                                movie_selection++;
+                                break;
+
+                            case 3:
+                                $("#movie_select_3").html($(this).html()).addClass("card p-0 m-2");
+                                movie_selection++;
+                                break;
+                        }
+                    });
+
+                    $("#movie_select_1").click(function(){
+                        if ($("#movie_select_1").html() != "") {
+                            $("#movie_select_1").html($("#movie_select_2").html());
+                            $("#movie_select_2").html($("#movie_select_3").html());
+                            $("#movie_select_3").html("").removeClass("card p-0 m-2");
+                            movie_selection = 3;
+                        } else if ($("#movie_select_2").html() != "") {
+                            $("#movie_select_1").html($("#movie_select_2").html());
+                            $("#movie_select_2").html("").removeClass("card p-0 m-2");
+                            movie_selection = 2;
+                        } else {
+                            $("#movie_select_1").html("").removeClass("card p-0 m-2");
+                            movie_selection = 1;
+                        }
+                    });
+
+                    $("#movie_select_2").click(function(){
+                        if ($("#movie_select_2").html() != "") {
+                            $("#movie_select_2").html($("#movie_select_3").html());
+                            $("#movie_select_3").html("").removeClass("card p-0 m-2");
+                            movie_selection = 3;
+                        } else {
+                            $("#movie_select_2").html("").removeClass("card p-0 m-2");
+                            movie_selection = 2;
+                        }
+                    });
+
+
+                    $("#movie_select_3").click(function(){
+                        $("#movie_select_3").html("").removeClass("card p-0 m-2");
+                        movie_selection = 3;
+                    });
                 });
                 </script>
 
@@ -221,8 +272,16 @@ $allSoirees = $bdd->query('SELECT * FROM film');
 
                 </div>
 
-                <div class ="row">
+                <div class ="row mt-4 d-flex justify-content-between">
+                    <div id="movie_select_1" class ="col-3">
 
+                    </div>
+                    <div id="movie_select_2" class ="col-3">
+
+                    </div>
+                    <div id="movie_select_3" class ="col-3">
+
+                    </div>
                 </div>
 
                 <div class="mb-3">

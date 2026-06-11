@@ -20,6 +20,9 @@ $soireesThriller_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Thriller'
 
 $soireesRomance_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Romance'; ");
 $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction'; ");
+
+// AIDE
+// $countSoirees = $bdd->prepare('SELECT *, LEFT(synopsis, 200) FROM film');
 ?>
 
 <!DOCTYPE html>

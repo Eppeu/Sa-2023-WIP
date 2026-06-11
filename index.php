@@ -16,6 +16,8 @@ $count = $countSoirees->rowCount();
 $soireesPopulaire = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE dateSortie > '2000-01-01'; ");
 $soireesHorreur = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE genre = 'horreur'; ");
 
+include("APIContact.php");
+
 ?>
 
 <!DOCTYPE html>

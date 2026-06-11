@@ -1,5 +1,5 @@
 <!-- 
-Patron_page.html: 
+Patron_page.php: 
 Page qui permet d'afficher la soirée. Elle prend les éléments du bouton cliqué dans index /
 soirée pour les remettres dans cette page.
 Si connecté, les utilisateurs peuvent voter pour une soirée pas encore commencé ou qui n'a pas encore de film / lieu défini.   
@@ -148,32 +148,32 @@ Si connecté, les utilisateurs peuvent voter pour une soirée pas encore commenc
 
     <main>
 
-    <div class="container d-flex flex-column mx-5 px-5 my-5">
-
-        <div class="row align-items-start">
-            <div class="col-4">
+    <div class="container d-flex ms-5 ps-5 my-5 ">
+        <div class="row flex-column">
+            <div class="">
                 <img src="./assets/images/chippies.png" class="img-resize-choose rounded-2 object-fit-cover" alt="...">
             </div>
-            <div class="col-4 d-inline">
-                <h1>DB Name</h1>
-            </div>
-            <div class="col-4 d-inline">
-                <h3>DB Genre</h3>
+            <div class="my-3">
+                <p id="caracteristics"></p>
             </div>
         </div>
-        <div class="row">
-            <div class="col-4 my-3">
-                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nihil, illo.</p>
+        <div class="row mx-3">
+            <div class="align-self-start col-6">
+                <h1 id="db_name"></h1>
             </div>
-            <div class="col-4 align-self-stretch">
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur officiis eos voluptatem, harum natus, magnam magni perferendis dolorem illum sapiente optio quibusdam quasi quisquam ipsa nesciunt voluptatibus suscipit ipsum debitis ad alias libero enim animi. Dolor quis ipsam aspernatur, molestias corrupti sequi esse cupiditate architecto illum dolorem quod ex unde.</p>
+            <div class="align-self-start col-6">
+                <h3 id="db_genre"></h3>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-8">
-                <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-1">Voter !</a>
+            <div class="align-self-stretch m-1">
+                <p id="party_description"></p>
             </div>
         </div>
+        <div class="row col-4 ms-auto border border-3">
+            <p id="movies_places"></p>
+        </div>
+    </div>
+    <div class="ms-5 mb-5 col-9">
+        <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-1">Voter !</a>
     </div>
 
     </main>
