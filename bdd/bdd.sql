@@ -61,7 +61,8 @@ CREATE TABLE IF NOT EXISTS soiree (
     choix4Film INT NOT NULL,
     choix5Film INT NOT NULL,
     choix1Lieu INT NOT NULL,
-    choix2Lieu INT NOT NULL
+    choix2Lieu INT NOT NULL,
+    choix3Lieu INT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS vote (

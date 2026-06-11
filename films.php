@@ -6,20 +6,20 @@ $bdd = connectBDS();
 
 $allSoirees = $bdd->query('SELECT * FROM film');
 
-$soireesHorreur_sort = $bdd->query("SELECT * FROM film WHERE genre = 'horreur'; ");
-$soireesAction_sort = $bdd->query("SELECT * FROM film WHERE genre = 'action'; ");
-$soireesFanstastique_sort = $bdd->query("SELECT * FROM film WHERE genre = 'fantastique'; ");
-$soireesAnimation_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Animation'; ");
-$soireesComedy_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Comédie'; ");
-$soireesHistorique_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Historique'; ");
-$soireesThriller_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Thriller'; ");
+$soireesHorreur_sort = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE genre = 'horreur'; ");
+$soireesAction_sort = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE genre = 'action'; ");
+$soireesFanstastique_sort = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE genre = 'fantastique'; ");
+$soireesAnimation_sort = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE genre = 'Animation'; ");
+$soireesComedy_sort = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE genre = 'Comédie'; ");
+$soireesHistorique_sort = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE genre = 'Historique'; ");
+$soireesThriller_sort = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE genre = 'Thriller'; ");
 
 
 // Documentaty is broken for some reasons (Please Check this Astrid !), Wrong Token or invalid expression 
 // $soireesDocumentaire_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Documentaire'; "); 
 
-$soireesRomance_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Romance'; ");
-$soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction'; ");
+$soireesRomance_sort = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE genre = 'Romance'; ");
+$soireesSF_sort = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE genre = 'Science-Fiction'; ");
 
 // AIDE
 // $countSoirees = $bdd->prepare('SELECT *, LEFT(synopsis, 200) FROM film');
@@ -185,7 +185,7 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
 
                                 <div class="card-body bg-ctm-primary-color-subtle">
                                     <h5 class="card-title"><?= $soireesAction_sortInfos['nom_film'];?></h5>
-                                    <p class="card-text lh-1"><?= $soireesAction_sortInfos['synopsis'];?><p>
+                                    <p class="card-text lh-1"><?= $soireesAction_sortInfos['LEFT(synopsis, 200)'];?>...<p>
                                 </div>
                                 <div class="card-footer p-0 border-0">
                                     <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
@@ -206,11 +206,36 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                         while($soireesFanstastique_sortInfos = $soireesFanstastique_sort->fetch()){
                         ?>
                             <div class="card p-0 m-0">
-                                <img src=<?= $soireesAction_sortInfos['affiche'];?>  class="card-img-top object-fit-cover" alt="...">
+                                <img src=<?= $soireesFanstastique_sortInfos['affiche'];?>  class="card-img-top object-fit-cover" alt="...">
 
                                 <div class="card-body bg-ctm-primary-color-subtle">
                                     <h5 class="card-title"><?= $soireesFanstastique_sortInfos['nom_film'];?></h5>
-                                    <p class="card-text lh-1"><?= $soireesFanstastique_sortInfos['synopsis'];?><p>
+                                    <p class="card-text lh-1"><?= $soireesFanstastique_sortInfos['LEFT(synopsis, 200)'];?>...<p>
+                                </div>
+                                <div class="card-footer p-0 border-0">
+                                    <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
+                                </div>
+                            </div>
+                        <?php
+                        }
+                        ?>
+                    </div>
+                </div>
+            </div>
+            <!-- film d'horreur fin -->
+            <h5 class="ms-5 mt-4 fs-3">Les films d'horreur</h5>
+            <div class="row mx-3">
+                <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
+                    <div id ="img-resize" class="row row-cols-2 row-cols-md-5 ms-1 my-3 g-5 flex-nowrap gap-3">
+                        <?php
+                        while($soireesHorreur_sortInfos = $soireesHorreur_sort->fetch()){
+                        ?>
+                            <div class="card p-0 m-0">
+                                <img src=<?= $soireesHorreur_sortInfos['affiche'];?>  class="card-img-top object-fit-cover" alt="...">
+
+                                <div class="card-body bg-ctm-primary-color-subtle">
+                                    <h5 class="card-title"><?= $soireesHorreur_sortInfos['nom_film'];?></h5>
+                                    <p class="card-text lh-1"><?= $soireesHorreur_sortInfos['LEFT(synopsis, 200)'];?>...<p>
                                 </div>
                                 <div class="card-footer p-0 border-0">
                                     <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
@@ -231,11 +256,11 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                         while($soireesAnimation_sortInfos = $soireesAnimation_sort->fetch()){
                         ?>
                             <div class="card p-0 m-0">
-                                <img src=<?= $soireesAction_sortInfos['affiche'];?>  class="card-img-top object-fit-cover" alt="...">
+                                <img src=<?= $soireesAnimation_sortInfos['affiche'];?>  class="card-img-top object-fit-cover" alt="...">
 
                                 <div class="card-body bg-ctm-primary-color-subtle">
                                     <h5 class="card-title"><?= $soireesAnimation_sortInfos['nom_film'];?></h5>
-                                    <p class="card-text lh-1"><?= $soireesAnimation_sortInfos['synopsis'];?><p>
+                                    <p class="card-text lh-1"><?= $soireesAnimation_sortInfos['LEFT(synopsis, 200)'];?>...<p>
                                 </div>
                                 <div class="card-footer p-0 border-0">
                                     <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
@@ -256,11 +281,11 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                         while($soireesComedy_sortInfos = $soireesComedy_sort->fetch()){
                         ?>
                             <div class="card p-0 m-0">
-                                <img src=<?= $soireesAction_sortInfos['affiche'];?>  class="card-img-top object-fit-cover" alt="...">
+                                <img src=<?= $soireesComedy_sortInfos['affiche'];?>  class="card-img-top object-fit-cover" alt="...">
 
                                 <div class="card-body bg-ctm-primary-color-subtle">
                                     <h5 class="card-title"><?= $soireesComedy_sortInfos['nom_film'];?></h5>
-                                    <p class="card-text lh-1"><?= $soireesComedy_sortInfos['synopsis'];?><p>
+                                    <p class="card-text lh-1"><?= $soireesComedy_sortInfos['LEFT(synopsis, 200)'];?><p>
                                 </div>
                                 <div class="card-footer p-0 border-0">
                                     <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
@@ -281,11 +306,11 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                         while($soireesHistorique_sortInfos = $soireesHistorique_sort->fetch()){
                         ?>
                             <div class="card p-0 m-0">
-                                <img src=<?= $soireesAction_sortInfos['affiche'];?>  class="card-img-top object-fit-cover" alt="...">
+                                <img src=<?= $soireesHistorique_sortInfos['affiche'];?>  class="card-img-top object-fit-cover" alt="...">
 
                                 <div class="card-body bg-ctm-primary-color-subtle">
                                     <h5 class="card-title"><?= $soireesHistorique_sortInfos['nom_film'];?></h5>
-                                    <p class="card-text lh-1"><?= $soireesHistorique_sortInfos['synopsis'];?><p>
+                                    <p class="card-text lh-1"><?= $soireesHistorique_sortInfos['LEFT(synopsis, 200)'];?><p>
                                 </div>
                                 <div class="card-footer p-0 border-0">
                                     <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
@@ -306,11 +331,11 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                         while($soireesThriller_sortInfos = $soireesThriller_sort->fetch()){
                         ?>
                             <div class="card p-0 m-0">
-                                <img src="./assets/images/miku_sunset.png" class="card-img-top object-fit-cover" alt="...">
+                                <img src=<?= $soireesThriller_sortInfos['affiche'];?> class="card-img-top object-fit-cover" alt="...">
 
                                 <div class="card-body bg-ctm-primary-color-subtle">
                                     <h5 class="card-title"><?= $soireesThriller_sortInfos['nom_film'];?></h5>
-                                    <p class="card-text lh-1"><?= $soireesThriller_sortInfos['synopsis'];?><p>
+                                    <p class="card-text lh-1"><?= $soireesThriller_sortInfos['LEFT(synopsis, 200)'];?><p>
                                 </div>
                                 <div class="card-footer p-0 border-0">
                                     <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
@@ -331,11 +356,11 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                         while($soireesRomance_sortInfos = $soireesRomance_sort->fetch()){
                         ?>
                             <div class="card p-0 m-0">
-                                <img src="./assets/images/yuri_time.png" class="card-img-top object-fit-cover" alt="...">
+                                <img src=<?= $soireesRomance_sortInfos['affiche'];?> class="card-img-top object-fit-cover" alt="...">
 
                                 <div class="card-body bg-ctm-primary-color-subtle">
                                     <h5 class="card-title"><?= $soireesRomance_sortInfos['nom_film'];?></h5>
-                                    <p class="card-text lh-1"><?= $soireesRomance_sortInfos['synopsis'];?><p>
+                                    <p class="card-text lh-1"><?= $soireesRomance_sortInfos['LEFT(synopsis, 200)'];?><p>
                                 </div>
                                 <div class="card-footer p-0 border-0">
                                     <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
@@ -356,11 +381,11 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                         while($soireesSF_sortInfos = $soireesSF_sort->fetch()){
                         ?>
                             <div class="card p-0 m-0">
-                                <img src="./assets/images/chippies.png" class="card-img-top object-fit-cover" alt="...">
+                                <img src=<?= $soireesSF_sortInfos['affiche'];?> class="card-img-top object-fit-cover" alt="...">
 
                                 <div class="card-body bg-ctm-primary-color-subtle">
                                     <h5 class="card-title"><?= $soireesSF_sortInfos['nom_film'];?></h5>
-                                    <p class="card-text lh-1"><?= $soireesSF_sortInfos['synopsis'];?><p>
+                                    <p class="card-text lh-1"><?= $soireesSF_sortInfos['LEFT(synopsis, 200)'];?><p>
                                 </div>
                                 <div class="card-footer p-0 border-0">
                                     <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>

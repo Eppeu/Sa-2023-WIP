@@ -161,23 +161,26 @@ VALUES
 (159, "La Planète des Poules", "Les poules et les hommes, une histoire d'amour qui dure depuis 5 000 ans. Comment une gallinacée forestière sans prétention a-t-elle réussi à conquérir les cinq continents ? Les poules sont aujourd'hui plus de 19 milliards sur Terre et sont bien plus nombreuses que n'importe quelle autre espèce d'oiseau sauvage.", 'Documentaire', 2014, 'https://image.tmdb.org/t/p/w500/a5P4AG2jelryQAtRUsGQplx0AGm.jpg'),
 (160, "Sur le Chemin de l'école", "Jackson, Zahira, Samuel et Carlos, quatre enfants, vivent l'un au Kenya, l'autre au Maroc, les autres enfin en Inde et en Patagonie. Tous les quatre, même s'ils ne se connaissent pas, sont prêts à relever tous les défis pour aller à l'école, espérant que l'éducation leur permettra d'échapper à leur destinée. Ainsi Zahira qui, chaque semaine, emprunte un chemin long, sinueux et dangereux pour quitter les monts de l'Atlas où vivent ses parents et rejoindre l'école.", 'Documentaire', 2013, 'https://image.tmdb.org/t/p/w500/placeholder.jpg');
 
-INSERT INTO soiree(idSoiree, nom_soiree, nbPersonneMax, genre_soiree, dateDebut, dateFin, lieuChoisi, filmChoisi, choix1Film, choix2Film, choix3Film, choix4Film, choix5Film, choix1Lieu, choix2Lieu)
+INSERT INTO soiree(idSoiree, nom_soiree, nbPersonneMax, genre_soiree, dateDebut, dateFin, lieuChoisi, filmChoisi, choix1Film, choix2Film, choix3Film, choix4Film, choix5Film, choix1Lieu, choix2Lieu, choix3Lieu)
 VALUES
-(1, "Le Lancement", 15, "Animation", "2026-06-08 20:00", "2026-06-08 23:00", 2, 110, 106, 110, 111, 107, 119, 1, 2),
-(2, "Party Cozy", 30, "Action", "2026-06-09 19:30", "2026-06-09 21:00", 4, 86, 75, 72, 86, 83, 78, 4, 5),
-(3, "Anniversaire de Claire", 20, "Comédie", "2026-06-14 20:00", "2026-06-14 23:00", 7, 96, 96, 95, 101, 100, 103, 6, 7),
-(4, "Halloween Party", 60, "Horreur", "2026-10-31 23:00", "2026-11-01 04:00", 8, 34, 16, 18, 34, 30, 33, 8, 9),
-(5, "Soirée Valentin", 100, "Romance", "2027-02-14 18:00", "2027-02-14 21:00", 11, "filmChoisi", 2, 1, 8, 10, 15, 10, 11),
-(6, "Les P'tits Bretons", 45, "Historique", "2026-08-10 18:00", "2026-08-10 21:00", 13, "filmChoisi", 131, 134, 137, 138, 133, 12, 13),
-(7, "Frisson et Passion", 10, "Thriller", "2026-06-10 21:00", "2026-06-11 00:00", 14, "filmChoisi", 141, 145, 149, 150, 142, 14, 15), 
-(8, "Retraite Roulette", 14, "Documentaire", "2026-12-05 16:00", "2026-12-05 18:00", 17, "filmChoisi", 153, 154, 157, 158, 159, 16, 17),
-(9, "Les Sorciers de Gelles", 10, "Fantastique", "2026-06-10 14:00", "2026-06-10 17:00", 18, "filmChoisi", 40, 42, 43, 45, 54, 18, 19),
-(10, "Fête de l'Espace", 100, "Science-Fiction", "2026-09-10 18:00", "2026-09-10 21:00", 20, "filmChoisi", 56, 57, 60, 69, 67, 20, 21),
-(11, "Love In the Air", 25, "Romance", "2027-03-14 18:00", "2027-03-14 21:00", 22, "filmChoisi", 7, 1, 4, 12, 11, 22, 23),
-(12, "Frayeur Garantie", 30, "Horreur", "2027-05-20 23:00", "2027-05-20 05:00", 25, "filmChoisi", 17, 19, 21, 24, 25, 24, 25),
-(13, "L'Heure de Peur", 15, "Horreur", "2027-02-20 23:00", "2027-02-20 04:00", 26, "filmChoisi", 26, 27, 29, 31, 35, 26, 27),
-(14, "3 2 1 Action", 30, "Action", "2026-07-09 19:30", "2026-07-09 21:00", 29, "filmChoisi", 71, 79, 74, 80, 82, 28, 29),
-(15, "Anim Nation", 25, "Animation", "2026-06-15 16:00", "2026-06-15 19:00", 30, "filmChoisi", 114, 117, 108, 121, 112, 30, 31);
+(1, "Le Lancement", 15, "Animation", "2026-06-08 20:00", "2026-06-08 23:00", 2, 110, 106, 110, 111, 107, 119, 1, 2, 32),
+(2, "Party Cozy", 30, "Action", "2026-06-09 19:30", "2026-06-09 21:00", 4, 86, 75, 72, 86, 83, 78, 4, 5, 33),
+(3, "Anniversaire de Claire", 20, "Comédie", "2026-06-14 20:00", "2026-06-14 23:00", 7, 96, 96, 95, 101, 100, 103, 6, 7, 34),
+(4, "Halloween Party", 60, "Horreur", "2026-10-31 23:00", "2026-11-01 04:00", 8, 34, 16, 18, 34, 30, 33, 8, 9, 35),
+(5, "Soirée Valentin", 100, "Romance", "2027-02-14 18:00", "2027-02-14 21:00", 11, "filmChoisi", 2, 1, 8, 10, 15, 10, 11, 36),
+(6, "Les P'tits Bretons", 45, "Historique", "2026-08-10 18:00", "2026-08-10 21:00", 13, "filmChoisi", 131, 134, 137, 138, 133, 12, 13, 37),
+(7, "Frisson et Passion", 10, "Thriller", "2026-06-10 21:00", "2026-06-11 00:00", 14, "filmChoisi", 141, 145, 149, 150, 142, 14, 15, 38), 
+(8, "Retraite Roulette", 14, "Documentaire", "2026-12-05 16:00", "2026-12-05 18:00", 17, "filmChoisi", 153, 154, 157, 158, 159, 16, 17, 39),
+(9, "Les Sorciers de Gelles", 10, "Fantastique", "2026-06-10 14:00", "2026-06-10 17:00", 18, "filmChoisi", 40, 42, 43, 45, 54, 18, 19, 40),
+(10, "Fête de l'Espace", 100, "Science-Fiction", "2026-09-10 18:00", "2026-09-10 21:00", 20, "filmChoisi", 56, 57, 60, 69, 67, 20, 21, 41),
+(11, "Love In the Air", 25, "Romance", "2027-03-14 18:00", "2027-03-14 21:00", 22, "filmChoisi", 7, 1, 4, 12, 11, 22, 23, 42),
+(12, "Frayeur Garantie", 30, "Horreur", "2027-05-20 23:00", "2027-05-20 05:00", 25, "filmChoisi", 17, 19, 21, 24, 25, 24, 25, 43),
+(13, "L'Heure de Peur", 15, "Horreur", "2027-02-20 23:00", "2027-02-20 04:00", 26, "filmChoisi", 26, 27, 29, 31, 35, 26, 27, 44),
+(14, "3 2 1 Action", 30, "Action", "2026-07-09 19:30", "2026-07-09 21:00", 29, "filmChoisi", 71, 79, 74, 80, 82, 28, 29, 45),
+(15, "Anim Nation", 25, "Animation", "2026-06-15 16:00", "2026-06-15 19:00", 30, "filmChoisi", 114, 117, 108, 121, 112, 30, 31, 46);
+
+-- INSERT INTO utilisateur("")
+
 
 -- Commande de création de l'index pour film.nom_film
 CREATE FULLTEXT INDEX idx_nom_film

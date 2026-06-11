@@ -6,37 +6,82 @@ $bdd = connectBDS();
 
 $allSoirees = $bdd->query('SELECT * FROM film');
 
-$getjson=file_get_contents("adoption.json");
-$decode_json=json_decode($getjson,true);
+function add($nomSoireePOST, $genreSoireePOST, $choixFilm1POST, $choixFilm2POST, $choixFilm3POST, $choixFilm4POST, $choixFilm5POST, $choixLieu1POST, $choixLieu2POST, $choixLieu3POST, $nbPersonneMaxPOST, $dateDebutPOST, $dateFinPOST, $imagePOST){
 
-if (isset($_POST["SubmitButton"])) {
+    // Prise en charge des retours à la ligne et des caractères spéciaux pour les champs le nécessitant
+    $nomSoiree = nl2br(htmlspecialchars($nomSoireePOST));
+    $genreSoiree = nl2br(htmlspecialchars($genreSoireePOST));
 
-    // Uploaded pictures (help me grrr)
-    $path_directory= "../public/adoption/";
-    $filename = basename($_FILES["animal_image"]["name"]);
-    $file_directory = $path_directory . $filename;
-    if (move_uploaded_file($_FILES["animal_image"]["tmp_name"], $file_directory)) {
-        $final_path= "public/adoption/" . $filename;
+    // Ajout de la date réelle au nom de l'image
+    $time = date('YmdHis');
+    $image = $time.$_FILES['image']['name'];
 
-        $post_form = array(
-        "nom" => $form_name=$_POST["animal_name"],
-        "age" => $form_age=$_POST["animal_age"],
-        "sexe" => $form_sexe=$_POST["animal_sexe"],
-        "image" => $final_path,
-        "description" => $form_description=$_POST["animal_description"]
-        );
-        array_push($decode_json, $post_form);
-    } else {
-        echo "La photo choisie fait plus de 5Mo, veuillez mettre une photo moins lourde.";
+    // Si les informations sont correctement renseignés, le script se lance
+    if(!empty($nomSoiree) AND !empty($genreSoiree) AND !empty($choixFilm1POST) AND !empty($choixFilm2POST) AND !empty($choixFilm3POST) AND !empty($choixFilm4POST) AND !empty($choixFilm5POST) AND !empty($nbPersonneMaxPOST) AND !empty($dateDebutPOST) AND !empty($dateFinPOST) AND !empty($choixLieu1POST) AND !empty($choixLieu2POST) AND !empty($choixLieu3POST) AND !empty($imagePOST)){
+
+
+        // Insertion des données
+        $ajoutSoiree = $bdd->prepare("INSERT INTO soiree(nom_soiree, nbPersonneMax, genre_soiree, dateDebut, dateFin, choix1Film, choix2Film, choix3Film, choix4Film, choix5Film, choix1Lieu, choix2Lieu, choix3Lieu, idImageFK)VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $ajoutSoiree->execute(array($nomSoiree, $genreSoiree, $choixFilm1POST, $choixFilm2POST, $choixFilm3POST, $choixFilm4POST, $choixFilm5POST, $nbPersonneMaxPOST, $dateDebutPOST, $dateFinPOST, $choixLieu1POST, $choixLieu2POST, $choixLieu3POST, $imagePOST));
+
+        $time = date('YmdHis');
+        $path_directory= "./assets/public/";
+
+        $filename = $time. basename($_FILES["formFile"]["name"]);
+        $filesize = basename($_FILES["formFile"]["size"]);
+    
+        $file_directory = $path_directory . $filename;
+        if (move_uploaded_file($_FILES["formFile"]["tmp_name"], $file_directory)) {
+            $final_path= "assets/public/" . $filename;
+        } else {
+            echo "Didn't work";
+        }
+
+        header('Location: ./metiers.php');
+    }else{
+        echo "Veuillez compléter tous les champs.";
     }
 }
 
-if (isset($_POST["delete_index"])) {
-    $index = $_POST["delete_index"];
-    unset($decode_json[$index]);
-} 
-$newfile=json_encode($decode_json);
-file_put_contents("adoption.json",$newfile);
+// Utilisation de la fonction
+if (isset($_POST["create_party"])) {
+    var_dump("['nomSoiree'] vaut : ".$_POST['nomSoiree']);
+    var_dump("['genre_movie'] vaut : ".$_POST['genre_movie']);
+    var_dump("['choixFilm1'] vaut : ".$_POST['choixFilm1']);
+    var_dump("['choixFilm2'] vaut : ".$_POST['choixFilm2']);
+    var_dump("['choixFilm3'] vaut : ".$_POST['choixFilm3']);
+    var_dump("['choixFilm4'] vaut : ".$_POST['choixFilm4']);
+    var_dump("['choixFilm5'] vaut : ".$_POST['choixFilm5']);
+    var_dump("['choixLieu1'] vaut : ".$_POST['choixLieu1']);
+    var_dump("['choixLieu2'] vaut : ".$_POST['choixLieu2']);
+    var_dump("['choixLieu3'] vaut : ".$_POST['choixLieu3']);
+    var_dump("['nbPersonneMax'] vaut : ".$_POST['nbPersonneMax']);
+    var_dump("['dateDebut'] vaut : ".$_POST['dateDebut']);
+    var_dump("['dateFin'] vaut : ".$_POST['dateFin']);
+    var_dump("['image']['name'] vaut : ".$_FILES['image']['name']);
+
+    //add($_POST['nomSoiree'], $_POST['genre_movie'], $_POST['choixFilm1'], $_POST['choixFilm2'], $_POST['choixFilm3'], $_POST['choixFilm4'], $_POST['choixFilm5'], $_POST['choixLieu1'], $_POST['choixLieu2'], $_POST['choixLieu3'], $_POST['nbPersonneMax'], $_POST['dateDebut'], $_POST['dateFin'], $_FILES['image']['name']);
+}
+
+
+
+
+
+// if (isset($_POST["create_party"])) {
+//     $time = date('YmdHis');
+//     $path_directory= "./assets/public/";
+
+//     $filename = $time. basename($_FILES["formFile"]["name"]);
+//     $filesize = basename($_FILES["formFile"]["size"]);
+    
+//     $file_directory = $path_directory . $filename;
+//     if (move_uploaded_file($_FILES["formFile"]["tmp_name"], $file_directory)) {
+//         $final_path= "assets/public/" . $filename;
+//     } else {
+//         echo "Didn't work";
+//     }
+// }
+
 ?>
 
 <!DOCTYPE html>
@@ -57,6 +102,132 @@ file_put_contents("adoption.json",$newfile);
     <!-- Bootstrap Icons  -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <title>Créer une soirée</title>
+
+<script>
+$(document).ready(function(){
+    let movie_selection = 1;
+    let place_selection = 1;
+
+    $("#livesearch").keyup(function() {
+        var result = $("#livesearch").val();
+        
+        if(result != "") {
+            $.ajax({
+                url: "livesearch.php",
+                type: "POST",
+                data:{result_search:result},
+                success: function(data) {
+                    $("#dynamic_search").html(data)
+                }
+            });
+        }
+
+        if ($("#livesearch").val() == "") {
+            $("#dynamic_search").html("");
+        }
+    });
+
+    $("#livesearch").change(function(){
+        if ($("#livesearch").val() == "") {
+            $("#dynamic_search").html("");
+        }
+    });
+
+    $(document).on ("click", ".card-click", function(){
+        var filmId = $(this).data("idFilm"); // récupère l'id du film cliqué
+        switch (movie_selection) {
+            case 1:
+                $("#movie_select_1").html($(this).html()).addClass("card p-0 m-2");
+                $("#hidden_film_1").val(filmId); // remplit l'input caché
+                movie_selection++;
+                break;
+        
+            case 2:
+                $("#movie_select_2").html($(this).html()).addClass("card p-0 m-2");
+                $("#hidden_film_2").val(filmId); // remplit l'input caché
+                movie_selection = 3;
+                break;
+
+            case 3:
+                $("#movie_select_3").html($(this).html()).addClass("card p-0 m-2");
+                $("#hidden_film_3").val(filmId); // remplit l'input caché
+                movie_selection = 4;
+                break;
+
+            case 4:
+                $("#movie_select_4").html($(this).html()).addClass("card p-0 m-2");
+                $("#hidden_film_4").val(filmId); // remplit l'input caché
+                movie_selection = 5;
+                break;
+
+            case 5:
+                $("#movie_select_5").html($(this).html()).addClass("card p-0 m-2");
+                $("#hidden_film_5").val(filmId); // remplit l'input caché
+                movie_selection = 6;
+                break;
+        }
+    });
+
+    $("#movie_select_1").click(function(){
+        if ($("#movie_select_1").html() != "") {
+            $("#movie_select_1").html($("#movie_select_2").html());
+            $("#movie_select_2").html($("#movie_select_3").html());
+            $("#movie_select_3").html("").removeClass("card p-0 m-2");
+            movie_selection = 3;
+        }
+        if ($("#movie_select_2").html() != "") {
+            $("#movie_select_1").html($("#movie_select_2").html());
+            $("#movie_select_2").html("").removeClass("card p-0 m-2");
+            movie_selection = 2;
+        } 
+        if ($("#movie_select_1").html() == ""){
+            $("#movie_select_1").html("").removeClass("card p-0 m-2");
+            movie_selection = 1;
+        }
+    });
+
+    $("#movie_select_2").click(function(){
+        if ($("#movie_select_2").html() != "") {
+            $("#movie_select_2").html($("#movie_select_3").html());
+            $("#movie_select_3").html("").removeClass("card p-0 m-2");
+            movie_selection = 3;
+        } else {
+            $("#movie_select_2").html("").removeClass("card p-0 m-2");
+            movie_selection = 2;
+        }
+    });
+
+    $("#movie_select_3").click(function(){
+        $("#movie_select_3").html("").removeClass("card p-0 m-2");
+        movie_selection = 3;
+    });
+
+    
+    $("#add_place").click(function() {
+        if ($("#place").val() == "") {
+            return;
+        }
+        if (place_selection <= 4) {
+            var tache = $("#place").val();
+            var nouvelItem = $("<li>",{text:tache}).addClass("list-group-item list-group-item-danger");
+            nouvelItem.append('<input type="hidden" name="choixLieu'+place_selection+'" value="'+tache+'">');
+            $("ol").append(nouvelItem);
+            $("#place").val("").focus();
+            place_selection++;
+        } 
+        if (place_selection == 4) {
+            $("#add_place").attr('disabled','true');
+        } 
+    });
+    $("#remove_place").click(function() {
+        $("ol").empty();
+        $("#add_place").removeAttr('disabled');
+        place_selection = 0;
+    });	
+
+});
+</script>
+
 </head>
 
 <body class="bg-ctm-terciary-color">
@@ -184,195 +355,117 @@ file_put_contents("adoption.json",$newfile);
 
         <div class="container my-5">
 
-            <form>
+            <form method="POST" action="" enctype="multipart/form-data">
                 <!-- partie formulaire -->
-                <div class="mb-3">
-                    <label for="" class="form-label">Nom de la soirée</label>
-                    <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" maxlength="30" placeholder="Soirée film d'horreur">
-                </div>
 
+                 <!-- Nom de la soirée -->
                 <div class="mb-3">
-                    <!-- choix du genre de la soirée avec les propositions en formulaire de sélection -->
+                    <label for="nomSoiree" class="form-label">Nom de la soirée</label>
+                    <input type="text" class="form-control" name="nomSoiree" id="nomSoiree" maxlength="30" placeholder="Soirée film d'horreur">
+                </div>
+    
+                <!-- choix du genre de la soirée avec les propositions en formulaire de sélection -->
+                <div class="mb-3">
                     <label for="genre_movie">Genre de la soirée</label>
-                    <select class="form-select" aria-label="genre_movie">
+                    <select class="form-select" aria-label="genre_movie" name="genre_movie" id="genre_movie">
                     <option selected>Choisissez un genre de soirée</option>
                     <option value="">Sans genre</option>
-                    <option value="horror">Horreur</option>
-                    <option value="sf">Science Fiction</option>
+                    <option value="Horreur" >Horreur</option>
+                    <option value="Science-Fiction" >Science Fiction</option>
                     <option value="Romance">Romance</option>
-                    <option value="fantasy">Fantastique</option>
+                    <option value="Fantastique">Fantastique</option>
                     <option value="action">Action</option>
                     <option value="Animation">Animation</option>
                     <option value="thriller">Thriller</option>
-                    <option value="comedie">Comédie</option>
-                    <option value="doc">Documentaire</option>
+                    <option value="comédie">Comédie</option>
+                    <option value="documentaire">Documentaire</option>
                     <option value="historique">Historique</option>
                     </select>
                 </div>
 
 
+                <!-- Partie sur la recherche des films -->
                 <div class="mb-3">
-                    <!-- Partie sur la recherche des films -->
                     <label for="formFile" class="form-label">Recherchez les films que vous voulez donner à choisir aux participants (3 maximum)</label>
                     <input class="form-control mb-5" id="livesearch" type="text" placeholder="Search" aria-label="Search"/>
                 </div>
-
-                <script>
-                $(document).ready(function(){
-                    let movie_selection = 1;
-
-                    $("#livesearch").keyup(function() {
-                        var result = $("#livesearch").val();
-                        
-                        if(result != "") {
-                            $.ajax({
-                                url: "livesearch.php",
-                                type: "POST",
-                                data:{result_search:result},
-                                success: function(data) {
-                                    $("#dynamic_search").html(data)
-                                }
-                            });
-                        }
-
-                        if ($("#livesearch").val() == "") {
-                            $("#dynamic_search").html("");
-                        }
-                    });
-
-                    $("#livesearch").change(function(){
-                        if ($("#livesearch").val() == "") {
-                            $("#dynamic_search").html("");
-                        }
-                    });
-
-                    $(document).on ("click", ".card-click", function(){
-                        switch (movie_selection) {
-                            case 1:
-                                $("#movie_select_1").html($(this).html()).addClass("card p-0 m-2");
-                                movie_selection++;
-                                break;
-                        
-                            case 2:
-                                $("#movie_select_2").html($(this).html()).addClass("card p-0 m-2");
-                                movie_selection = 3;
-                                break;
-
-                            case 3:
-                                $("#movie_select_3").html($(this).html()).addClass("card p-0 m-2");
-                                movie_selection = 4;
-                                break;
-
-                            case 4:
-                                $("#movie_select_4").html($(this).html()).addClass("card p-0 m-2");
-                                movie_selection = 5;
-                                break;
-
-                            case 5:
-                                $("#movie_select_5").html($(this).html()).addClass("card p-0 m-2");
-                                movie_selection = 6;
-                                break;
-                        }
-                    });
-
-                    $("#movie_select_1").click(function(){
-                        if ($("#movie_select_1").html() != "") {
-                            $("#movie_select_1").html($("#movie_select_2").html());
-                            $("#movie_select_2").html($("#movie_select_3").html());
-                            $("#movie_select_3").html("").removeClass("card p-0 m-2");
-                            movie_selection = 3;
-                        }
-                        if ($("#movie_select_2").html() != "") {
-                            $("#movie_select_1").html($("#movie_select_2").html());
-                            $("#movie_select_2").html("").removeClass("card p-0 m-2");
-                            movie_selection = 2;
-                        } 
-                        if ($("#movie_select_1").html() == ""){
-                            $("#movie_select_1").html("").removeClass("card p-0 m-2");
-                            movie_selection = 1;
-                        }
-                    });
-
-                    $("#movie_select_2").click(function(){
-                        if ($("#movie_select_2").html() != "") {
-                            $("#movie_select_2").html($("#movie_select_3").html());
-                            $("#movie_select_3").html("").removeClass("card p-0 m-2");
-                            movie_selection = 3;
-                        } else {
-                            $("#movie_select_2").html("").removeClass("card p-0 m-2");
-                            movie_selection = 2;
-                        }
-                    });
-
-
-                    $("#movie_select_3").click(function(){
-                        $("#movie_select_3").html("").removeClass("card p-0 m-2");
-                        movie_selection = 3;
-                    });
-                });
-                </script>
 
                 <div id="dynamic_search" class="row mx-3">
 
                 </div>
 
-                <div class ="row mt-4 d-flex justify-content-between">
+                <div class="row mt-4 d-flex justify-content-between">
                     <div id="movie_select_1" class ="col-2">
+                        <input type="hidden" name="choixFilm1" id="hidden_film_1">
 
                     </div>
                     <div id="movie_select_2" class ="col-2">
+                        <input type="hidden" name="choixFilm2" id="hidden_film_2">
 
                     </div>
                     <div id="movie_select_3" class ="col-2">
+                        <input type="hidden" name="choixFilm3" id="hidden_film_3">
 
                     </div>
                     <div id="movie_select_4" class ="col-2">
+                        <input type="hidden" name="choixFilm4" id="hidden_film_4">
 
                     </div>
                     <div id="movie_select_5" class ="col-2">
-
+                        <input type="hidden" name="choixFilm5"  id="hidden_film_5">
                     </div>
                 </div>
 
                 <div class="mb-3">
-                    <label for="range4" class="form-label mt-3">Nombre de personnes à inviter</label>
-                    <div id="" class="form-text mb-3">Indiquez le nombre de personnes maximum de la soirée</div>
-                    <input type="range" class="form-range" min="0" max="100" value="5" id="range4">
+                    <label for="range4" class="form-label">Nombre de personnes maximales pouvant être invités</label>
+                    <input type="range" class="form-range" min="0" max="100" value="50" id="range4" name="nbPersonneMax">
                     <output for="range4" id="rangeValue" aria-hidden="true"></output>
+
                     <script>
-                        // This is an example script, please modify as needed
-                        const rangeInput = document.getElementById('range4');
-                        const rangeOutput = document.getElementById('rangeValue');
-                        // Set initial value
-                        rangeOutput.textContent = rangeInput.value;
-                        rangeInput.addEventListener('input', function() {
-                            rangeOutput.textContent = this.value;
-                        });
+                    // This is an example script, please modify as needed
+                    const rangeInput = document.getElementById('range4');
+                    const rangeOutput = document.getElementById('rangeValue');
+
+                    // Set initial value
+                    rangeOutput.textContent = rangeInput.value;
+
+                    rangeInput.addEventListener('input', function() {
+                        rangeOutput.textContent = this.value;
+                    });
                     </script>
                 </div>
                 <!-- partie pour mettre les dates grâce à un calendrier -->
                 <div class="mb-3">
-                    <label for="start" class="">Date de la soirée :</label>
-                    <input type="datetime-local" id="start" name="trip-start" value="2026-06-01" min="2026-06-01" max="2099-12-31" />
+                    <label for="dateDebut" class="">Date de la soirée :</label>
+                    <input type="datetime-local" id="dateDebut" name="dateDebut" value="2026-06-01" min="2026-06-01" max="2099-12-31" />
                 </div>
 
                 <div class="mb-3">
-                    <label for="start" class="">Date de fin de la soirée :</label>
-                    <input type="datetime-local" id="start" name="trip-start" value="2026-06-01" min="2026-06-01" max="2099-12-31" />
+                    <label for="dateFin" class="">Date de fin de la soirée :</label>
+                    <input type="datetime-local" id="dateFin" name="dateFin" value="2026-06-01" min="2026-06-01" max="2099-12-31" />
                 </div>
 
                 <div class="mb-3">
-                    <label for="" class="form-label">Propositions de lieux où la soirée va se dérouler</label>
-                    <input type="password" class="form-control" id="">
+                    <label for="place" class="form-label">Choix de Lieu (3 Maxiumum)</label>
+                    <input type="text" name="place" class="form-control mb-4" id="place" placeholder="7 Rue George Clemenceau">
+                    
+                    <button id ="add_place" type="reset" class="btn btn-primary">Ajouter</button>
+                    <button id ="remove_place" type="reset" class="btn btn-primary">Supprimer</button>
+                </div>
+
+                <div class="container mt-4">
+                    <ol id="liste" class="list-group list-group-numbered">
+                    </ol>
                 </div>
 
                 <div class="mb-3">
                     <label for="formFile" class="form-label">Choisissez une image de fond pour votre soirée</label>
                     <div id="emailHelp" class="form-text mb-3">Cette image accompagnera la présentation de votre soirée, pour donner l'ambiance que vous voulez transmettre  Veuillez ne pas mettre d'image offensante</div>
-                    <input class="form-control" type="file" id="formFile">
+
+                    <input class="form-control" type="file" id="formFile" name="formFile" accept=".png,.jpg,.jpeg,.svg">
                 </div>
 
-                <button name="Crate_party" type="submit" class="btn btn-primary">Submit</button>
+                <button name="create_party" type="submit" class="btn btn-primary">Submit</button>
                 <!-- bouton pour soumettre la soirée -->
             </form>
 
