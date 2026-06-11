@@ -6,17 +6,17 @@ require_once './bdd/bdd_connexion.php';
 $bdd = connectBDS();
 
 // Sélection de tous les soirées (films)
-$allSoirees = $bdd->query('SELECT *, LEFT(synopsis, 200) FROM film LIMIT 10');
+$allSoirees = $bdd->query('SELECT * FROM soiree LIMIT 10');
 
 // Comptage du nombre de soirées (films)
-$countSoirees = $bdd->prepare('SELECT *, LEFT(synopsis, 200) FROM film');
+$countSoirees = $bdd->prepare('SELECT * FROM soiree');
 $countSoirees->execute();
 $count = $countSoirees->rowCount();
 
-$soireesPopulaire = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE dateSortie > '2000-01-01'; ");
-$soireesHorreur = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE genre = 'horreur'; ");
+$soireesPopulaire = $bdd->query("SELECT * FROM soiree WHERE dateDebut > '2026-06-08 20:00';");
+$soireesHorreur = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'horreur'; ");
 
-include("APIContact.php");
+// include("APIContact.php");
 
 ?>
 
@@ -186,8 +186,8 @@ include("APIContact.php");
                                 <img src="./assets/images/rella_16th_birthday_edit.jpg" class="card-img-top object-fit-cover" alt="...">
 
                                 <div class="card-body bg-ctm-primary-color-subtle">
-                                    <h5 class="card-title"><?= $allSoireesInfos['nom_film'];?></h5>
-                                    <p class="card-text lh-1"><?= $allSoireesInfos['LEFT(synopsis, 200)'];?>...<p>
+                                    <h5 class="card-title"><?= $allSoireesInfos['nom_soiree'];?></h5>
+                                    <p class="card-text lh-1"><?= $allSoireesInfos['genre_soiree'];?>...<p>
                                 </div>
                                 <div class="card-footer p-0 border-0">
                                     <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
@@ -211,8 +211,8 @@ include("APIContact.php");
                                 <img src="./assets/images/rella_16th_birthday_edit.jpg" class="card-img-top object-fit-cover" alt="...">
 
                                 <div class="card-body bg-ctm-primary-color-subtle">
-                                    <h5 class="card-title"><?= $soireesPopulaireInfos['nom_film'];?></h5>
-                                    <p class="card-text lh-1"><?= $soireesPopulaireInfos['LEFT(synopsis, 200)'];?>...<p>
+                                    <h5 class="card-title"><?= $soireesPopulaireInfos['nom_soiree'];?></h5>
+                                    <p class="card-text lh-1"><?= $soireesPopulaireInfos['genre_soiree'];?>...<p>
                                 </div>
                                 <div class="card-footer p-0 border-0">
                                     <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
@@ -236,8 +236,8 @@ include("APIContact.php");
                                 <img src="./assets/images/rella_16th_birthday_edit.jpg" class="card-img-top object-fit-cover" alt="...">
 
                                 <div class="card-body bg-ctm-primary-color-subtle">
-                                    <h5 class="card-title"><?= $soireesHorreurInfos['nom_film'];?></h5>
-                                    <p class="card-text lh-1"><?= $soireesHorreurInfos['LEFT(synopsis, 200)'];?>...<p>
+                                    <h5 class="card-title"><?= $soireesHorreurInfos['nom_soiree'];?></h5>
+                                    <p class="card-text lh-1"><?= $soireesHorreurInfos['genre_soiree'];?>...<p>
                                 </div>
                                 <div class="card-footer p-0 border-0">
                                     <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>

@@ -181,7 +181,7 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                         while($soireesAction_sortInfos = $soireesAction_sort->fetch()){
                         ?>
                             <div class="card p-0 m-0">
-                                <img src="./assets/images/chippies.png" class="card-img-top object-fit-cover" alt="...">
+                                <img src=<?= $soireesAction_sortInfos['affiche'];?> class="card-img-top object-fit-cover" alt="...">
 
                                 <div class="card-body bg-ctm-primary-color-subtle">
                                     <h5 class="card-title"><?= $soireesAction_sortInfos['nom_film'];?></h5>
@@ -206,7 +206,7 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                         while($soireesFanstastique_sortInfos = $soireesFanstastique_sort->fetch()){
                         ?>
                             <div class="card p-0 m-0">
-                                <img src="./assets/images/looking_into_my_soul.png" class="card-img-top object-fit-cover" alt="...">
+                                <img src=<?= $soireesAction_sortInfos['affiche'];?>  class="card-img-top object-fit-cover" alt="...">
 
                                 <div class="card-body bg-ctm-primary-color-subtle">
                                     <h5 class="card-title"><?= $soireesFanstastique_sortInfos['nom_film'];?></h5>
@@ -231,7 +231,7 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                         while($soireesAnimation_sortInfos = $soireesAnimation_sort->fetch()){
                         ?>
                             <div class="card p-0 m-0">
-                                <img src="./assets/images/rin_smile.png" class="card-img-top object-fit-cover" alt="...">
+                                <img src=<?= $soireesAction_sortInfos['affiche'];?>  class="card-img-top object-fit-cover" alt="...">
 
                                 <div class="card-body bg-ctm-primary-color-subtle">
                                     <h5 class="card-title"><?= $soireesAnimation_sortInfos['nom_film'];?></h5>
@@ -256,7 +256,7 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                         while($soireesComedy_sortInfos = $soireesComedy_sort->fetch()){
                         ?>
                             <div class="card p-0 m-0">
-                                <img src="./assets/images/rella_16th_birthday_edit.jpg" class="card-img-top object-fit-cover" alt="...">
+                                <img src=<?= $soireesAction_sortInfos['affiche'];?>  class="card-img-top object-fit-cover" alt="...">
 
                                 <div class="card-body bg-ctm-primary-color-subtle">
                                     <h5 class="card-title"><?= $soireesComedy_sortInfos['nom_film'];?></h5>
@@ -281,7 +281,7 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                         while($soireesHistorique_sortInfos = $soireesHistorique_sort->fetch()){
                         ?>
                             <div class="card p-0 m-0">
-                                <img src="./assets/images/AAAHHH.png" class="card-img-top object-fit-cover" alt="...">
+                                <img src=<?= $soireesAction_sortInfos['affiche'];?>  class="card-img-top object-fit-cover" alt="...">
 
                                 <div class="card-body bg-ctm-primary-color-subtle">
                                     <h5 class="card-title"><?= $soireesHistorique_sortInfos['nom_film'];?></h5>

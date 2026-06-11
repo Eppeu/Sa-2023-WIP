@@ -5,6 +5,38 @@ require_once './bdd/bdd_connexion.php';
 $bdd = connectBDS();
 
 $allSoirees = $bdd->query('SELECT * FROM film');
+
+$getjson=file_get_contents("adoption.json");
+$decode_json=json_decode($getjson,true);
+
+if (isset($_POST["SubmitButton"])) {
+
+    // Uploaded pictures (help me grrr)
+    $path_directory= "../public/adoption/";
+    $filename = basename($_FILES["animal_image"]["name"]);
+    $file_directory = $path_directory . $filename;
+    if (move_uploaded_file($_FILES["animal_image"]["tmp_name"], $file_directory)) {
+        $final_path= "public/adoption/" . $filename;
+
+        $post_form = array(
+        "nom" => $form_name=$_POST["animal_name"],
+        "age" => $form_age=$_POST["animal_age"],
+        "sexe" => $form_sexe=$_POST["animal_sexe"],
+        "image" => $final_path,
+        "description" => $form_description=$_POST["animal_description"]
+        );
+        array_push($decode_json, $post_form);
+    } else {
+        echo "La photo choisie fait plus de 5Mo, veuillez mettre une photo moins lourde.";
+    }
+}
+
+if (isset($_POST["delete_index"])) {
+    $index = $_POST["delete_index"];
+    unset($decode_json[$index]);
+} 
+$newfile=json_encode($decode_json);
+file_put_contents("adoption.json",$newfile);
 ?>
 
 <!DOCTYPE html>
@@ -223,12 +255,22 @@ $allSoirees = $bdd->query('SELECT * FROM film');
                         
                             case 2:
                                 $("#movie_select_2").html($(this).html()).addClass("card p-0 m-2");
-                                movie_selection++;
+                                movie_selection = 3;
                                 break;
 
                             case 3:
                                 $("#movie_select_3").html($(this).html()).addClass("card p-0 m-2");
-                                movie_selection++;
+                                movie_selection = 4;
+                                break;
+
+                            case 4:
+                                $("#movie_select_4").html($(this).html()).addClass("card p-0 m-2");
+                                movie_selection = 5;
+                                break;
+
+                            case 5:
+                                $("#movie_select_5").html($(this).html()).addClass("card p-0 m-2");
+                                movie_selection = 6;
                                 break;
                         }
                     });
@@ -239,11 +281,13 @@ $allSoirees = $bdd->query('SELECT * FROM film');
                             $("#movie_select_2").html($("#movie_select_3").html());
                             $("#movie_select_3").html("").removeClass("card p-0 m-2");
                             movie_selection = 3;
-                        } else if ($("#movie_select_2").html() != "") {
+                        }
+                        if ($("#movie_select_2").html() != "") {
                             $("#movie_select_1").html($("#movie_select_2").html());
                             $("#movie_select_2").html("").removeClass("card p-0 m-2");
                             movie_selection = 2;
-                        } else {
+                        } 
+                        if ($("#movie_select_1").html() == ""){
                             $("#movie_select_1").html("").removeClass("card p-0 m-2");
                             movie_selection = 1;
                         }
@@ -273,13 +317,19 @@ $allSoirees = $bdd->query('SELECT * FROM film');
                 </div>
 
                 <div class ="row mt-4 d-flex justify-content-between">
-                    <div id="movie_select_1" class ="col-3">
+                    <div id="movie_select_1" class ="col-2">
 
                     </div>
-                    <div id="movie_select_2" class ="col-3">
+                    <div id="movie_select_2" class ="col-2">
 
                     </div>
-                    <div id="movie_select_3" class ="col-3">
+                    <div id="movie_select_3" class ="col-2">
+
+                    </div>
+                    <div id="movie_select_4" class ="col-2">
+
+                    </div>
+                    <div id="movie_select_5" class ="col-2">
 
                     </div>
                 </div>
@@ -322,7 +372,7 @@ $allSoirees = $bdd->query('SELECT * FROM film');
                     <input class="form-control" type="file" id="formFile">
                 </div>
 
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button name="Crate_party" type="submit" class="btn btn-primary">Submit</button>
                 <!-- bouton pour soumettre la soirée -->
             </form>
 
