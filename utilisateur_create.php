@@ -14,8 +14,8 @@ function add($ligne1, $ligne2, $ligne3, $ligne4, $ligne5){
         if ($info4 == $info5){
             $password = password_hash($info4, PASSWORD_DEFAULT);
 
-            $creer = $bdd->prepare("INSERT INTO utilisateur (nom_utilisateur, prenom_utilisateur, email, motDePasse)VALUES(?, ?, ?, ?)");
-            $creer->execute(array($info1, $info2, $info3, $password));
+            $creer = $bdd->prepare("INSERT INTO utilisateur (nom_utilisateur, prenom_utilisateur, email, motDePasse, isAdmin)VALUES(?, ?, ?, ?, ?)");
+            $creer->execute(array($info1, $info2, $info3, $password, FALSE));
             header('Location: ./connexion.php');
         }else{
             echo "Mot de passe incorrect";

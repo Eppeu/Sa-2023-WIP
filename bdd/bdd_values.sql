@@ -1,3 +1,33 @@
+INSERT INTO utilisateur(idUtilisateur, nom_utilisateur, prenom_utilisateur, email, motDePasse, isAdmin)
+VALUES
+(1, 'root','root','root@email.com','$2y$10$NTwVfbtA82exTvd7Wt8bzeEd5DVu57RFKhmsEtl1gRcIRyqd8P1/i',TRUE), -- mdp : root123
+(2, 'BURNEL','cerise','???@email.com','$2y$10$bRj3P2EBi6J/roHUA0hfB.V.Nm9NmmJxyvP/pPd5eti14Lhra2/MO',TRUE), -- mdp : cerise
+(3, 'CALAIS','Astrid','astrid.calais@iut-tarbes.com','$2y$10$PGhF15luCcIFZupDzv3FlekpqG10CE/ZfN.s0WpwyrO3B/ijuoNcS',TRUE), -- mdp : poule
+(4, 'CATALAN','Noah','???@email.com','$2y$10$pkgpEVoxMTQX6MjfdwZrZub3gxeN6xneMl8W2v1.o/0tuP68LReWu',TRUE), -- mdp : noah
+(5, 'CLOE','Thalya','???@email.com','$2y$10$EcMkf9SY/.LwmJuMQRPFWe2g..iE1W7TfjoIXuRBsgl60o3dtMJD2',TRUE), -- mdp : thalya
+(6, 'MAITRE','Claire','???@email.com','$2y$10$2TDoft1T3gboimgaB.NWJOknBfHivjoPMKtVfUeGLRQBNFT/TDPGG',TRUE), -- mdp : claire
+(7, 'user1','user1','???@email.com','$2y$10$9PwTMWim/MDwxNJLpshlZ.5LmGg.H2SJ3WKWvpfCAg5tnSi9iktGq',FALSE), -- mdp : user1
+(8, 'user2','user2','???@email.com','$2y$10$EWEgeYiqCMQc.OIU193.n./SGdcN5QRc2wa7jDD6CJ4d619pPSwUO',FALSE); -- mdp : user2
+
+INSERT INTO soiree(idSoiree, nom_soiree, nbPersonneMax, genre_soiree, dateDebut, dateFin, lieuChoisi, filmChoisi, choix1Film, choix2Film, choix3Film, choix4Film, choix5Film, choix1Lieu, choix2Lieu, choix3Lieu)
+VALUES
+(1, "Le Lancement", 15, "Animation", "2026-06-08 20:00", "2026-06-08 23:00", 2, 110, 106, 110, 111, 107, 119, 1, 2, 32),
+(2, "Party Cozy", 30, "Action", "2026-06-09 19:30", "2026-06-09 21:00", 4, 86, 75, 72, 86, 83, 78, 4, 5, 33),
+(3, "Anniversaire de Claire", 20, "Comédie", "2026-06-14 20:00", "2026-06-14 23:00", 7, 96, 96, 95, 101, 100, 103, 6, 7, 34),
+(4, "Halloween Party", 60, "Horreur", "2026-10-31 23:00", "2026-11-01 04:00", 8, 34, 16, 18, 34, 30, 33, 8, 9, 35),
+(5, "Soirée Valentin", 100, "Romance", "2027-02-14 18:00", "2027-02-14 21:00", 11, "filmChoisi", 2, 1, 8, 10, 15, 10, 11, 36),
+(6, "Les P'tits Bretons", 45, "Historique", "2026-08-10 18:00", "2026-08-10 21:00", 13, "filmChoisi", 131, 134, 137, 138, 133, 12, 13, 37),
+(7, "Frisson et Passion", 10, "Thriller", "2026-06-10 21:00", "2026-06-11 00:00", 14, "filmChoisi", 141, 145, 149, 150, 142, 14, 15, 38), 
+(8, "Retraite Roulette", 14, "Documentaire", "2026-12-05 16:00", "2026-12-05 18:00", 17, "filmChoisi", 153, 154, 157, 158, 159, 16, 17, 39),
+(9, "Les Sorciers de Gelles", 10, "Fantastique", "2026-06-10 14:00", "2026-06-10 17:00", 18, "filmChoisi", 40, 42, 43, 45, 54, 18, 19, 40),
+(10, "Fête de l'Espace", 100, "Science-Fiction", "2026-09-10 18:00", "2026-09-10 21:00", 20, "filmChoisi", 56, 57, 60, 69, 67, 20, 21, 41),
+(11, "Love In the Air", 25, "Romance", "2027-03-14 18:00", "2027-03-14 21:00", 22, "filmChoisi", 7, 1, 4, 12, 11, 22, 23, 42),
+(12, "Frayeur Garantie", 30, "Horreur", "2027-05-20 23:00", "2027-05-20 05:00", 25, "filmChoisi", 17, 19, 21, 24, 25, 24, 25, 43),
+(13, "L'Heure de Peur", 15, "Horreur", "2027-02-20 23:00", "2027-02-20 04:00", 26, "filmChoisi", 26, 27, 29, 31, 35, 26, 27, 44),
+(14, "3 2 1 Action", 30, "Action", "2026-07-09 19:30", "2026-07-09 21:00", 29, "filmChoisi", 71, 79, 74, 80, 82, 28, 29, 45),
+(15, "Anim Nation", 25, "Animation", "2026-06-15 16:00", "2026-06-15 19:00", 30, "filmChoisi", 114, 117, 108, 121, 112, 30, 31, 46);
+
+
 INSERT INTO film(idFilm, nom_film, synopsis, genre, dateSortie, affiche)
 VALUES
 (1, "Titanic", "Le film se déroule en avril 1912, lors du voyage inaugural du Titanic, le paquebot le plus grand et le plus moderne de son époque, réputé pour son insubmersibilité. L'histoire suit deux jeunes passagers de milieux sociaux opposés : Jack Dawson, un artiste pauvre, et Rose DeWitt Bukater, une aristocrate promise à un homme qu'elle n'aime pas, Caledon Hockley.", 'Romance', 1998, 'https://image.tmdb.org/t/p/w500/9xjZS2rlVxm8SFx8kPC3aIGCOYQ.jpg'),
@@ -160,27 +190,6 @@ VALUES
 (158, "Resistance", "Strasbourg, 1938. Alors que Marcel Mangel rêve de faire une carrière de mime, il décide de prendre en charge, en compagnie de boy-scouts, cent vingt-trois orphelins juifs rescapés de l'Allemagne nazie. Lorsque la France est envahie, le groupe gagne le sud du pays afin de placer les enfants dans des familles d'accueil, et Marcel Mangel, devenu Marceau, intègre la Résistance.", 'Documentaire', 2022, 'https://image.tmdb.org/t/p/w500/placeholder.jpg'),
 (159, "La Planète des Poules", "Les poules et les hommes, une histoire d'amour qui dure depuis 5 000 ans. Comment une gallinacée forestière sans prétention a-t-elle réussi à conquérir les cinq continents ? Les poules sont aujourd'hui plus de 19 milliards sur Terre et sont bien plus nombreuses que n'importe quelle autre espèce d'oiseau sauvage.", 'Documentaire', 2014, 'https://image.tmdb.org/t/p/w500/a5P4AG2jelryQAtRUsGQplx0AGm.jpg'),
 (160, "Sur le Chemin de l'école", "Jackson, Zahira, Samuel et Carlos, quatre enfants, vivent l'un au Kenya, l'autre au Maroc, les autres enfin en Inde et en Patagonie. Tous les quatre, même s'ils ne se connaissent pas, sont prêts à relever tous les défis pour aller à l'école, espérant que l'éducation leur permettra d'échapper à leur destinée. Ainsi Zahira qui, chaque semaine, emprunte un chemin long, sinueux et dangereux pour quitter les monts de l'Atlas où vivent ses parents et rejoindre l'école.", 'Documentaire', 2013, 'https://image.tmdb.org/t/p/w500/placeholder.jpg');
-
-INSERT INTO soiree(idSoiree, nom_soiree, nbPersonneMax, genre_soiree, dateDebut, dateFin, lieuChoisi, filmChoisi, choix1Film, choix2Film, choix3Film, choix4Film, choix5Film, choix1Lieu, choix2Lieu, choix3Lieu)
-VALUES
-(1, "Le Lancement", 15, "Animation", "2026-06-08 20:00", "2026-06-08 23:00", 2, 110, 106, 110, 111, 107, 119, 1, 2, 32),
-(2, "Party Cozy", 30, "Action", "2026-06-09 19:30", "2026-06-09 21:00", 4, 86, 75, 72, 86, 83, 78, 4, 5, 33),
-(3, "Anniversaire de Claire", 20, "Comédie", "2026-06-14 20:00", "2026-06-14 23:00", 7, 96, 96, 95, 101, 100, 103, 6, 7, 34),
-(4, "Halloween Party", 60, "Horreur", "2026-10-31 23:00", "2026-11-01 04:00", 8, 34, 16, 18, 34, 30, 33, 8, 9, 35),
-(5, "Soirée Valentin", 100, "Romance", "2027-02-14 18:00", "2027-02-14 21:00", 11, "filmChoisi", 2, 1, 8, 10, 15, 10, 11, 36),
-(6, "Les P'tits Bretons", 45, "Historique", "2026-08-10 18:00", "2026-08-10 21:00", 13, "filmChoisi", 131, 134, 137, 138, 133, 12, 13, 37),
-(7, "Frisson et Passion", 10, "Thriller", "2026-06-10 21:00", "2026-06-11 00:00", 14, "filmChoisi", 141, 145, 149, 150, 142, 14, 15, 38), 
-(8, "Retraite Roulette", 14, "Documentaire", "2026-12-05 16:00", "2026-12-05 18:00", 17, "filmChoisi", 153, 154, 157, 158, 159, 16, 17, 39),
-(9, "Les Sorciers de Gelles", 10, "Fantastique", "2026-06-10 14:00", "2026-06-10 17:00", 18, "filmChoisi", 40, 42, 43, 45, 54, 18, 19, 40),
-(10, "Fête de l'Espace", 100, "Science-Fiction", "2026-09-10 18:00", "2026-09-10 21:00", 20, "filmChoisi", 56, 57, 60, 69, 67, 20, 21, 41),
-(11, "Love In the Air", 25, "Romance", "2027-03-14 18:00", "2027-03-14 21:00", 22, "filmChoisi", 7, 1, 4, 12, 11, 22, 23, 42),
-(12, "Frayeur Garantie", 30, "Horreur", "2027-05-20 23:00", "2027-05-20 05:00", 25, "filmChoisi", 17, 19, 21, 24, 25, 24, 25, 43),
-(13, "L'Heure de Peur", 15, "Horreur", "2027-02-20 23:00", "2027-02-20 04:00", 26, "filmChoisi", 26, 27, 29, 31, 35, 26, 27, 44),
-(14, "3 2 1 Action", 30, "Action", "2026-07-09 19:30", "2026-07-09 21:00", 29, "filmChoisi", 71, 79, 74, 80, 82, 28, 29, 45),
-(15, "Anim Nation", 25, "Animation", "2026-06-15 16:00", "2026-06-15 19:00", 30, "filmChoisi", 114, 117, 108, 121, 112, 30, 31, 46);
-
--- INSERT INTO utilisateur("")
-
 
 -- Commande de création de l'index pour film.nom_film
 CREATE FULLTEXT INDEX idx_nom_film

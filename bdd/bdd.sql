@@ -29,7 +29,8 @@ CREATE TABLE IF NOT EXISTS utilisateur (
     nom_utilisateur VARCHAR(100) NOT NULL,
     prenom_utilisateur VARCHAR(100) NOT NULL,
     email VARCHAR(50)  NOT NULL,
-    motDePasse VARCHAR(200)  NOT NULL
+    motDePasse VARCHAR(200)  NOT NULL,
+    isAdmin BOOLEAN NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS film (

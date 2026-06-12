@@ -19,12 +19,9 @@ if (isset($_POST['valider'])) {
                 $hashedMdp = $row['motDePasse'];
                 if (password_verify($mdp, $hashedMdp)) {
                     $_SESSION['nom_utilisateur'] = $row['nom_utilisateur'];
-
-                    // $nomUser = $info['nom_utilisateur'];
-
-                    // session_start();
-                    // $_SESSION['nom_utilisateur'] = $nomUser;
-
+                    if($row['isAdmin']==TRUE){
+                        $_SESSION['isAdmin'] = TRUE;
+                    }
                     header('Location: ./utilisateur.php');
                 } else {
                     echo "

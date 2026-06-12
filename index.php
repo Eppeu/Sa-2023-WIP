@@ -75,6 +75,12 @@ $soireesHorreur = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'horreu
                                     <a class="nav-link bootstrap_nav_item_color" href="./vote.php">Vote TEMP</a>
                                     <!-- lien de navigation -->
                                 </li>
+                                <?php if(isset($_SESSION['isAdmin']) && $_SESSION['isAdmin']==TRUE) { ?>
+                                <li class="nav-item">
+                                    <a class="nav-link bootstrap_nav_item_color" href="./new_film.php">Ajouter un film</a>
+                                    <!-- lien de navigation -->
+                                </li>
+                                <?php } ?>
                             </ul>
 
                             <?php
@@ -103,9 +109,7 @@ $soireesHorreur = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'horreu
                                 <!-- Boutons Rouges (un de couleur légère et l'autre non) pour créer un compte et se connecter -->
                                 
                         </div>
-                        <?php
-                            }
-                            ?>
+                        <?php } ?>
 
                         <a class="fs-1 d-block d-md-none text-success" data-bs-toggle="offcanvas" href="#menu_phone" aria-controls="offcanvasExample">
                         <i class="bi bi-list link-ctm-terciary-color"></i>
@@ -157,7 +161,6 @@ $soireesHorreur = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'horreu
         </div>
     </header>
 
-    
     <main class="container-fluid px-0">
         <div class="bgImage"></div>
         <div class="text-center py-5 callToAction">
@@ -252,6 +255,7 @@ $soireesHorreur = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'horreu
         </div>
         <!-- card pour le thème film d'horreur avec une barre de défilement -->
     </main>
+
     <!-- Footer avec les liens vers instagram, discord, facebook, mentions légales -->
     <footer id="footer_popco" class="container-fluid py-3 rounded-top-5 bg-ctm-primary-color">
         <div class="row g-1 d-flex align-items-center">
