@@ -1,9 +1,117 @@
-<!-- 
-Patron_page.php: 
-Page qui permet d'afficher la soirée. Elle prend les éléments du bouton cliqué dans index /
-soirée pour les remettres dans cette page.
-Si connecté, les utilisateurs peuvent voter pour une soirée pas encore commencé ou qui n'a pas encore de film / lieu défini.   
--->
+<?php
+session_start();
+require_once '../bdd/bdd_connexion.php';
+$bdd = connectBDS();
+
+$allSoirees = $bdd->query('SELECT * FROM film');
+
+if (!empty($_POST)) include("api_contact.php");
+
+function add($nomSoireePOST, $descriptionSoireePOST, $genreSoireePOST, $choixFilm1POST, $choixFilm2POST, $choixFilm3POST, $choixFilm4POST, $choixFilm5POST, $choixLieu1POST, $choixLieu2POST, $choixLieu3POST, $nb_personne_maxPOST, $date_debutPOST, $date_finPOST) {
+
+    global $bdd;
+
+    // DEBUG TEMPORAIRE - à supprimer une fois le problème résolu
+    echo "<pre>";
+    echo "nomSoiree : '" . $nomSoireePOST . "'\n";
+    echo "DESCRIPTION : '" . $descriptionSoireePOST . "'\n";
+    echo "choixFilm1 : '" . $choixFilm1POST . "'\n";
+    echo "choixFilm2 : '" . $choixFilm2POST . "'\n";
+    echo "choixFilm3 : '" . $choixFilm3POST . "'\n";
+    echo "choixFilm4 : '" . $choixFilm4POST . "'\n";
+    echo "choixFilm5 : '" . $choixFilm5POST . "'\n";
+    echo "choixLieu1 : '" . $choixLieu1POST . "'\n";
+    echo "choixLieu2 : '" . $choixLieu2POST . "'\n";
+    echo "choixLieu3 : '" . $choixLieu3POST . "'\n";
+    echo "nb_personne_max : '" . $nb_personne_maxPOST . "'\n";
+    echo "date_debut : '" . $date_debutPOST . "'\n";
+    echo "date_fin : '" . $date_finPOST . "'\n";
+    echo "</pre>";
+    // FIN DEBUG
+
+    $nomSoiree   = nl2br(htmlspecialchars($nomSoireePOST));
+    $descriptionSoiree   = nl2br(htmlspecialchars($descriptionSoireePOST));
+    $genreSoiree = nl2br(htmlspecialchars($genreSoireePOST));
+
+    // Bug 5 corrigé : conversion du format datetime-local → MySQL
+    $date_debut = str_replace('T', ' ', $date_debutPOST);
+    $date_fin   = str_replace('T', ' ', $date_finPOST);
+
+    // Bug 2 corrigé : utilisation de 'formFile' partout
+    $time     = date('YmdHis');
+    $filename = $time . basename($_FILES["formFile"]["name"]);
+
+    if (
+        !empty($nomSoiree) && !empty($descriptionSoiree) && !empty($choixFilm1POST) && !empty($choixFilm2POST) &&
+        !empty($choixFilm3POST) && !empty($choixFilm4POST) && !empty($choixFilm5POST) &&
+        !empty($nb_personne_maxPOST) && !empty($date_debut) && !empty($date_fin) &&
+        !empty($choixLieu1POST) && !empty($choixLieu2POST) && !empty($choixLieu3POST)
+    ) {
+        // Déplacement de l'image
+        $path_directory = "../assets/public/";
+        $file_directory = $path_directory . $filename;
+        if (move_uploaded_file($_FILES["formFile"]["tmp_name"], $file_directory)) {
+            $image_path = "../assets/public/" . $filename;
+        } else {
+            echo "Erreur lors du téléchargement de l'image.";
+            return;
+        }
+
+        // Bug 3 corrigé : ordre des valeurs aligné sur l'ordre des colonnes INSERT
+        // Bug 4 corrigé : remplacement de ??????????? par image_soiree
+        $ajoutSoiree = $bdd->prepare(
+            "INSERT INTO soiree(nom_soiree, description_soiree, nb_personne_max, genre_soiree, date_debut, date_fin,
+             choix_1_film, choix_2_film, choix_3_film, choix_4_film, choix_5_film,
+             choix_1_lieu, choix_2_lieu, choix_3_lieu, image_soiree)
+             VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        );
+        $ajoutSoiree->execute([
+            $nomSoiree,         // nom_soiree
+            $descriptionSoiree, // description_soiree
+            $nb_personne_maxPOST, // nb_personne_max
+            $genreSoiree,       // genre_soiree
+            $date_debut,        // date_debut
+            $date_fin,          // date_fin
+            $choixFilm1POST,    // choix_1_film
+            $choixFilm2POST,    // choix_2_film
+            $choixFilm3POST,    // choix_3_film
+            $choixFilm4POST,    // choix_4_film
+            $choixFilm5POST,    // choix_5_film
+            $choixLieu1POST,    // choix_1_lieu
+            $choixLieu2POST,    // choix_2_lieu
+            $choixLieu3POST,    // choix_3_lieu
+            $image_path         // image_soiree
+        ]);
+
+        header('Location: ./soirees.php');
+        exit();
+
+    } else {
+        echo "Veuillez compléter tous les champs.";
+    }
+}
+
+// Bug 1 corrigé : appel à add() décommenté
+if (isset($_POST["create_party"])) {
+    add(
+        $_POST['nomSoiree'],
+        $_POST['description_soiree'],
+        $_POST['genre_movie'],
+        $_POST['choixFilm1'],
+        $_POST['choixFilm2'],
+        $_POST['choixFilm3'],
+        $_POST['choixFilm4'],
+        $_POST['choixFilm5'],
+        $_POST['choixLieu1'],
+        $_POST['choixLieu2'],
+        $_POST['choixLieu3'],
+        $_POST['nb_personne_max'],
+        $_POST['date_debut'],
+        $_POST['date_fin']
+    );
+}
+
+?>
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -22,7 +130,8 @@ Si connecté, les utilisateurs peuvent voter pour une soirée pas encore commenc
         <script src="https://kit.fontawesome.com/4b69bc6b92.js" crossorigin="anonymous"></script>
     <!-- Bootstrap Icons  -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <title>PopCo - GET card element</title>
+    <title>Nouveau Film</title>
+
 </head>
 
 <body class="bg-ctm-terciary-color">
@@ -45,7 +154,11 @@ Si connecté, les utilisateurs peuvent voter pour une soirée pas encore commenc
                                     <!-- lien de navigation -->
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./soirees.php">Les soirées</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="./soirees.php">Soirées</a>
+                                    <!-- lien de navigation -->
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link bootstrap_nav_item_color" href="./films.php">Films</a>
                                     <!-- lien de navigation -->
                                 </li>
                                 <li class="nav-item">
@@ -53,15 +166,7 @@ Si connecté, les utilisateurs peuvent voter pour une soirée pas encore commenc
                                     <!-- lien de navigation -->
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./films.php">Films proposés</a>
-                                    <!-- lien de navigation -->
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./utilisateur.php">Utilisateur</a>
-                                    <!-- lien de navigation -->
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./vote.php">Vote</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="./vote.php">Vote TEMP</a>
                                     <!-- lien de navigation -->
                                 </li>
                             </ul>
@@ -147,35 +252,58 @@ Si connecté, les utilisateurs peuvent voter pour une soirée pas encore commenc
     </header>
 
     <main>
-        <div class="container d-flex ms-5 ps-5 my-5 ">
-            <div class="row flex-column">
-                <div class="">
-                    <img src="../assets/images/chippies.png" class="img-resize-choose rounded-2 object-fit-cover" alt="...">
-                </div>
-                <div class="my-3">
-                    <p id="caracteristics"></p>
-                </div>
-            </div>
-            <div class="row mx-3">
-                <div class="align-self-start col-6">
-                    <h1 id="db_name"></h1>
-                </div>
-                <div class="align-self-start col-6">
-                    <h3 id="db_genre"></h3>
-                </div>
-                <div class="align-self-stretch m-1">
-                    <p id="party_description"></p>
-                </div>
-            </div>
-            <div class="row col-4 ms-auto border border-3">
-                <p id="movies_places"></p>
-            </div>
+        <div class="text-center my-5 py-5">
+            <h5>Ajoutez un nouveau film</h5>
         </div>
-        <div class="ms-5 mb-5 col-9">
-            <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-1">Voter !</a>
+        <h5 class="ms-5">Entrez les informations du film à ajouter.</h5>
+
+        <div class="container my-5">
+
+            <form method="POST" action="" enctype="multipart/form-data">
+                <!-- partie formulaire -->
+
+                 <!-- Nom de la soirée -->
+                <div class="mb-3">
+                    <label for="nomMovie" class="form-label">Nom du film:</label>
+                    <input type="text" class="form-control" name="nomMovie" id="nomMovie" maxlength="30" placeholder="Backrooms">
+                </div>
+
+                <button name="search_movie" type="submit" class="btn btn-ctm-red">Chercher</button>
+                <!-- bouton pour soumettre la soirée -->
+            </form>
+
+            
+            <?php if (!empty($_POST)) { ?>
+            
+                <div class ="row mt-3">
+                    <div class ="col-4">
+                        <figure class ="figure">
+                            <img src=<?= "https://image.tmdb.org/t/p/w500" . $data_fr["poster_path"]?> class="figure-img img-fluid rounded img-create" alt="...">
+                        </figure>
+                        
+                    </div>
+
+                    <div class="col-8">
+                        <div class ="row">
+                            <h1 class="col-6"><?=$data_fr["original_title"]?></h1>
+                            <h3 class="col-3"><?=$data_fr["genres"][0]["name"]?></h3>
+                            <h3 class="col-3"><?=$data_fr["release_date"]?></h3>
+                        </div>
+
+                        <div class ="row">
+                            <p><?=$data_fr["overview"]?></p>
+                        </div>
+                    </div>
+                    <h4 class ="mb-1">Est-ce le bon film ?</h4>
+                    <div class ="row gap-3">
+                        <button name="movie_create" type="submit" class="btn btn-ctm-red col-4">Ajouter</button>
+                        <button name="empty_movie" type="submit" class="btn btn-ctm-red-subtle col-4">Non (réessayer)</button>
+                    </div>
+                </div>
+            <?php } ?>
+
         </div>
     </main>
-
     <!-- Footer avec les liens vers instagram, discord, facebook, mentions légales -->
     <footer id="footer_popco" class="container-fluid py-3 rounded-top-5 bg-ctm-primary-color">
         <div class="row g-1 d-flex align-items-center">
@@ -193,14 +321,14 @@ Si connecté, les utilisateurs peuvent voter pour une soirée pas encore commenc
             </div>
             <div class="col-4 text-center">
                 <img src="../assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
-                <!-- Insertion de l'icône du logo PopCo -->
+                <!--Insertion de l'icône du logo PopCo -->
             </div>
             <div class="col-4 py-3 text-start d-lg-block text-end pe-4">
                 <a class="text-decoration-none link-ctm-terciary-color-subtle" data-bs-toggle="modal" href="#popco_ml" role="button">
                 Mentions légales
                 </a>
+                <!-- partie mentions légales sous la forme d'un modal -->
                 <div class="modal fade" id="popco_ml" tabindex="-1" aria-labelledby="popco_mlLabel" aria-hidden="true">
-                    <!-- partie mentions légales sous la forme d'un modal -->
                     <div class="modal-dialog">
                         <div class="modal-content bg-ctm-terciary-color">
                         <div class="modal-header">
@@ -246,4 +374,3 @@ Si connecté, les utilisateurs peuvent voter pour une soirée pas encore commenc
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html>

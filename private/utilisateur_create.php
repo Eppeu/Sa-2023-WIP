@@ -1,5 +1,5 @@
 <?php
-require_once './bdd/bdd_connexion.php';
+require_once '../bdd/bdd_connexion.php';
 
 function add($ligne1, $ligne2, $ligne3, $ligne4, $ligne5){
     $bdd = connectBDS();
@@ -14,12 +14,12 @@ function add($ligne1, $ligne2, $ligne3, $ligne4, $ligne5){
         if ($info4 == $info5){
             $password = password_hash($info4, PASSWORD_DEFAULT);
 
-            $creer = $bdd->prepare("INSERT INTO utilisateur (nom_utilisateur, prenom_utilisateur, email, motDePasse, isAdmin)VALUES(?, ?, ?, ?, ?)");
+            $creer = $bdd->prepare("INSERT INTO utilisateur (nom_utilisateur, prenom_utilisateur, email, mot_de_passe, is_admin)VALUES(?, ?, ?, ?, ?)");
             $creer->execute(array($info1, $info2, $info3, $password, FALSE));
             header('Location: ./connexion.php');
         }else{
             echo "Mot de passe incorrect";
-            header('Location: ./new_account.php');
+            header('Location: ./compte_create.php');
         }
     }else{
         echo `HOOO Veuillez compléter tous les champs. info 1 : $info1, info 2 : $info2, info 3 : $info3, info 4 : $info4, info 5 : $info5, `;

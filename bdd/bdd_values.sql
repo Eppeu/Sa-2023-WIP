@@ -1,4 +1,4 @@
-INSERT INTO utilisateur(idUtilisateur, nom_utilisateur, prenom_utilisateur, email, motDePasse, isAdmin)
+INSERT INTO utilisateur(id_utilisateur, nom_utilisateur, prenom_utilisateur, email, mot_de_passe, is_admin)
 VALUES
 (1, 'root','root','root@email.com','$2y$10$NTwVfbtA82exTvd7Wt8bzeEd5DVu57RFKhmsEtl1gRcIRyqd8P1/i',TRUE), -- mdp : root123
 (2, 'BURNEL','cerise','???@email.com','$2y$10$bRj3P2EBi6J/roHUA0hfB.V.Nm9NmmJxyvP/pPd5eti14Lhra2/MO',TRUE), -- mdp : cerise
@@ -9,26 +9,26 @@ VALUES
 (7, 'user1','user1','???@email.com','$2y$10$9PwTMWim/MDwxNJLpshlZ.5LmGg.H2SJ3WKWvpfCAg5tnSi9iktGq',FALSE), -- mdp : user1
 (8, 'user2','user2','???@email.com','$2y$10$EWEgeYiqCMQc.OIU193.n./SGdcN5QRc2wa7jDD6CJ4d619pPSwUO',FALSE); -- mdp : user2
 
-INSERT INTO soiree(idSoiree, nom_soiree, nbPersonneMax, genre_soiree, dateDebut, dateFin, lieuChoisi, filmChoisi, choix1Film, choix2Film, choix3Film, choix4Film, choix5Film, choix1Lieu, choix2Lieu, choix3Lieu)
+INSERT INTO soiree(id_soiree, nom_soiree, description_soiree, nb_personne_max, genre_soiree, date_debut, date_fin, lieu_choisi, film_choisi, choix_1_film, choix_2_film, choix_3_film, choix_4_film, choix_5_film, choix_1_lieu, choix_2_lieu, choix_3_lieu, image_soiree)
 VALUES
-(1, "Le Lancement", 15, "Animation", "2026-06-08 20:00", "2026-06-08 23:00", 2, 110, 106, 110, 111, 107, 119, 1, 2, 32),
-(2, "Party Cozy", 30, "Action", "2026-06-09 19:30", "2026-06-09 21:00", 4, 86, 75, 72, 86, 83, 78, 4, 5, 33),
-(3, "Anniversaire de Claire", 20, "Comédie", "2026-06-14 20:00", "2026-06-14 23:00", 7, 96, 96, 95, 101, 100, 103, 6, 7, 34),
-(4, "Halloween Party", 60, "Horreur", "2026-10-31 23:00", "2026-11-01 04:00", 8, 34, 16, 18, 34, 30, 33, 8, 9, 35),
-(5, "Soirée Valentin", 100, "Romance", "2027-02-14 18:00", "2027-02-14 21:00", 11, "filmChoisi", 2, 1, 8, 10, 15, 10, 11, 36),
-(6, "Les P'tits Bretons", 45, "Historique", "2026-08-10 18:00", "2026-08-10 21:00", 13, "filmChoisi", 131, 134, 137, 138, 133, 12, 13, 37),
-(7, "Frisson et Passion", 10, "Thriller", "2026-06-10 21:00", "2026-06-11 00:00", 14, "filmChoisi", 141, 145, 149, 150, 142, 14, 15, 38), 
-(8, "Retraite Roulette", 14, "Documentaire", "2026-12-05 16:00", "2026-12-05 18:00", 17, "filmChoisi", 153, 154, 157, 158, 159, 16, 17, 39),
-(9, "Les Sorciers de Gelles", 10, "Fantastique", "2026-06-10 14:00", "2026-06-10 17:00", 18, "filmChoisi", 40, 42, 43, 45, 54, 18, 19, 40),
-(10, "Fête de l'Espace", 100, "Science-Fiction", "2026-09-10 18:00", "2026-09-10 21:00", 20, "filmChoisi", 56, 57, 60, 69, 67, 20, 21, 41),
-(11, "Love In the Air", 25, "Romance", "2027-03-14 18:00", "2027-03-14 21:00", 22, "filmChoisi", 7, 1, 4, 12, 11, 22, 23, 42),
-(12, "Frayeur Garantie", 30, "Horreur", "2027-05-20 23:00", "2027-05-20 05:00", 25, "filmChoisi", 17, 19, 21, 24, 25, 24, 25, 43),
-(13, "L'Heure de Peur", 15, "Horreur", "2027-02-20 23:00", "2027-02-20 04:00", 26, "filmChoisi", 26, 27, 29, 31, 35, 26, 27, 44),
-(14, "3 2 1 Action", 30, "Action", "2026-07-09 19:30", "2026-07-09 21:00", 29, "filmChoisi", 71, 79, 74, 80, 82, 28, 29, 45),
-(15, "Anim Nation", 25, "Animation", "2026-06-15 16:00", "2026-06-15 19:00", 30, "filmChoisi", 114, 117, 108, 121, 112, 30, 31, 46);
+(1, "Le Lancement","Description 1", 15,"Animation", "2026-06-08 20:00", "2026-06-08 23:00", 2, 110, 106, 110, 111, 107, 119, 1, 2, 32, './image'),
+(2, "Party Cozy","Description 2", 30, "Action", "2026-06-09 19:30", "2026-06-09 21:00", 4, 86, 75, 72, 86, 83, 78, 4, 5, 33, './image'),
+(3, "Anniversaire de Claire","Description 3", 20, "Comédie", "2026-06-14 20:00", "2026-06-14 23:00", 7, 96, 96, 95, 101, 100, 103, 6, 7, 34, './image'),
+(4, "Halloween Party","Description 4", 60, "Horreur", "2026-10-31 23:00", "2026-11-01 04:00", 8, 34, 16, 18, 34, 30, 33, 8, 9, 35, './image'),
+(5, "Soirée Valentin","Description 5", 100, "Romance", "2027-02-14 18:00", "2027-02-14 21:00", 11, 8, 2, 1, 8, 10, 15, 10, 11, 36, './image'),
+(6, "Les P'tits Bretons","Description 6", 45, "Historique", "2026-08-10 18:00", "2026-08-10 21:00", 13, 134, 131, 134, 137, 138, 133, 12, 13, 37, './image'),
+(7, "Frisson et Passion","Description 7", 10, "Thriller", "2026-06-10 21:00", "2026-06-11 00:00", 14, 149, 141, 145, 149, 150, 142, 14, 15, 38, './image'), 
+(8, "Retraite Roulette","Description 8", 14, "Documentaire", "2026-12-05 16:00", "2026-12-05 18:00", 17, 153, 153, 154, 157, 158, 159, 16, 17, 39, './image'),
+(9, "Les Sorciers de Gelles","Description 8", 10, "Fantastique", "2026-06-10 14:00", "2026-06-10 17:00", 18, 43, 40, 42, 43, 45, 54, 18, 19, 40, './image'),
+(10, "Fête de l'Espace","Description 10", 100, "Science-Fiction", "2026-09-10 18:00", "2026-09-10 21:00", 20, 60, 56, 57, 60, 69, 67, 20, 21, 41, './image'),
+(11, "Love In the Air","Description 11", 25, "Romance", "2027-03-14 18:00", "2027-03-14 21:00", 22, 1, 7, 1, 4, 12, 11, 22, 23, 42, './image'),
+(12, "Frayeur Garantie","Description 12", 30, "Horreur", "2027-05-20 23:00", "2027-05-20 05:00", 25, 19, 17, 19, 21, 24, 25, 24, 25, 43, './image'),
+(13, "L'Heure de Peur","Description 13", 15, "Horreur", "2027-02-20 23:00", "2027-02-20 04:00", 26, 27, 26, 27, 29, 31, 35, 26, 27, 44, './image'),
+(14, "3 2 1 Action","Description 14", 30, "Action", "2026-07-09 19:30", "2026-07-09 21:00", 29, 79, 71, 79, 74, 80, 82, 28, 29, 45, './image'),
+(15, "Anim Nation","Description 15", 25, "Animation", "2026-06-15 16:00", "2026-06-15 19:00", 30, 117, 114, 117, 108, 121, 112, 30, 31, 46, './image');
 
 
-INSERT INTO film(idFilm, nom_film, synopsis, genre, dateSortie, affiche)
+INSERT INTO film(id_film, nom_film, synopsis, genre, date_sortie, affiche)
 VALUES
 (1, "Titanic", "Le film se déroule en avril 1912, lors du voyage inaugural du Titanic, le paquebot le plus grand et le plus moderne de son époque, réputé pour son insubmersibilité. L'histoire suit deux jeunes passagers de milieux sociaux opposés : Jack Dawson, un artiste pauvre, et Rose DeWitt Bukater, une aristocrate promise à un homme qu'elle n'aime pas, Caledon Hockley.", 'Romance', 1998, 'https://image.tmdb.org/t/p/w500/9xjZS2rlVxm8SFx8kPC3aIGCOYQ.jpg'),
 (2, "La La Land", "Un embouteillage monstre s'est formé sur un autopont de Los Angeles (Another Day of Sun). Mia Dolan (Emma Stone), une actrice débutante, répète un dialogue de film dans sa voiture. Lorsque Sebastian Wilder (Ryan Gosling) klaxonne derrière elle, elle lui répond par un doigt d'honneur.", 'Romance', 2017, 'https://image.tmdb.org/t/p/w500/uDO8zWDhfWwoFdKS4fzkUJt0Rf0.jpg'),

@@ -1,13 +1,57 @@
-<!-- 
-Patron_page.php: 
-Page qui permet d'afficher la soirée. Elle prend les éléments du bouton cliqué dans index /
-soirée pour les remettres dans cette page.
-Si connecté, les utilisateurs peuvent voter pour une soirée pas encore commencé ou qui n'a pas encore de film / lieu défini.   
--->
+<?php
+session_start();
+
+require_once '../bdd/bdd_connexion.php';
+$bdd = connectBDS();
+
+// Vérifie que les champs ont tous été remplis
+if(isset($_GET['id_soiree']) AND !empty($_GET['id_soiree'])){
+    // Récupère l'id de l'élément voulu depuis l'URL
+    $id_soiree_get = $_GET['id_soiree'];
+
+    // Récupère la colonne de l'id voulu
+    $soiree_infos_requete = $bdd->prepare('SELECT
+    s.*,
+    f1.nom_film AS film1_nom_film,
+    f1.affiche AS film1_affiche,
+    f2.nom_film AS film2_nom_film,
+    f2.affiche AS film2_affiche,
+    f3.nom_film AS film3_nom_film,
+    f3.affiche AS film3_affiche,
+    f4.nom_film AS film4_nom_film,
+    f4.affiche AS film4_affiche,
+    f5.nom_film AS film5_nom_film,
+    f5.affiche AS film5_affiche
+    
+    FROM soiree s
+
+    JOIN film f1 ON s.choix_1_film = f1.id_film
+    JOIN film f2 ON s.choix_2_film = f2.id_film
+    JOIN film f3 ON s.choix_3_film = f3.id_film
+    JOIN film f4 ON s.choix_4_film = f4.id_film
+    JOIN film f5 ON s.choix_5_film = f5.id_film
+
+    WHERE s.id_soiree = ?;');
+    
+
+    $soiree_infos_requete->execute(array($id_soiree_get));
+
+    // Si cette colonne existe, les données déjà éxistantes sont récupées
+    if($soiree_infos_requete->rowCount() > 0){
+
+        $soiree_infos = $soiree_infos_requete->fetch();
+    }
+    else{
+        echo "soiree introuvable. Vous allez être redirigé vers les soirees.";
+    }
+}
+else{
+    echo "Une erreur s'est produite, l'identifiant n'est pas parvenu à être récupéré, veuillez revenir à la page précédente.";
+}
+?>
 
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,9 +66,9 @@ Si connecté, les utilisateurs peuvent voter pour une soirée pas encore commenc
         <script src="https://kit.fontawesome.com/4b69bc6b92.js" crossorigin="anonymous"></script>
     <!-- Bootstrap Icons  -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <title>PopCo - GET card element</title>
-</head>
+    <title>Informations de la soiree</title>
 
+</head>
 <body class="bg-ctm-terciary-color">
     <header> 
          <!-- Header contenant le menu de navigation version pour écran normal et version pour écran réduit -->
@@ -45,7 +89,11 @@ Si connecté, les utilisateurs peuvent voter pour une soirée pas encore commenc
                                     <!-- lien de navigation -->
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./soirees.php">Les soirées</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="./soirees.php">Soirées</a>
+                                    <!-- lien de navigation -->
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link bootstrap_nav_item_color" href="./films.php">Films</a>
                                     <!-- lien de navigation -->
                                 </li>
                                 <li class="nav-item">
@@ -53,17 +101,15 @@ Si connecté, les utilisateurs peuvent voter pour une soirée pas encore commenc
                                     <!-- lien de navigation -->
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./films.php">Films proposés</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="./vote.php">Vote TEMP</a>
                                     <!-- lien de navigation -->
                                 </li>
+                                <?php if(isset($_SESSION['is_admin']) && $_SESSION['is_admin']==TRUE) { ?>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./utilisateur.php">Utilisateur</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="./new_film.php">Ajouter un film</a>
                                     <!-- lien de navigation -->
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./vote.php">Vote</a>
-                                    <!-- lien de navigation -->
-                                </li>
+                                <?php } ?>
                             </ul>
 
                             <?php
@@ -74,7 +120,7 @@ Si connecté, les utilisateurs peuvent voter pour une soirée pas encore commenc
                                         <a class="btn btn-ctm-red-subtle" href="./utilisateur.php">Votre profil</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="btn btn-ctm-red" href="./deconnexion.php">Se déconnecter</a>
+                                        <a class="btn btn-ctm-red" href="../private/deconnexion.php">Se déconnecter</a>
                                     </li>
                                     <!-- Boutons Rouges (un de couleur légère et l'autre non) pour créer un compte et se connecter -->
                                 </ul>
@@ -92,9 +138,7 @@ Si connecté, les utilisateurs peuvent voter pour une soirée pas encore commenc
                                 <!-- Boutons Rouges (un de couleur légère et l'autre non) pour créer un compte et se connecter -->
                                 
                         </div>
-                        <?php
-                            }
-                            ?>
+                        <?php } ?>
 
                         <a class="fs-1 d-block d-md-none text-success" data-bs-toggle="offcanvas" href="#menu_phone" aria-controls="offcanvasExample">
                         <i class="bi bi-list link-ctm-terciary-color"></i>
@@ -150,7 +194,7 @@ Si connecté, les utilisateurs peuvent voter pour une soirée pas encore commenc
         <div class="container d-flex ms-5 ps-5 my-5 ">
             <div class="row flex-column">
                 <div class="">
-                    <img src="../assets/images/chippies.png" class="img-resize-choose rounded-2 object-fit-cover" alt="...">
+                    <img src="<?= $soiree_infos['image_soiree'] ?>" class="img-resize-choose rounded-2 object-fit-cover" alt="...">
                 </div>
                 <div class="my-3">
                     <p id="caracteristics"></p>
@@ -158,25 +202,73 @@ Si connecté, les utilisateurs peuvent voter pour une soirée pas encore commenc
             </div>
             <div class="row mx-3">
                 <div class="align-self-start col-6">
-                    <h1 id="db_name"></h1>
+                    <h1 id="nom_soiree"><?= $soiree_infos['nom_soiree'] ?></h1>
                 </div>
                 <div class="align-self-start col-6">
-                    <h3 id="db_genre"></h3>
+                    <h3 id="genre_soiree">Nombre d'invités maximum : <?= $soiree_infos['nb_personne_max'] ?> personnes</h3>
                 </div>
                 <div class="align-self-stretch m-1">
-                    <p id="party_description"></p>
+                    <p id=""><?= $soiree_infos['description_soiree'] ?></p>
+                    <p id="synopsis_soiree">Genre : <?= $soiree_infos['genre_soiree'] ?></p>
+                    <p id="">Date de début : <?= $soiree_infos['date_debut'] ?></p>
+                    <p id="">Date de fin prévue : <?= $soiree_infos['date_fin'] ?></p>
+                    <p id="">Date de début : <?= $soiree_infos['date_debut'] ?></p>
                 </div>
             </div>
-            <div class="row col-4 ms-auto border border-3">
-                <p id="movies_places"></p>
+            <div class="row col-4 ms-auto">
+
+                <div class="card p-0 m-0">
+                    <img src="<?= $soiree_infos['film1_affiche'] ?>" class="card-img-top object-fit-cover" alt="...">
+
+                    <div class="card-body bg-ctm-primary-color-subtle">
+                        <p class="card-caption">1er film choisi :</p>
+                        <h5 class="card-title"><?= $soiree_infos['film1_nom_film'] ?></h5>
+                    </div>
+                </div>
+
+                <div class="card p-0 m-0">
+                    <img src="<?= $soiree_infos['film2_affiche'] ?>" class="card-img-top object-fit-cover" alt="...">
+
+                    <div class="card-body bg-ctm-primary-color-subtle">
+                        <p class="card-caption">2ème film choisi :</p>
+                        <h5 class="card-title"><?= $soiree_infos['film2_nom_film'] ?></h5>
+                    </div>
+                </div>
+
+                <div class="card p-0 m-0">
+                    <img src="<?= $soiree_infos['film3_affiche'] ?>" class="card-img-top object-fit-cover" alt="...">
+
+                    <div class="card-body bg-ctm-primary-color-subtle">
+                        <p class="card-caption">3ème film choisi :</p>
+                        <h5 class="card-title"><?= $soiree_infos['film3_nom_film'] ?></h5>
+                    </div>
+                </div>
+
+                <div class="card p-0 m-0">
+                    <img src="<?= $soiree_infos['film4_affiche'] ?>" class="card-img-top object-fit-cover" alt="...">
+
+                    <div class="card-body bg-ctm-primary-color-subtle">
+                        <p class="card-caption">4ème film choisi :</p>
+                        <h5 class="card-title"><?= $soiree_infos['film4_nom_film'] ?></h5>
+                    </div>
+                </div>
+
+                <div class="card p-0 m-0">
+                    <img src="<?= $soiree_infos['film5_affiche'] ?>" class="card-img-top object-fit-cover" alt="...">
+
+                    <div class="card-body bg-ctm-primary-color-subtle">
+                        <p class="card-caption">5ème film choisi :</p>
+                        <h5 class="card-title"><?= $soiree_infos['film5_nom_film'] ?></h5>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="ms-5 mb-5 col-9">
             <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-1">Voter !</a>
         </div>
+        </div>
     </main>
 
-    <!-- Footer avec les liens vers instagram, discord, facebook, mentions légales -->
     <footer id="footer_popco" class="container-fluid py-3 rounded-top-5 bg-ctm-primary-color">
         <div class="row g-1 d-flex align-items-center">
             <div class="col-4 fs-2 ps-4">
@@ -191,16 +283,18 @@ Si connecté, les utilisateurs peuvent voter pour une soirée pas encore commenc
                 </a>
                 
             </div>
+            <!-- icone lien vers les réseaux sociaux -->
             <div class="col-4 text-center">
                 <img src="../assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
                 <!-- Insertion de l'icône du logo PopCo -->
             </div>
+            <!-- logo bas de page ramenant a la page d'accueil -->
             <div class="col-4 py-3 text-start d-lg-block text-end pe-4">
                 <a class="text-decoration-none link-ctm-terciary-color-subtle" data-bs-toggle="modal" href="#popco_ml" role="button">
                 Mentions légales
                 </a>
+                <!-- bouton pop up mentions légales -->
                 <div class="modal fade" id="popco_ml" tabindex="-1" aria-labelledby="popco_mlLabel" aria-hidden="true">
-                    <!-- partie mentions légales sous la forme d'un modal -->
                     <div class="modal-dialog">
                         <div class="modal-content bg-ctm-terciary-color">
                         <div class="modal-header">
@@ -208,6 +302,7 @@ Si connecté, les utilisateurs peuvent voter pour une soirée pas encore commenc
                             <button type="button" class="btn-close link-ctm-primary-color-subtle" data-bs-dismiss="modal" aria-label="Close"></button>
                             <!-- bouton pour fermer les mentions légales (en forme de X)-->
                         </div>
+                        <!-- mise en forme des mentions légales -->
                         <div class="modal-body text-center lh-sm">
                             <p>
                                 Conformément aux dispositions de la loi n° 2004-575 du 21 juin 2004 pour la confiance en l'économie numérique, il est précisé aux utilisateurs du site PopCo l'identité des différents intervenants dans le cadre de sa réalisation et de son suivi.
@@ -233,10 +328,11 @@ Si connecté, les utilisateurs peuvent voter pour une soirée pas encore commenc
                                 Génération des mentions légales par Legalstart.
                             </p>
                         </div>
+                        <!-- contenus des mentions légales -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-ctm-secondary-color-subtle" data-bs-dismiss="modal">Close</button>
-                            <!-- bouton pour fermer les mentions légales "Close"-->
                         </div>
+                        <!-- bouton de fermeture des mentions légales -->
                         </div>
                     </div>
                 </div>
@@ -246,4 +342,3 @@ Si connecté, les utilisateurs peuvent voter pour une soirée pas encore commenc
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html>

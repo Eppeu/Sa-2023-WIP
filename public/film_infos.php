@@ -1,25 +1,30 @@
 <?php
 session_start();
 
-require_once './bdd/bdd_connexion.php';
+require_once '../bdd/bdd_connexion.php';
 $bdd = connectBDS();
 
-$allSoirees = $bdd->query('SELECT * FROM soiree');
+// Vérifie que les champs ont tous été remplis
+if(isset($_GET['id_film']) AND !empty($_GET['id_film'])){
+    // Récupère l'id de l'élément voulu depuis l'URL
+    $id_film_get = $_GET['id_film'];
 
-$soireesHorreur_sort = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'Horreur';");
-$soireesAction_sort = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'Action';");
-$soireesFanstastique_sort = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'Fantastique';");
-$soireesAnimation_sort = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'Animation';");
-$soireesComedy_sort = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'Comédie';");
-$soireesHistorique_sort = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'Historique';");
-$soireesThriller_sort = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'Thriller';");
+    // Récupère la colonne de l'id voulu
+    $film_infos_requete = $bdd->prepare('SELECT * FROM film WHERE id_film = ?');
+    $film_infos_requete->execute(array($id_film_get));
 
+    // Si cette colonne existe, les données déjà éxistantes sont récupées
+    if($film_infos_requete->rowCount() > 0){
 
-// Documentaty is broken for some reasons (Please Check this Astrid !), Wrong Token or invalid expression 
-// $soireesDocumentaire_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Documentaire'; "); 
-
-$soireesRomance_sort = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'Romance';");
-$soireesSF_sort = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'Science-Fiction'; ");
+        $film_infos = $film_infos_requete->fetch();
+    }
+    else{
+        echo "Film introuvable. Vous allez être redirigé vers les films.";
+    }
+}
+else{
+    echo "Une erreur s'est produite, l'identifiant n'est pas parvenu à être récupéré, veuillez revenir à la page précédente.";
+}
 ?>
 
 <!DOCTYPE html>
@@ -27,18 +32,18 @@ $soireesSF_sort = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'Scienc
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./styles/style.css">
+    <link rel="stylesheet" href="../styles/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Dongle&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" sizes="32x32" href="./assets/icons/PopCo_favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/icons/PopCo_favicon.ico">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="../styles/main.css">
     <!-- Font Awesome pour les icônes -->
         <script src="https://kit.fontawesome.com/4b69bc6b92.js" crossorigin="anonymous"></script>
     <!-- Bootstrap Icons  -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <title>Les soirées</title>
+    <title>Informations du film</title>
 
 </head>
 <body class="bg-ctm-terciary-color">
@@ -48,7 +53,7 @@ $soireesSF_sort = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'Scienc
                 <nav id="header_popco" class="navbar navbar-expand bg-ctm-primary-color rounded-bottom-5 ">
                     <div class="container-fluid">
                         <a class="navbar-brand" href="./index.php">
-                            <img src="./assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
+                            <img src="../assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
                             <!-- Insertion de l'icône du logo PopCo -->
                         </a>
                         <div class="collapse navbar-collapse justify-content-between">
@@ -76,6 +81,12 @@ $soireesSF_sort = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'Scienc
                                     <a class="nav-link bootstrap_nav_item_color" href="./vote.php">Vote TEMP</a>
                                     <!-- lien de navigation -->
                                 </li>
+                                <?php if(isset($_SESSION['is_admin']) && $_SESSION['is_admin']==TRUE) { ?>
+                                <li class="nav-item">
+                                    <a class="nav-link bootstrap_nav_item_color" href="./new_film.php">Ajouter un film</a>
+                                    <!-- lien de navigation -->
+                                </li>
+                                <?php } ?>
                             </ul>
 
                             <?php
@@ -86,7 +97,7 @@ $soireesSF_sort = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'Scienc
                                         <a class="btn btn-ctm-red-subtle" href="./utilisateur.php">Votre profil</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="btn btn-ctm-red" href="./deconnexion.php">Se déconnecter</a>
+                                        <a class="btn btn-ctm-red" href="../private/deconnexion.php">Se déconnecter</a>
                                     </li>
                                     <!-- Boutons Rouges (un de couleur légère et l'autre non) pour créer un compte et se connecter -->
                                 </ul>
@@ -98,15 +109,13 @@ $soireesSF_sort = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'Scienc
                                         <a class="btn btn-ctm-red-subtle" href="./connexion.php">Se connecter</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="btn btn-ctm-red" href="./new_account.php">Créer un compte</a>
+                                        <a class="btn btn-ctm-red" href="./compte_create.php">Créer un compte</a>
                                     </li>
                                 </ul>
                                 <!-- Boutons Rouges (un de couleur légère et l'autre non) pour créer un compte et se connecter -->
                                 
                         </div>
-                        <?php
-                            }
-                            ?>
+                        <?php } ?>
 
                         <a class="fs-1 d-block d-md-none text-success" data-bs-toggle="offcanvas" href="#menu_phone" aria-controls="offcanvasExample">
                         <i class="bi bi-list link-ctm-terciary-color"></i>
@@ -147,7 +156,7 @@ $soireesSF_sort = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'Scienc
 
                                 <div class="container-fluid d-md-flex justify-content-end gap-2">
                                     <a class="btn btn-ctm-red-subtle" href="./connexion.php">Se connecter</a>
-                                    <a class="btn btn-ctm-red" href="./new_account.php">Créer un compte</a>
+                                    <a class="btn btn-ctm-red" href="./compte_create.php">Créer un compte</a>
                                     <!-- Bouton rouge pour se connecter / créer un compte -->
                                 </div>
                             </div>
@@ -157,89 +166,27 @@ $soireesSF_sort = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'Scienc
                 </nav>
         </div>
     </header>
-    
-    <main class="container-fluid px-0">
-        <div class="bgImage"></div>
-        <div class="text-center py-5 callToAction">
-            <h5 id="test" class="fs-1">Retrouvez toutes les soirées ici !</h5>
-        </div>
-        <!-- affichage principal avec titre -->
-        <div class="mainPart py-5">
-            <div class="row m-0">
-                <div class="col-8">
-                    <h5 class="ms-5 fs-3">Les dernières soirées ajoutées</h5>
+
+    <main>
+        <div class="container d-flex ms-5 ps-5 my-5 ">
+            <div class="row flex-column">
+                <div class="">
+                    <img src="<?= $film_infos['affiche'] ?>" class="img-resize-choose rounded-2 object-fit-cover" alt="...">
                 </div>
-                <div class="col-auto">
-                    <select name="movie_genre" id="genre_select" onchange='$.fn.load_new_content()' class="form-select ms-2" aria-label="Default select example">
-                        <option selected>Trier par genre...</option>
-                        <option value="Action">Action</option>
-                        <option value="Fantastique">Fantastique</option>
-                        <option value="Horreur">Horreur</option>
-                        <option value="Animation">Animation</option>
-                        <option value="Comédie">Comédie</option>
-                        <option value="Historique">Historique</option>
-                        <option value="Thriller">Thriller</option>
-                        <option value="Documentaire">Documentaire</option>
-                        <option value="Romance">Romance</option>
-                        <option value="Science-Fiction">Science-Fiction</option>
-                    </select>
+                <div class="my-3">
+                    <p id="caracteristics"></p>
                 </div>
             </div>
-            <!-- formulaire de selection en fonction des genres -->
-
-            <!-- Méthode Ajax afin de load la BDD (Semi-Broken) -->
-            <script>
-                $(document).ready(function() {
-                    $.fn.load_new_content = function(){
-                        var model=$('#genre_select').val();
-                        if (model == "Action") {
-                            $("#img-resize").html("<?php while($soireesAction_sortInfos = $soireesAction_sort->fetch()){ ?> <div class='col-12 col-sm-6 col-lg-4 col-xl-3'><div class='card p-0 h-auto'><img src='./assets/images/looking_into_my_soul.png' class='card-img-top object-fit-cover' alt='...'><div class='card-body bg-ctm-primary-color-subtle'><h5 class='card-title'><?php echo addslashes($soireesAction_sortInfos['nom_soiree']);?></h5><p class='card-text lh-1'><?php echo addslashes($soireesAction_sortInfos['genre_soiree']);?>...</p></div> <div class='card-footer p-0 border-0'> <a href='#' class='btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1'>Go somewhere</a> </div> </div></div> <?php } ?>");
-                        } else if (model == "Fantastique") {
-                            $("#img-resize").html("<?php while($soireesFanstastique_sortInfos = $soireesFanstastique_sort->fetch()){ ?> <div class='col-12 col-sm-6 col-lg-4 col-xl-3'><div class='card p-0 h-auto'><img src='./assets/images/looking_into_my_soul.png' class='card-img-top object-fit-cover' alt='...'><div class='card-body bg-ctm-primary-color-subtle'><h5 class='card-title'><?php echo addslashes($soireesFanstastique_sortInfos['nom_soiree']);?></h5><p class='card-text lh-1'><?php echo addslashes($soireesFanstastique_sortInfos['genre_soiree']);?>...</p></div> <div class='card-footer p-0 border-0'> <a href='#' class='btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1'>Go somewhere</a> </div> </div></div> <?php } ?>");
-                        } else if (model == "Horreur") {
-                            $("#img-resize").html("<?php while($soireesHorreur_sortInfos = $soireesHorreur_sort->fetch()){ ?> <div class='col-12 col-sm-6 col-lg-4 col-xl-3'><div class='card p-0 h-auto'><img src='./assets/images/looking_into_my_soul.png' class='card-img-top object-fit-cover' alt='...'><div class='card-body bg-ctm-primary-color-subtle'><h5 class='card-title'><?php echo addslashes($soireesHorreur_sortInfos['nom_soiree']);?></h5><p class='card-text lh-1'><?php echo addslashes($soireesHorreur_sortInfos['genre_soiree']);?>...</p></div> <div class='card-footer p-0 border-0'> <a href='#' class='btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1'>Go somewhere</a> </div> </div></div> <?php } ?>");
-                        } else if (model == "Animation") {
-                            $("#img-resize").html("<?php while($soireesAnimation_sortInfos = $soireesAnimation_sort->fetch()){ ?> <div class='col-12 col-sm-6 col-lg-4 col-xl-3'><div class='card p-0 h-auto'><img src='./assets/images/looking_into_my_soul.png' class='card-img-top object-fit-cover' alt='...'><div class='card-body bg-ctm-primary-color-subtle'><h5 class='card-title'><?php echo addslashes($soireesAnimation_sortInfos['nom_soiree']);?></h5><p class='card-text lh-1'><?php echo addslashes($soireesAnimation_sortInfos['genre_soiree']);?>...</p></div> <div class='card-footer p-0 border-0'> <a href='#' class='btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1'>Go somewhere</a> </div> </div></div> <?php } ?>");
-                        } else if (model == "Comédie") {
-                            $("#img-resize").html("<?php while($soireesComedy_sortInfos = $soireesComedy_sort->fetch()){ ?> <div class='col-12 col-sm-6 col-lg-4 col-xl-3'><div class='card p-0 h-auto'><img src='./assets/images/looking_into_my_soul.png' class='card-img-top object-fit-cover' alt='...'><div class='card-body bg-ctm-primary-color-subtle'><h5 class='card-title'><?php echo addslashes($soireesComedy_sortInfos['nom_soiree']);?></h5><p class='card-text lh-1'><?php echo addslashes($soireesComedy_sortInfos['genre_soiree']);?>...</p></div> <div class='card-footer p-0 border-0'> <a href='#' class='btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1'>Go somewhere</a> </div> </div></div> <?php } ?>");
-                        } else if (model == "Historique") {
-                            $("#img-resize").html("<?php while($soireesHistorique_sortInfos = $soireesHistorique_sort->fetch()){ ?> <div class='col-12 col-sm-6 col-lg-4 col-xl-3'><div class='card p-0 h-auto'><img src='./assets/images/looking_into_my_soul.png' class='card-img-top object-fit-cover' alt='...'><div class='card-body bg-ctm-primary-color-subtle'><h5 class='card-title'><?php echo addslashes($soireesHistorique_sortInfos['nom_soiree']);?></h5><p class='card-text lh-1'><?php echo addslashes($soireesHistorique_sortInfos['genre_soiree']);?>...</p></div> <div class='card-footer p-0 border-0'> <a href='#' class='btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1'>Go somewhere</a> </div> </div></div> <?php } ?>");
-                        } else if (model == "Thriller") {
-                            $("#img-resize").html("<?php while($soireesThriller_sortInfos = $soireesThriller_sort->fetch()){ ?> <div class='col-12 col-sm-6 col-lg-4 col-xl-3'><div class='card p-0 h-auto'><img src='./assets/images/looking_into_my_soul.png' class='card-img-top object-fit-cover' alt='...'><div class='card-body bg-ctm-primary-color-subtle'><h5 class='card-title'><?php echo addslashes($soireesThriller_sortInfos['nom_soiree']);?></h5><p class='card-text lh-1'><?php echo addslashes($soireesThriller_sortInfos['genre_soiree']);?>...</p></div> <div class='card-footer p-0 border-0'> <a href='#' class='btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1'>Go somewhere</a> </div> </div></div> <?php } ?>");
-                        } else if (model == "Documentaire") { // Is broken, check line 15-16 for more infos
-                            $("#img-resize").html(""); 
-                        } else if (model == "Romance") {
-                            $("#img-resize").html("<?php while($soireesRomance_sortInfos = $soireesRomance_sort->fetch()){ ?> <div class='col-12 col-sm-6 col-lg-4 col-xl-3'><div class='card p-0 h-auto'><img src='./assets/images/looking_into_my_soul.png' class='card-img-top object-fit-cover' alt='...'><div class='card-body bg-ctm-primary-color-subtle'><h5 class='card-title'><?php echo addslashes($soireesRomance_sortInfos['nom_soiree']);?></h5><p class='card-text lh-1'><?php echo addslashes($soireesRomance_sortInfos['genre_soiree']);?>...</p></div> <div class='card-footer p-0 border-0'> <a href='#' class='btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1'>Go somewhere</a> </div> </div></div> <?php } ?>");
-                        } else if (model == "Science-Fiction") {
-                            $("#img-resize").html("<?php while($soireesSF_sortInfos = $soireesSF_sort->fetch()){ ?> <div class='col-12 col-sm-6 col-lg-4 col-xl-3'><div class='card p-0 h-auto'><img src='./assets/images/looking_into_my_soul.png' class='card-img-top object-fit-cover' alt='...'><div class='card-body bg-ctm-primary-color-subtle'><h5 class='card-title'><?php echo addslashes($soireesSF_sortInfos['nom_soiree']);?></h5><p class='card-text lh-1'><?php echo addslashes($soireesSF_sortInfos['genre_soiree']);?>...</p></div> <div class='card-footer p-0 border-0'> <a href='#' class='btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1'>Go somewhere</a> </div> </div></div> <?php } ?>");
-                        }
-                    };
-                });
-            </script>
-            <!-- donne les information de chaque film en fonction du genre -->
-
-            <div id ="img-resize" class="row row-cols-5 mx-0 mb-3 pt-3 g-5">
-                <?php
-                while($allSoireesInfos = $allSoirees->fetch()){
-                ?>
-                    <div class="col-12 col-sm-6 col-lg-4 col-xl-3" >
-                        <div class="card p-0 h-auto">
-                            <img src="./assets/images/rella_16th_birthday_edit.jpg" class="card-img-top object-fit-cover" alt="...">
-
-                            <div class="card-body bg-ctm-primary-color-subtle">
-                                <h5 class="card-title"><?= $allSoireesInfos['nom_soiree'];?></h5>
-                                <p class="card-text lh-1"><?= $allSoireesInfos['genre_soiree'];?><p>
-                            </div>
-                            <div class="card-footer p-0 border-0">
-                                <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- crée les cartes de présentation pour tout les films -->
-                <?php
-                }
-                ?>
-
+            <div class="row mx-3">
+                <div class="align-self-start col-6">
+                    <h1 id="nom_film"><?= $film_infos['nom_film'] ?></h1>
+                </div>
+                <div class="align-self-start col-6">
+                    <h3 id="genre_film"><?= $film_infos['genre'] ?></h3>
+                </div>
+                <div class="align-self-stretch m-1">
+                    <p id="synopsis_film"><?= $film_infos['synopsis'] ?></p>
+                </div>
             </div>
         </div>
     </main>
@@ -260,7 +207,7 @@ $soireesSF_sort = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'Scienc
             </div>
             <!-- icone lien vers les réseaux sociaux -->
             <div class="col-4 text-center">
-                <img src="./assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
+                <img src="../assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
                 <!-- Insertion de l'icône du logo PopCo -->
             </div>
             <!-- logo bas de page ramenant a la page d'accueil -->

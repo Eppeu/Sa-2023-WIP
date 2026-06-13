@@ -1,6 +1,6 @@
 <?php
 
-include("db_infos.php");
+include("../bdd/db_infos.php");
 
 if(isset($_POST['result_search'])) {
 
@@ -18,13 +18,13 @@ if(isset($_POST['result_search'])) {
 
     if ($query_db && mysqli_num_rows($query_db) > 0) {
     ?>
-        <div id="scrollbar" class="col-12 overflow-x-scroll me-5" value="<?$fetchDB['idFilm']?>">
+        <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
             <div id ="img-resize" class="row row-cols-2 row-cols-md-5 ms-1 my-3 g-5 flex-nowrap gap-3">
                 <?php
                 while($fetchDB = mysqli_fetch_assoc($query_db)) {
                 ?>
-                <div class="card-click card p-0 m-0">
-                    <img src="./assets/images/rella_16th_birthday_edit.jpg" class="card-img-top object-fit-cover" alt="...">
+                <div class="card-click card p-0 m-0" data-id_film="<?= $fetchDB['id_film']?>">
+                    <img src="../assets/images/rella_16th_birthday_edit.jpg" class="card-img-top object-fit-cover" alt="...">
                     <h5 class="card-text text-center"><?= $fetchDB['nom_film'];?></h5>
                 </div>
 

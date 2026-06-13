@@ -25,54 +25,56 @@ DROP TABLE IF EXISTS `utilisateur`;
 -- A UTILISER A LA PREMIERE UTILISATION
 -- CI DESSOUS LES CREATIONS DES TABLES
 CREATE TABLE IF NOT EXISTS utilisateur (
-    idUtilisateur INT AUTO_INCREMENT PRIMARY KEY  NOT NULL,
+    id_utilisateur INT AUTO_INCREMENT PRIMARY KEY  NOT NULL,
     nom_utilisateur VARCHAR(100) NOT NULL,
     prenom_utilisateur VARCHAR(100) NOT NULL,
     email VARCHAR(50)  NOT NULL,
-    motDePasse VARCHAR(200)  NOT NULL,
-    isAdmin BOOLEAN NOT NULL
+    mot_de_passe VARCHAR(200)  NOT NULL,
+    is_admin BOOLEAN NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS film (
-    idFilm INT AUTO_INCREMENT PRIMARY KEY  NOT NULL,
+    id_film INT AUTO_INCREMENT PRIMARY KEY  NOT NULL,
     nom_film VARCHAR(100) NOT NULL,
     synopsis TEXT NOT NULL,
     genre VARCHAR(50) NOT NULL,
-    dateSortie YEAR NOT NULL,
+    date_sortie YEAR NOT NULL,
     affiche VARCHAR(300) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS lieu (
-    idLieu INT AUTO_INCREMENT PRIMARY KEY  NOT NULL,
+    id_lieu INT AUTO_INCREMENT PRIMARY KEY  NOT NULL,
     adresse VARCHAR(200) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS soiree (
-    idSoiree INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    id_soiree INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
     nom_soiree VARCHAR(200) NOT NULL,
-    nbPersonneMax INT NOT NULL,
+    description_soiree TEXT NOT NULL,
+    nb_personne_max INT NOT NULL,
     genre_soiree VARCHAR(50),
-    dateDebut DATETIME NOT NULL,
-    dateFin DATETIME NOT NULL,
-    lieuChoisi INT,
-    filmChoisi INT,
-    choix1Film INT NOT NULL,
-    choix2Film INT NOT NULL,
-    choix3Film INT NOT NULL,
-    choix4Film INT NOT NULL,
-    choix5Film INT NOT NULL,
-    choix1Lieu INT NOT NULL,
-    choix2Lieu INT NOT NULL,
-    choix3Lieu INT NOT NULL
+    date_debut DATETIME NOT NULL,
+    date_fin DATETIME NOT NULL,
+    lieu_choisi INT,
+    film_choisi INT,
+    choix_1_film INT NOT NULL,
+    choix_2_film INT NOT NULL,
+    choix_3_film INT NOT NULL,
+    choix_4_film INT NOT NULL,
+    choix_5_film INT NOT NULL,
+    choix_1_lieu INT NOT NULL,
+    choix_2_lieu INT NOT NULL,
+    choix_3_lieu INT NOT NULL,
+    image_soiree VARCHAR(200)
 );
 
 CREATE TABLE IF NOT EXISTS vote (
-    idSoiree INT PRIMARY KEY NOT NULL,
-    idUtilisateur INT NOT NULL,
-    choixFilm INT NOT NULL,
-    choixLieu INT NOT NULL,
-    FOREIGN KEY (idSoiree) REFERENCES soiree(idSoiree),
-    FOREIGN KEY (idUtilisateur) REFERENCES utilisateur(idUtilisateur),
-    FOREIGN KEY (choixFilm) REFERENCES film(idFilm),
-    FOREIGN KEY (choixLieu) REFERENCES lieu(idLieu)
+    id_soiree INT PRIMARY KEY NOT NULL,
+    id_utilisateur INT NOT NULL,
+    choix_film INT NOT NULL,
+    choix_lieu INT NOT NULL,
+    FOREIGN KEY (id_soiree) REFERENCES soiree(id_soiree),
+    FOREIGN KEY (id_utilisateur) REFERENCES utilisateur(id_utilisateur),
+    FOREIGN KEY (choix_film) REFERENCES film(id_film),
+    FOREIGN KEY (choix_lieu) REFERENCES lieu(id_lieu)
 );

@@ -2,21 +2,21 @@
 <?php
 session_start();
 
-require_once './bdd/bdd_connexion.php';
+require_once '../bdd/bdd_connexion.php';
 $bdd = connectBDS();
 
 // Sélection de tous les soirées (films)
-$allSoirees = $bdd->query('SELECT * FROM soiree LIMIT 10');
+$all_soirees = $bdd->query('SELECT * FROM soiree LIMIT 10');
 
 // Comptage du nombre de soirées (films)
-$countSoirees = $bdd->prepare('SELECT * FROM soiree');
-$countSoirees->execute();
-$count = $countSoirees->rowCount();
+$count_soirees = $bdd->prepare('SELECT * FROM soiree');
+$count_soirees->execute();
+$count = $count_soirees->rowCount();
 
-$soireesPopulaire = $bdd->query("SELECT * FROM soiree WHERE dateDebut > '2026-06-08 20:00';");
-$soireesHorreur = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'horreur'; ");
+$soirees_populaire = $bdd->query("SELECT * FROM soiree WHERE date_debut > '2026-06-08 20:00';");
+$soirees_horreur = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'horreur'; ");
 
-// include("APIContact.php");
+// include("api_contact.php");
 
 ?>
 
@@ -26,17 +26,17 @@ $soireesHorreur = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'horreu
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./styles/style.css">
+    <link rel="stylesheet" href="../styles/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Dongle&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" sizes="32x32" href="./assets/icons/PopCo_favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/icons/PopCo_favicon.ico">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="../styles/main.css">
     <!-- Font Awesome pour les icônes -->
-        <script src="https://kit.fontawesome.com/4b69bc6b92.js" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/4b69bc6b92.js" crossorigin="anonymous"></script>
     <!-- Bootstrap Icons  -->
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <title>PopCo - Accueil</title>
 </head>
 
@@ -47,7 +47,7 @@ $soireesHorreur = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'horreu
                 <nav id="header_popco" class="navbar navbar-expand bg-ctm-primary-color rounded-bottom-5 ">
                     <div class="container-fluid">
                         <a class="navbar-brand" href="./index.php">
-                            <img src="./assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
+                            <img src="../assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
                             <!-- Insertion de l'icône du logo PopCo -->
                         </a>
                         <div class="collapse navbar-collapse justify-content-between">
@@ -75,7 +75,7 @@ $soireesHorreur = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'horreu
                                     <a class="nav-link bootstrap_nav_item_color" href="./vote.php">Vote TEMP</a>
                                     <!-- lien de navigation -->
                                 </li>
-                                <?php if(isset($_SESSION['isAdmin']) && $_SESSION['isAdmin']==TRUE) { ?>
+                                <?php if(isset($_SESSION['is_admin']) && $_SESSION['is_admin']==TRUE) { ?>
                                 <li class="nav-item">
                                     <a class="nav-link bootstrap_nav_item_color" href="./new_film.php">Ajouter un film</a>
                                     <!-- lien de navigation -->
@@ -91,7 +91,7 @@ $soireesHorreur = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'horreu
                                         <a class="btn btn-ctm-red-subtle" href="./utilisateur.php">Votre profil</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="btn btn-ctm-red" href="./deconnexion.php">Se déconnecter</a>
+                                        <a class="btn btn-ctm-red" href="../private/deconnexion.php">Se déconnecter</a>
                                     </li>
                                     <!-- Boutons Rouges (un de couleur légère et l'autre non) pour créer un compte et se connecter -->
                                 </ul>
@@ -103,7 +103,7 @@ $soireesHorreur = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'horreu
                                         <a class="btn btn-ctm-red-subtle" href="./connexion.php">Se connecter</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="btn btn-ctm-red" href="./new_account.php">Créer un compte</a>
+                                        <a class="btn btn-ctm-red" href="./compte_create.php">Créer un compte</a>
                                     </li>
                                 </ul>
                                 <!-- Boutons Rouges (un de couleur légère et l'autre non) pour créer un compte et se connecter -->
@@ -150,7 +150,7 @@ $soireesHorreur = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'horreu
 
                                 <div class="container-fluid d-md-flex justify-content-end gap-2">
                                     <a class="btn btn-ctm-red-subtle" href="./connexion.php">Se connecter</a>
-                                    <a class="btn btn-ctm-red" href="./new_account.php">Créer un compte</a>
+                                    <a class="btn btn-ctm-red" href="./compte_create.php">Créer un compte</a>
                                     <!-- Bouton rouge pour se connecter / créer un compte -->
                                 </div>
                             </div>
@@ -183,14 +183,14 @@ $soireesHorreur = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'horreu
                 <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
                     <div id ="img-resize" class="row row-cols-2 row-cols-md-5 ms-1 my-3 g-5 flex-nowrap gap-3">
                         <?php
-                        while($allSoireesInfos = $allSoirees->fetch()){
+                        while($all_soireesInfos = $all_soirees->fetch()){
                         ?>
                             <div class="card p-0 m-0">
-                                <img src="./assets/images/rella_16th_birthday_edit.jpg" class="card-img-top object-fit-cover" alt="...">
+                                <img src="../assets/images/rella_16th_birthday_edit.jpg" class="card-img-top object-fit-cover" alt="...">
 
                                 <div class="card-body bg-ctm-primary-color-subtle">
-                                    <h5 class="card-title"><?= $allSoireesInfos['nom_soiree'];?></h5>
-                                    <p class="card-text lh-1"><?= $allSoireesInfos['genre_soiree'];?>...<p>
+                                    <h5 class="card-title"><?= $all_soireesInfos['nom_soiree'];?></h5>
+                                    <p class="card-text lh-1"><?= $all_soireesInfos['genre_soiree'];?>...<p>
                                 </div>
                                 <div class="card-footer p-0 border-0">
                                     <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
@@ -208,14 +208,14 @@ $soireesHorreur = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'horreu
                 <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
                     <div id ="img-resize" class="row row-cols-2 row-cols-md-5 ms-1 my-3 g-5 flex-nowrap gap-3">
                         <?php
-                        while($soireesPopulaireInfos = $soireesPopulaire->fetch()){
+                        while($soirees_populaireInfos = $soirees_populaire->fetch()){
                         ?>
                             <div class="card p-0 m-0">
-                                <img src="./assets/images/rella_16th_birthday_edit.jpg" class="card-img-top object-fit-cover" alt="...">
+                                <img src="../assets/images/rella_16th_birthday_edit.jpg" class="card-img-top object-fit-cover" alt="...">
 
                                 <div class="card-body bg-ctm-primary-color-subtle">
-                                    <h5 class="card-title"><?= $soireesPopulaireInfos['nom_soiree'];?></h5>
-                                    <p class="card-text lh-1"><?= $soireesPopulaireInfos['genre_soiree'];?>...<p>
+                                    <h5 class="card-title"><?= $soirees_populaireInfos['nom_soiree'];?></h5>
+                                    <p class="card-text lh-1"><?= $soirees_populaireInfos['genre_soiree'];?>...<p>
                                 </div>
                                 <div class="card-footer p-0 border-0">
                                     <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
@@ -233,14 +233,14 @@ $soireesHorreur = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'horreu
                 <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
                     <div id ="img-resize" class="row row-cols-2 row-cols-md-5 ms-1 my-3 g-5 flex-nowrap gap-3">
                         <?php
-                        while($soireesHorreurInfos = $soireesHorreur->fetch()){
+                        while($soirees_horreurInfos = $soirees_horreur->fetch()){
                         ?>
                             <div class="card p-0 m-0">
-                                <img src="./assets/images/rella_16th_birthday_edit.jpg" class="card-img-top object-fit-cover" alt="...">
+                                <img src="../assets/images/rella_16th_birthday_edit.jpg" class="card-img-top object-fit-cover" alt="...">
 
                                 <div class="card-body bg-ctm-primary-color-subtle">
-                                    <h5 class="card-title"><?= $soireesHorreurInfos['nom_soiree'];?></h5>
-                                    <p class="card-text lh-1"><?= $soireesHorreurInfos['genre_soiree'];?>...<p>
+                                    <h5 class="card-title"><?= $soirees_horreurInfos['nom_soiree'];?></h5>
+                                    <p class="card-text lh-1"><?= $soirees_horreurInfos['genre_soiree'];?>...<p>
                                 </div>
                                 <div class="card-footer p-0 border-0">
                                     <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
@@ -272,7 +272,7 @@ $soireesHorreur = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'horreu
                 
             </div>
             <div class="col-4 text-center">
-                <img src="./assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
+                <img src="../assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
                 <!-- Insertion de l'icône du logo PopCo -->
             </div>
             <div class="col-4 py-3 text-start d-lg-block text-end pe-4">

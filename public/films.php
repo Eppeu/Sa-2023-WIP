@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-require_once './bdd/bdd_connexion.php';
+require_once '../bdd/bdd_connexion.php';
 $bdd = connectBDS();
 
 $allSoirees = $bdd->query('SELECT * FROM film');
@@ -31,13 +31,13 @@ $soireesSF_sort = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE gen
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./styles/style.css">
+    <link rel="stylesheet" href="../styles/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Dongle&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" sizes="32x32" href="./assets/icons/PopCo_favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/icons/PopCo_favicon.ico">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="../styles/main.css">
     <!-- Font Awesome pour les icônes -->
         <script src="https://kit.fontawesome.com/4b69bc6b92.js" crossorigin="anonymous"></script>
     <!-- Bootstrap Icons  -->
@@ -52,7 +52,7 @@ $soireesSF_sort = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE gen
                 <nav id="header_popco" class="navbar navbar-expand bg-ctm-primary-color rounded-bottom-5 ">
                     <div class="container-fluid">
                         <a class="navbar-brand" href="./index.php">
-                            <img src="./assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
+                            <img src="../assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
                             <!-- Insertion de l'icône du logo PopCo -->
                         </a>
                         <div class="collapse navbar-collapse justify-content-between">
@@ -80,6 +80,12 @@ $soireesSF_sort = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE gen
                                     <a class="nav-link bootstrap_nav_item_color" href="./vote.php">Vote TEMP</a>
                                     <!-- lien de navigation -->
                                 </li>
+                                <?php if(isset($_SESSION['is_admin']) && $_SESSION['is_admin']==TRUE) { ?>
+                                <li class="nav-item">
+                                    <a class="nav-link bootstrap_nav_item_color" href="./new_film.php">Ajouter un film</a>
+                                    <!-- lien de navigation -->
+                                </li>
+                                <?php } ?>
                             </ul>
 
                             <?php
@@ -90,7 +96,7 @@ $soireesSF_sort = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE gen
                                         <a class="btn btn-ctm-red-subtle" href="./utilisateur.php">Votre profil</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="btn btn-ctm-red" href="./deconnexion.php">Se déconnecter</a>
+                                        <a class="btn btn-ctm-red" href="../private/deconnexion.php">Se déconnecter</a>
                                     </li>
                                     <!-- Boutons Rouges (un de couleur légère et l'autre non) pour créer un compte et se connecter -->
                                 </ul>
@@ -102,15 +108,13 @@ $soireesSF_sort = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE gen
                                         <a class="btn btn-ctm-red-subtle" href="./connexion.php">Se connecter</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="btn btn-ctm-red" href="./new_account.php">Créer un compte</a>
+                                        <a class="btn btn-ctm-red" href="./compte_create.php">Créer un compte</a>
                                     </li>
                                 </ul>
                                 <!-- Boutons Rouges (un de couleur légère et l'autre non) pour créer un compte et se connecter -->
                                 
                         </div>
-                        <?php
-                            }
-                            ?>
+                        <?php } ?>
 
                         <a class="fs-1 d-block d-md-none text-success" data-bs-toggle="offcanvas" href="#menu_phone" aria-controls="offcanvasExample">
                         <i class="bi bi-list link-ctm-terciary-color"></i>
@@ -151,7 +155,7 @@ $soireesSF_sort = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE gen
 
                                 <div class="container-fluid d-md-flex justify-content-end gap-2">
                                     <a class="btn btn-ctm-red-subtle" href="./connexion.php">Se connecter</a>
-                                    <a class="btn btn-ctm-red" href="./new_account.php">Créer un compte</a>
+                                    <a class="btn btn-ctm-red" href="./compte_create.php">Créer un compte</a>
                                     <!-- Bouton rouge pour se connecter / créer un compte -->
                                 </div>
                             </div>
@@ -188,7 +192,7 @@ $soireesSF_sort = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE gen
                                     <p class="card-text lh-1"><?= $soireesAction_sortInfos['LEFT(synopsis, 200)'];?>...<p>
                                 </div>
                                 <div class="card-footer p-0 border-0">
-                                    <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
+                                    <a href="./film_infos.php?id_film=<?= $soireesAction_sortInfos['id_film'] ?>" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus ?</a>
                                 </div>
                             </div>
                         <?php
@@ -213,7 +217,7 @@ $soireesSF_sort = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE gen
                                     <p class="card-text lh-1"><?= $soireesFanstastique_sortInfos['LEFT(synopsis, 200)'];?>...<p>
                                 </div>
                                 <div class="card-footer p-0 border-0">
-                                    <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
+                                    <a href="./film_infos.php?id_film=<?= $soireesFanstastique_sortInfos['id_film'] ?>" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
                                 </div>
                             </div>
                         <?php
@@ -238,7 +242,7 @@ $soireesSF_sort = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE gen
                                     <p class="card-text lh-1"><?= $soireesHorreur_sortInfos['LEFT(synopsis, 200)'];?>...<p>
                                 </div>
                                 <div class="card-footer p-0 border-0">
-                                    <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
+                                    <a href="./film_infos.php?id_film=<?= $soireesHorreur_sortInfos['id_film'] ?>" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
                                 </div>
                             </div>
                         <?php
@@ -263,7 +267,7 @@ $soireesSF_sort = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE gen
                                     <p class="card-text lh-1"><?= $soireesAnimation_sortInfos['LEFT(synopsis, 200)'];?>...<p>
                                 </div>
                                 <div class="card-footer p-0 border-0">
-                                    <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
+                                    <a href="./film_infos.php?id_film=<?= $soireesAnimation_sortInfos['id_film'] ?>" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
                                 </div>
                             </div>
                         <?php
@@ -288,7 +292,7 @@ $soireesSF_sort = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE gen
                                     <p class="card-text lh-1"><?= $soireesComedy_sortInfos['LEFT(synopsis, 200)'];?><p>
                                 </div>
                                 <div class="card-footer p-0 border-0">
-                                    <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
+                                    <a href="./film_infos.php?id_film=<?= $soireesComedy_sortInfos['id_film'] ?>" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
                                 </div>
                             </div>
                         <?php
@@ -313,7 +317,7 @@ $soireesSF_sort = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE gen
                                     <p class="card-text lh-1"><?= $soireesHistorique_sortInfos['LEFT(synopsis, 200)'];?><p>
                                 </div>
                                 <div class="card-footer p-0 border-0">
-                                    <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
+                                    <a href="./film_infos.php?id_film=<?= $soireesHistorique_sortInfos['id_film'] ?>" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
                                 </div>
                             </div>
                         <?php
@@ -338,7 +342,7 @@ $soireesSF_sort = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE gen
                                     <p class="card-text lh-1"><?= $soireesThriller_sortInfos['LEFT(synopsis, 200)'];?><p>
                                 </div>
                                 <div class="card-footer p-0 border-0">
-                                    <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
+                                    <a href="./film_infos.php?id_film=<?= $soireesThriller_sortInfos['id_film'] ?>" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
                                 </div>
                             </div>
                         <?php
@@ -363,7 +367,7 @@ $soireesSF_sort = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE gen
                                     <p class="card-text lh-1"><?= $soireesRomance_sortInfos['LEFT(synopsis, 200)'];?><p>
                                 </div>
                                 <div class="card-footer p-0 border-0">
-                                    <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
+                                    <a href="./film_infos.php?id_film=<?= $soireesRomance_sortInfos['id_film'] ?>" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
                                 </div>
                             </div>
                         <?php
@@ -388,7 +392,7 @@ $soireesSF_sort = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE gen
                                     <p class="card-text lh-1"><?= $soireesSF_sortInfos['LEFT(synopsis, 200)'];?><p>
                                 </div>
                                 <div class="card-footer p-0 border-0">
-                                    <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
+                                    <a href="./film_infos.php?id_film=<?= $soireesSF_sortInfos['id_film'] ?>" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
                                 </div>
                             </div>
                         <?php
@@ -417,7 +421,7 @@ $soireesSF_sort = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE gen
                 
             </div>
             <div class="col-4 text-center">
-                <img src="./assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
+                <img src="../assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
                 <!-- Insertion de l'icône du logo PopCo -->
             </div>
             <div class="col-4 py-3 text-start d-lg-block text-end pe-4">

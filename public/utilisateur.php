@@ -1,58 +1,20 @@
+<!-- CONNEXION A LA BASE DE DONNEE-->
 <?php
 session_start();
-
-if (isset($_POST['valider'])) {
-    if (!empty($_POST['login']) and !empty($_POST['password'])) {
-        require_once './bdd/bdd_connexion.php';
-
-        $login = htmlspecialchars($_POST['login']);
-        $mdp = htmlspecialchars($_POST['password']);
-
-        $bdd = connectBDS(); // Connexion à la BDD
-
-            // Récupération du mot de passe haché de l'utilisateur depuis la base de données
-            $query = $bdd->prepare("SELECT * FROM utilisateur WHERE nom_utilisateur=:identifiant");
-            $query->execute([':identifiant' => $login]);
-            
-            // Vérification du mot de passe
-            if ($row = $query->fetch()) {
-                $hashedMdp = $row['motDePasse'];
-                if (password_verify($mdp, $hashedMdp)) {
-                    $_SESSION['nom_utilisateur'] = $row['nom_utilisateur'];
-                    if($row['isAdmin']==TRUE){
-                        $_SESSION['isAdmin'] = TRUE;
-                    }
-                    header('Location: ./utilisateur.php');
-                } else {
-                    echo "
-                    <div class='modal'>
-                        <p>Identifiant ou mot de passe invalide</p>
-                    </div>";
-                }
-            } else {
-                echo "
-                <div class='modal'>
-                    <p>Identifiant ou mot de passe invalide</p>
-                </div>";
-            }
-        } else {
-            echo "
-            <div class='modal'>
-                <p>Captcha invalide</p>
-            </div>";
-        }
-    } else {
-        echo "Veuillez compléter tous les champs.";
-    }
-
-$characts = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-$characts .= '123456789';
-$code_aleatoire = '';
-for ($i = 0; $i < 4; $i++) {
-    $code_aleatoire .= substr($characts, rand() % (strlen($characts)), 1);
+if(!$_SESSION['nom_utilisateur']) {
+    header('Location: ./connexion.php');
 }
 
-$_SESSION['captcha'] = $code_aleatoire;
+require_once '../bdd/bdd_connexion.php';
+$bdd = connectBDS();
+
+
+// Sélection de tous les soirées (films)
+// $allUtilisateur = $bdd->query('SELECT * FROM utilisateur WHERE nom_utilisateur=""');
+
+$query = $bdd->prepare("SELECT * FROM utilisateur WHERE nom_utilisateur=:identifiant");
+$query->execute([':identifiant' => $_SESSION['nom_utilisateur']]);
+$infosUtilisateur = $query->fetch();
 ?>
 
 <!DOCTYPE html>
@@ -61,18 +23,18 @@ $_SESSION['captcha'] = $code_aleatoire;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./styles/style.css">
+    <link rel="stylesheet" href="../styles/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Dongle&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" sizes="32x32" href="./assets/icons/PopCo_favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/icons/PopCo_favicon.ico">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="../styles/main.css">
     <!-- Font Awesome pour les icônes -->
         <script src="https://kit.fontawesome.com/4b69bc6b92.js" crossorigin="anonymous"></script>
     <!-- Bootstrap Icons  -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <title>PopCo</title>
+    <title>Les soirées</title>
 </head>
 
 <body class="bg-ctm-terciary-color">
@@ -82,7 +44,7 @@ $_SESSION['captcha'] = $code_aleatoire;
                 <nav id="header_popco" class="navbar navbar-expand bg-ctm-primary-color rounded-bottom-5 ">
                     <div class="container-fluid">
                         <a class="navbar-brand" href="./index.php">
-                            <img src="./assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
+                            <img src="../assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
                             <!-- Insertion de l'icône du logo PopCo -->
                         </a>
                         <div class="collapse navbar-collapse justify-content-between">
@@ -110,6 +72,12 @@ $_SESSION['captcha'] = $code_aleatoire;
                                     <a class="nav-link bootstrap_nav_item_color" href="./vote.php">Vote TEMP</a>
                                     <!-- lien de navigation -->
                                 </li>
+                                <?php if(isset($_SESSION['is_admin']) && $_SESSION['is_admin']==TRUE) { ?>
+                                <li class="nav-item">
+                                    <a class="nav-link bootstrap_nav_item_color" href="./new_film.php">Ajouter un film</a>
+                                    <!-- lien de navigation -->
+                                </li>
+                                <?php } ?>
                             </ul>
 
                             <?php
@@ -120,7 +88,7 @@ $_SESSION['captcha'] = $code_aleatoire;
                                         <a class="btn btn-ctm-red-subtle" href="./utilisateur.php">Votre profil</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="btn btn-ctm-red" href="./deconnexion.php">Se déconnecter</a>
+                                        <a class="btn btn-ctm-red" href="../private/deconnexion.php">Se déconnecter</a>
                                     </li>
                                     <!-- Boutons Rouges (un de couleur légère et l'autre non) pour créer un compte et se connecter -->
                                 </ul>
@@ -132,15 +100,13 @@ $_SESSION['captcha'] = $code_aleatoire;
                                         <a class="btn btn-ctm-red-subtle" href="./connexion.php">Se connecter</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="btn btn-ctm-red" href="./new_account.php">Créer un compte</a>
+                                        <a class="btn btn-ctm-red" href="./compte_create.php">Créer un compte</a>
                                     </li>
                                 </ul>
                                 <!-- Boutons Rouges (un de couleur légère et l'autre non) pour créer un compte et se connecter -->
                                 
                         </div>
-                        <?php
-                            }
-                            ?>
+                        <?php } ?>
 
                         <a class="fs-1 d-block d-md-none text-success" data-bs-toggle="offcanvas" href="#menu_phone" aria-controls="offcanvasExample">
                         <i class="bi bi-list link-ctm-terciary-color"></i>
@@ -181,7 +147,7 @@ $_SESSION['captcha'] = $code_aleatoire;
 
                                 <div class="container-fluid d-md-flex justify-content-end gap-2">
                                     <a class="btn btn-ctm-red-subtle" href="./connexion.php">Se connecter</a>
-                                    <a class="btn btn-ctm-red" href="./new_account.php">Créer un compte</a>
+                                    <a class="btn btn-ctm-red" href="./compte_create.php">Créer un compte</a>
                                     <!-- Bouton rouge pour se connecter / créer un compte -->
                                 </div>
                             </div>
@@ -192,33 +158,127 @@ $_SESSION['captcha'] = $code_aleatoire;
         </div>
     </header>
 
-    <main>
-        <div class="text-center my-5 py-5">
-            <h5>Se connecter</h5>
+    <main class="container-fluid px-0">
+        <div class="bgImage"></div>
+        <div class="text-center py-5 callToAction">
+            <h5 class="fs-1">Bonjour <?= $infosUtilisateur['nom_utilisateur'];?> !</h5>
         </div>
-        <div class="container my-5">
+        <!-- affichage de la page avec texte -->
+        <div class="mainPart py-5">
+            <div class="row m-0">
+                <div class="ms-5 col-11">
+                    <h5 class="fs-3">Vos informations</h5>
+                    <p class="mt-5">Nom : <?= $infosUtilisateur['nom_utilisateur'];?></p>
+                    <p>Prénom : <?= $infosUtilisateur['prenom_utilisateur'];?></p>
+                    <p>email : <?= $infosUtilisateur['email'];?></p>
+                    <h5 class="mt-5 fs-3">Les soirées auxquelles vous êtes inscrit(e)</h5>
+                </div>
+                <!-- affiche les informations de l'utilisateur -->
+            <div id ="img-resize" class="row row-cols-5 mx-0 mb-3 pt-3 g-5">
+                <div class="col-12 col-sm-6 col-lg-4 col-xl-3" >
+                    <div class="card p-0 h-auto">
+                        <img src="../assets/images/rin_smile.png" class="card-img-top object-fit-cover" alt="...">
 
-            <form method="POST" action="" class="form">
-                <!-- partie formulaire avec login et password -->
-                <div class="mb-3">
-                    <label for="" class="form-label">Utilisateur</label>
-                    <input type="text" class="form-control" id="login" name="login" maxlength="30" placeholder="Utilisateur">
+                        <div class="card-body bg-ctm-primary-color-subtle">
+                            <h5 class="card-title">Card title</h5>
+                            <p class="card-text lh-1">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
+                        </div>
+                        <div class="card-footer p-0 border-0">
+                            <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                    <div class="card p-0 h-auto">
+                        <img src="../assets/images/yuri_time.png" class="card-img-top object-fit-cover" alt="...">
+
+                        <div class="card-body bg-ctm-primary-color-subtle">
+                            <h5 class="card-title">Card title</h5>
+                            <p class="card-text lh-1">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
+                        </div>
+                        <div class="card-footer p-0 border-0">
+                            <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="mb-3">
-                    <label for="" class="form-label">Mot de Passe</label>
-                    <input type="text" class="form-control" id="password" name="password" maxlength="30" placeholder="Password">
+                <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                    <div class="card p-0 h-auto">
+                        <img src="../assets/images/AAAHHH.png" class="card-img-top object-fit-cover" alt="...">
+
+                        <div class="card-body bg-ctm-primary-color-subtle">
+                            <h5 class="card-title">Card title</h5>
+                            <p class="card-text lh-1">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
+                        </div>
+                        <div class="card-footer p-0 border-0">
+                            <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
+                        </div>
+                    </div>
                 </div>
 
-                <button type="submit" class="btn btn-ctm-red container-fluid p-3" name="valider">Se connecter</button>
-                <!-- bouton de type submit pour se connecter -->
-            </form>
+                <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                    <div class="card p-0 h-auto">
+                        <img src="../assets/images/chippies.png" class="card-img-top object-fit-cover" alt="...">
 
+                        <div class="card-body bg-ctm-primary-color-subtle">
+                            <h5 class="card-title">Card title</h5>
+                            <p class="card-text lh-1">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
+                        </div>
+                        <div class="card-footer p-0 border-0">
+                            <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                    <div class="card p-0 h-auto">
+                        <img src="../assets/images/rella_16th_birthday_edit.jpg" class="card-img-top object-fit-cover" alt="...">
+
+                        <div class="card-body bg-ctm-primary-color-subtle">
+                            <h5 class="card-title">Card title</h5>
+                            <p class="card-text lh-1">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
+                        </div>
+                        <div class="card-footer p-0 border-0">
+                            <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                    <div class="card p-0 h-auto">
+                        <img src="../assets/images/looking_into_my_soul.png" class="card-img-top object-fit-cover" alt="...">
+
+                        <div class="card-body bg-ctm-primary-color-subtle">
+                            <h5 class="card-title">Card title</h5>
+                            <p class="card-text lh-1">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
+                        </div>
+                        <div class="card-footer p-0 border-0">
+                            <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                    <div class="card p-0 h-auto">
+                        <img src="../assets/images/miku_sunset.png" class="card-img-top object-fit-cover" alt="...">
+
+                        <div class="card-body bg-ctm-primary-color-subtle">
+                            <h5 class="card-title">Card title</h5>
+                            <p class="card-text lh-1">Some quick example text to build on the card title and make up the bulk of the card’s content.<p>
+                        </div>
+                        <div class="card-footer p-0 border-0">
+                            <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">Go somewhere</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- carte des soirée ou l'utilisateur participe -->
+            </div>
         </div>
-
     </main>
-    <!-- Footer avec les liens vers instagram, discord, facebook, mentions légales -->
+
     <footer id="footer_popco" class="container-fluid py-3 rounded-top-5 bg-ctm-primary-color">
+        <!-- Footer avec les liens vers instagram, discord, facebook, mentions légales -->
         <div class="row g-1 d-flex align-items-center">
             <div class="col-4 fs-2 ps-4">
                 <a href="" target="_blank" class="text-decoration-none link-ctm-terciary-color-subtle">
@@ -232,15 +292,17 @@ $_SESSION['captcha'] = $code_aleatoire;
                 </a>
                 
             </div>
+            <!-- icone lien vers les réseaux sociaux -->
             <div class="col-4 text-center">
-                <img src="./assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
-                <!-- image du logo -->
+                <img src="../assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
+                <!-- Insertion de l'icône du logo PopCo -->
             </div>
+            <!-- logo bas de page ramenant a la page d'accueil -->
             <div class="col-4 py-3 text-start d-lg-block text-end pe-4">
                 <a class="text-decoration-none link-ctm-terciary-color-subtle" data-bs-toggle="modal" href="#popco_ml" role="button">
                 Mentions légales
                 </a>
-                <!-- partie mentions légales sous la forme d'un modal -->
+                <!-- bouton pop up mentions légales -->
                 <div class="modal fade" id="popco_ml" tabindex="-1" aria-labelledby="popco_mlLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content bg-ctm-terciary-color">
@@ -249,6 +311,7 @@ $_SESSION['captcha'] = $code_aleatoire;
                             <button type="button" class="btn-close link-ctm-primary-color-subtle" data-bs-dismiss="modal" aria-label="Close"></button>
                             <!-- bouton pour fermer les mentions légales (en forme de X)-->
                         </div>
+                        <!-- mise en forme des mentions légales -->
                         <div class="modal-body text-center lh-sm">
                             <p>
                                 Conformément aux dispositions de la loi n° 2004-575 du 21 juin 2004 pour la confiance en l'économie numérique, il est précisé aux utilisateurs du site PopCo l'identité des différents intervenants dans le cadre de sa réalisation et de son suivi.
@@ -274,10 +337,11 @@ $_SESSION['captcha'] = $code_aleatoire;
                                 Génération des mentions légales par Legalstart.
                             </p>
                         </div>
+                        <!-- contenus des mentions légales -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-ctm-secondary-color-subtle" data-bs-dismiss="modal">Close</button>
-                            <!-- bouton pour fermer les mentions légales "Close"-->
                         </div>
+                        <!-- bouton de fermeture des mentions légales -->
                         </div>
                     </div>
                 </div>
@@ -287,4 +351,3 @@ $_SESSION['captcha'] = $code_aleatoire;
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html>
