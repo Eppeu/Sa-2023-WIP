@@ -1,4 +1,6 @@
 <?php
+session_start();
+if(!isset($_SESSION['is_admin']) && $_SESSION['is_admin'] != TRUE) header("Location: ../public/index.php");
 
 include("../bdd/db_infos.php");
 
@@ -24,7 +26,7 @@ if(isset($_POST['result_search'])) {
                 while($fetchDB = mysqli_fetch_assoc($query_db)) {
                 ?>
                 <div class="card-click card p-0 m-0" data-id_film="<?= $fetchDB['id_film']?>">
-                    <img src="../assets/images/rella_16th_birthday_edit.jpg" class="card-img-top object-fit-cover" alt="...">
+                    <img src=<?= $fetchDB['affiche'];?> class="card-img-top object-fit-cover" alt="...">
                     <h5 class="card-text text-center"><?= $fetchDB['nom_film'];?></h5>
                 </div>
 

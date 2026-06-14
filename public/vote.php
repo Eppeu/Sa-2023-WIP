@@ -4,22 +4,89 @@ session_start();
 require_once '../bdd/bdd_connexion.php';
 $bdd = connectBDS();
 
-$allSoirees = $bdd->query('SELECT * FROM film');
+// Vérifie si un utilisateur est connecté, sinon il est renvoyé à la page de connexion
+if(!isset($_SESSION['email'])) {
+    header('Location: ./connexion.php');
+}
 
-$soireesHorreur_sort = $bdd->query("SELECT * FROM film WHERE genre = 'horreur'; ");
-$soireesAction_sort = $bdd->query("SELECT * FROM film WHERE genre = 'action'; ");
-$soireesFanstastique_sort = $bdd->query("SELECT * FROM film WHERE genre = 'fantastique'; ");
-$soireesAnimation_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Animation'; ");
-$soireesComedy_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Comédie'; ");
-$soireesHistorique_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Historique'; ");
-$soireesThriller_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Thriller'; ");
+// Récupère l'utilisateur connecté
+$query = $bdd->prepare("SELECT * FROM utilisateur WHERE email=:identifiant");
+$query->execute([':identifiant' => $_SESSION['email']]);
+$infosUtilisateur = $query->fetch();
+
+// Vérifie que l'id de la soirée a bien été récupéré
+if(isset($_GET['id_soiree']) AND !empty($_GET['id_soiree'])){
+    // Récupère l'id de l'élément voulu depuis l'URL
+    $id_soiree_get = $_GET['id_soiree'];
+
+    // Récupération des informations de la soirée, des films et des lieux
+    $soiree_infos_requete = $bdd->prepare('SELECT
+    s.*,
+    f1.id_film AS film1_id_film, f1.nom_film AS film1_nom_film, f1.affiche AS film1_affiche,
+    f2.id_film AS film2_id_film, f2.nom_film AS film2_nom_film, f2.affiche AS film2_affiche,
+    f3.id_film AS film3_id_film, f3.nom_film AS film3_nom_film, f3.affiche AS film3_affiche,
+    f4.id_film AS film4_id_film, f4.nom_film AS film4_nom_film, f4.affiche AS film4_affiche,
+    f5.id_film AS film5_id_film, f5.nom_film AS film5_nom_film, f5.affiche AS film5_affiche,
+    l1.id_lieu AS lieu1_id, l1.adresse AS lieu1_adresse,
+    l2.id_lieu AS lieu2_id, l2.adresse AS lieu2_adresse,
+    l3.id_lieu AS lieu3_id, l3.adresse AS lieu3_adresse
+
+    FROM soiree s
+    JOIN film f1 ON s.choix_1_film = f1.id_film
+    JOIN film f2 ON s.choix_2_film = f2.id_film
+    JOIN film f3 ON s.choix_3_film = f3.id_film
+    JOIN film f4 ON s.choix_4_film = f4.id_film
+    JOIN film f5 ON s.choix_5_film = f5.id_film
+    JOIN lieu l1 ON s.choix_1_lieu = l1.id_lieu
+    JOIN lieu l2 ON s.choix_2_lieu = l2.id_lieu
+    JOIN lieu l3 ON s.choix_3_lieu = l3.id_lieu
+
+    WHERE s.id_soiree = ?;');
+    
+    $soiree_infos_requete->execute(array($id_soiree_get));
+
+    // Si cette colonne existe, les données déjà éxistantes sont récupées
+    if($soiree_infos_requete->rowCount() > 0){
+
+        $soiree_infos = $soiree_infos_requete->fetch();
+    }
+    else{
+        echo "soiree introuvable. Vous allez être redirigé vers les soirees.";
+    }
+}
+else{
+    echo "Une erreur s'est produite, l'identifiant n'est pas parvenu à être récupéré, veuillez revenir à la page précédente.";
+}
 
 
-// Documentaty is broken for some reasons (Please Check this Astrid !), Wrong Token or invalid expression 
-// $soireesDocumentaire_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Documentaire'; "); 
+    function add_vote($vote_film, $vote_lieu, $id_soiree, $id_utilisateur) {
+        global $bdd;
 
-$soireesRomance_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Romance'; ");
-$soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction'; ");
+        if (!empty($vote_film) && !empty($vote_lieu)) {
+            $creer = $bdd->prepare("INSERT INTO vote(id_soiree, id_utilisateur, choix_film, choix_lieu) VALUES(?, ?, ?, ?)");
+            if ($creer->execute([$id_soiree, $id_utilisateur, $vote_film, $vote_lieu])) {
+                header('Location: ./soiree_infos.php?id_soiree='.$id_soiree);
+                exit();
+            } else {
+                echo "Erreur lors de l'enregistrement du vote.";
+            }
+        } else {
+            echo "Veuillez compléter tous les champs.";
+        }
+    }
+
+    if (isset($_POST['vote_complet'])) {
+        add_vote(
+            $_POST['vote_film'],
+            $_POST['vote_lieu'],
+            $id_soiree_get,
+            $infosUtilisateur['id_utilisateur']
+        );
+    }
+
+    if (isset($_POST['vote_complet'])) {
+        add_vote($_POST['vote_film'], $_POST['vote_lieu']);
+    }
 ?>
 
 <!DOCTYPE html>
@@ -73,20 +140,17 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                                     <a class="nav-link bootstrap_nav_item_color" href="./soiree_create.php">Créer une soirée</a>
                                     <!-- lien de navigation -->
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./vote.php">Vote TEMP</a>
-                                    <!-- lien de navigation -->
-                                </li>
+                                
                                 <?php if(isset($_SESSION['is_admin']) && $_SESSION['is_admin']==TRUE) { ?>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./new_film.php">Ajouter un film</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="../private/movie_create.php">Ajouter un film</a>
                                     <!-- lien de navigation -->
                                 </li>
                                 <?php } ?>
                             </ul>
 
                             <?php
-                            if(isset($_SESSION['nom_utilisateur'])) {
+                            if(isset($_SESSION['email'])) {
                                 ?>
                                 <ul class="navbar-nav mb-2 mb-lg-0 gap-2 me-0 d-none d-md-flex">
                                     <li class="nav-item">
@@ -95,7 +159,7 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
                                     <li class="nav-item">
                                         <a class="btn btn-ctm-red" href="../private/deconnexion.php">Se déconnecter</a>
                                     </li>
-                                    <!-- Boutons Rouges (un de couleur légère et l'autre non) pour créer un compte et se connecter -->
+                                    <!-- Boutons pour créer un compte et se connecter -->
                                 </ul>
                                 <?php
                             }else{
@@ -164,55 +228,101 @@ $soireesSF_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Science-Fiction
     </header>
 
     <main>
-        <!-- partie du vote-->
         <div class="container my-5" id="formulaireVote">
-            <h5 class="fs-3">Votez pour le film que vous aimeriez voir !</h5>
-            <p>Ci-dessous le choix de films que l'organisateur de soirée à décider à sélectionner pour la soirée du jour mois année à heure heure</p>
+        <h5 class="fs-3">Votez pour le film que vous aimeriez voir !</h5>
+        <p>Pour la soirée <strong><?= $soiree_infos['nom_soiree'] ?></strong>, choisissez un film et un lieu.</p>
 
-            <p>Pour la soirée [soirée], vous avez le choix entre les films suivants, veuillez en choisir un.</p>
-            <form>
-                <div class="container d-flex justify-content-between flex-wrap">
-                    <div class="col-12 col-md-6 col-lg-4">
-                        <input type="radio" class="btn-check" id="btn-check-1" autocomplete="off" name="vote">
-                        <label class="btn btn-lg" for="btn-check-1">
-                            <figure>
-                                <img src="../assets/images/rin_smile.png" class="figure-img img-fluid object-fit-cover" alt="...">
-                                <figcaption class="figure-caption text-ctm-primary-color-subtle">Film 1</figcaption>
-                            </figure>
-                        </label>
-                    </div>
-                    <!-- premier bouton pour le choix 1 -->
-    
-                    <div class="col-12 col-md-6 col-lg-4">
-                        <input type="radio" class="btn-check" id="btn-check-2" autocomplete="off" name="vote">
-                        <label class="btn btn-lg" for="btn-check-2">
-                            <figure class="align-content-center">
-                                <img src="../assets/images/miku_sunset.png" class="figure-img img-fluid object-fit-cover" alt="...">
-                                <figcaption class="figure-caption text-ctm-primary-color-subtle">Film 2</figcaption>
-                            </figure>
-                        </label>
-                    </div>
-                    <!-- deuxième bouton pour le choix 2 -->
-    
-                    <div class="col-12 col-md-6 offset-md-3 col-lg-4 offset-lg-0">
-                        <input type="radio" class="btn-check" id="btn-check-3" autocomplete="off" name="vote">
-                        <label class="btn btn-lg" for="btn-check-3">
-    
-                            <figure class="align-content-center">
-                                <img src="../assets/images/AAAHHH.png" class="figure-img img-fluid object-fit-cover" alt="...">
-                                <figcaption class="figure-caption text-ctm-primary-color-subtle">Film 3</figcaption>
-                            </figure>
-                        </label>
-                    </div>
-                    <!-- troisième bouton pour le choix 3 -->
-                    <button type="submit" class="btn btn-ctm-red mt-3 container-fluid mb-5 p-3">Voter</button>
-                    <!-- bouton de type submit pour valider le vote -->
+        <form method="POST" action="">
+
+            <!-- FILMS -->
+            <h5 class="mb-3">Film</h5>
+            <div class="container d-flex justify-content-between flex-wrap gap-3">
+
+                <div class="col-12 col-md-6 col-lg-2">
+                    <input type="radio" class="btn-check" id="btn-film-1" autocomplete="off" name="vote_film" value="<?= $soiree_infos['film1_id_film'] ?>">
+                    <label class="btn btn-lg w-100" for="btn-film-1">
+                        <figure>
+                            <img src="<?= $soiree_infos['film1_affiche'] ?>" class="figure-img img-fluid object-fit-cover" alt="">
+                            <figcaption><?= $soiree_infos['film1_nom_film'] ?></figcaption>
+                        </figure>
+                    </label>
                 </div>
+
+                <div class="col-12 col-md-6 col-lg-2">
+                    <input type="radio" class="btn-check" id="btn-film-2" autocomplete="off" name="vote_film" value="<?= $soiree_infos['film2_id_film'] ?>">
+                    <label class="btn btn-lg w-100" for="btn-film-2">
+                        <figure>
+                            <img src="<?= $soiree_infos['film2_affiche'] ?>" class="figure-img img-fluid object-fit-cover" alt="">
+                            <figcaption><?= $soiree_infos['film2_nom_film'] ?></figcaption>
+                        </figure>
+                    </label>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-2">
+                    <input type="radio" class="btn-check" id="btn-film-3" autocomplete="off" name="vote_film" value="<?= $soiree_infos['film3_id_film'] ?>">
+                    <label class="btn btn-lg w-100" for="btn-film-3">
+                        <figure>
+                            <img src="<?= $soiree_infos['film3_affiche'] ?>" class="figure-img img-fluid object-fit-cover" alt="">
+                            <figcaption><?= $soiree_infos['film3_nom_film'] ?></figcaption>
+                        </figure>
+                    </label>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-2">
+                    <input type="radio" class="btn-check" id="btn-film-4" autocomplete="off" name="vote_film" value="<?= $soiree_infos['film4_id_film'] ?>">
+                    <label class="btn btn-lg w-100" for="btn-film-4">
+                        <figure>
+                            <img src="<?= $soiree_infos['film4_affiche'] ?>" class="figure-img img-fluid object-fit-cover" alt="">
+                            <figcaption><?= $soiree_infos['film4_nom_film'] ?></figcaption>
+                        </figure>
+                    </label>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-2">
+                    <input type="radio" class="btn-check" id="btn-film-5" autocomplete="off" name="vote_film" value="<?= $soiree_infos['film5_id_film'] ?>">
+                    <label class="btn btn-lg w-100" for="btn-film-5">
+                        <figure>
+                            <img src="<?= $soiree_infos['film5_affiche'] ?>" class="figure-img img-fluid object-fit-cover" alt="">
+                            <figcaption><?= $soiree_infos['film5_nom_film'] ?></figcaption>
+                        </figure>
+                    </label>
+                </div>
+
             </div>
-    
-            </form>
+
+            <!-- LIEUX -->
+            <h5 class="mt-5 mb-3">Lieu</h5>
+            <div class="container d-flex justify-content-start flex-wrap gap-3">
+
+                <div class="col-12 col-md-4 col-lg-3">
+                    <input type="radio" class="btn-check" id="btn-lieu-1" autocomplete="off" name="vote_lieu" value="<?= $soiree_infos['lieu1_id'] ?>">
+                    <label class="btn btn-outline-primary btn-lg w-100" for="btn-lieu-1">
+                        <?= $soiree_infos['lieu1_adresse'] ?>
+                    </label>
+                </div>
+
+                <div class="col-12 col-md-4 col-lg-3">
+                    <input type="radio" class="btn-check" id="btn-lieu-2" autocomplete="off" name="vote_lieu" value="<?= $soiree_infos['lieu2_id'] ?>">
+                    <label class="btn btn-outline-primary btn-lg w-100" for="btn-lieu-2">
+                        <?= $soiree_infos['lieu2_adresse'] ?>
+                    </label>
+                </div>
+
+                <div class="col-12 col-md-4 col-lg-3">
+                    <input type="radio" class="btn-check" id="btn-lieu-3" autocomplete="off" name="vote_lieu" value="<?= $soiree_infos['lieu3_id'] ?>">
+                    <label class="btn btn-outline-primary btn-lg w-100" for="btn-lieu-3">
+                        <?= $soiree_infos['lieu3_adresse'] ?>
+                    </label>
+                </div>
+
+            </div>
+
+            <button type="submit" name="vote_complet" class="btn btn-ctm-red mt-4 w-100 p-3">Voter</button>
+
+        </form>
         </div>
     </main>
+    
     <!-- Footer avec les liens vers instagram, discord, facebook, mentions légales -->
     <footer id="footer_popco" class="container-fluid py-3 rounded-top-5 bg-ctm-primary-color">
         <div class="row g-1 d-flex align-items-center">

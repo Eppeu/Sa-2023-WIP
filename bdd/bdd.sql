@@ -69,10 +69,11 @@ CREATE TABLE IF NOT EXISTS soiree (
 );
 
 CREATE TABLE IF NOT EXISTS vote (
-    id_soiree INT PRIMARY KEY NOT NULL,
+    id_soiree INT NOT NULL,
     id_utilisateur INT NOT NULL,
     choix_film INT NOT NULL,
     choix_lieu INT NOT NULL,
+    PRIMARY KEY (id_soiree, id_utilisateur),
     FOREIGN KEY (id_soiree) REFERENCES soiree(id_soiree),
     FOREIGN KEY (id_utilisateur) REFERENCES utilisateur(id_utilisateur),
     FOREIGN KEY (choix_film) REFERENCES film(id_film),

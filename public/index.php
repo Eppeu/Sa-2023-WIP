@@ -6,17 +6,16 @@ require_once '../bdd/bdd_connexion.php';
 $bdd = connectBDS();
 
 // Sélection de tous les soirées (films)
-$all_soirees = $bdd->query('SELECT * FROM soiree LIMIT 10');
+$all_soirees = $bdd->query('SELECT * FROM soiree ORDER BY id_soiree DESC LIMIT 10;');
 
-// Comptage du nombre de soirées (films)
+// Comptage du nombre de soirées
 $count_soirees = $bdd->prepare('SELECT * FROM soiree');
 $count_soirees->execute();
 $count = $count_soirees->rowCount();
 
-$soirees_populaire = $bdd->query("SELECT * FROM soiree WHERE date_debut > '2026-06-08 20:00';");
+$soirees_populaire = $bdd->query("SELECT * FROM soiree ORDER BY nb_personne_max DESC LIMIT 10;");
 $soirees_horreur = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'horreur'; ");
 
-// include("api_contact.php");
 
 ?>
 
@@ -71,20 +70,17 @@ $soirees_horreur = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'horre
                                     <a class="nav-link bootstrap_nav_item_color" href="./soiree_create.php">Créer une soirée</a>
                                     <!-- lien de navigation -->
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./vote.php">Vote TEMP</a>
-                                    <!-- lien de navigation -->
-                                </li>
+                                
                                 <?php if(isset($_SESSION['is_admin']) && $_SESSION['is_admin']==TRUE) { ?>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./new_film.php">Ajouter un film</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="../private/movie_create.php">Ajouter un film</a>
                                     <!-- lien de navigation -->
                                 </li>
                                 <?php } ?>
                             </ul>
 
                             <?php
-                            if(isset($_SESSION['nom_utilisateur'])) {
+                            if(isset($_SESSION['email'])) {
                                 ?>
                                 <ul class="navbar-nav mb-2 mb-lg-0 gap-2 me-0 d-none d-md-flex">
                                     <li class="nav-item">
@@ -93,7 +89,7 @@ $soirees_horreur = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'horre
                                     <li class="nav-item">
                                         <a class="btn btn-ctm-red" href="../private/deconnexion.php">Se déconnecter</a>
                                     </li>
-                                    <!-- Boutons Rouges (un de couleur légère et l'autre non) pour créer un compte et se connecter -->
+                                    <!-- Boutons pour créer un compte et se connecter -->
                                 </ul>
                                 <?php
                             }else{
@@ -186,14 +182,14 @@ $soirees_horreur = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'horre
                         while($all_soireesInfos = $all_soirees->fetch()){
                         ?>
                             <div class="card p-0 m-0">
-                                <img src="../assets/images/rella_16th_birthday_edit.jpg" class="card-img-top object-fit-cover" alt="...">
+                                <img src=<?= $all_soireesInfos['image_soiree']?> class="card-img-top object-fit-cover" alt="...">
 
                                 <div class="card-body bg-ctm-primary-color-subtle">
                                     <h5 class="card-title"><?= $all_soireesInfos['nom_soiree'];?></h5>
-                                    <p class="card-text lh-1"><?= $all_soireesInfos['genre_soiree'];?>...<p>
+                                    <p class="card-text lh-1"><?= $all_soireesInfos['description_soiree'];?>...<p>
                                 </div>
                                 <div class="card-footer p-0 border-0">
-                                    <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
+                                    <a href="./soiree_infos.php?id_soiree=<?php echo $all_soireesInfos['id_soiree']; ?>" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
                                 </div>
                             </div>
                         <?php
@@ -203,7 +199,7 @@ $soirees_horreur = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'horre
                 </div>
             </div>
             <!-- card pour les soirées récemment ajoutées avec une barre de défilement -->
-            <h5 class="ms-5 mt-4 fs-3">Les soirées populaires :fire:</h5>
+            <h5 class="ms-5 mt-4 fs-3">Les soirées populaires</h5>
             <div class="row mx-3">
                 <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
                     <div id ="img-resize" class="row row-cols-2 row-cols-md-5 ms-1 my-3 g-5 flex-nowrap gap-3">
@@ -211,14 +207,14 @@ $soirees_horreur = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'horre
                         while($soirees_populaireInfos = $soirees_populaire->fetch()){
                         ?>
                             <div class="card p-0 m-0">
-                                <img src="../assets/images/rella_16th_birthday_edit.jpg" class="card-img-top object-fit-cover" alt="...">
+                                <img src=<?= $soirees_populaireInfos['image_soiree'];?> class="card-img-top object-fit-cover" alt="...">
 
                                 <div class="card-body bg-ctm-primary-color-subtle">
                                     <h5 class="card-title"><?= $soirees_populaireInfos['nom_soiree'];?></h5>
-                                    <p class="card-text lh-1"><?= $soirees_populaireInfos['genre_soiree'];?>...<p>
+                                    <p class="card-text lh-1"><?= $soirees_populaireInfos['description_soiree'];?>...<p>
                                 </div>
                                 <div class="card-footer p-0 border-0">
-                                    <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
+                                    <a href="./soiree_infos.php?id_soiree=<?php echo $soirees_populaireInfos['id_soiree']; ?>" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
                                 </div>
                             </div>
                         <?php
@@ -236,14 +232,14 @@ $soirees_horreur = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'horre
                         while($soirees_horreurInfos = $soirees_horreur->fetch()){
                         ?>
                             <div class="card p-0 m-0">
-                                <img src="../assets/images/rella_16th_birthday_edit.jpg" class="card-img-top object-fit-cover" alt="...">
+                                <img src=<?= $soirees_horreurInfos['image_soiree'];?> class="card-img-top object-fit-cover" alt="...">
 
                                 <div class="card-body bg-ctm-primary-color-subtle">
                                     <h5 class="card-title"><?= $soirees_horreurInfos['nom_soiree'];?></h5>
-                                    <p class="card-text lh-1"><?= $soirees_horreurInfos['genre_soiree'];?>...<p>
+                                    <p class="card-text lh-1"><?= $soirees_horreurInfos['description_soiree'];?>...<p>
                                 </div>
                                 <div class="card-footer p-0 border-0">
-                                    <a href="#" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
+                                    <a href="./soiree_infos.php?id_soiree=<?php echo $soirees_horreurInfos['id_soiree']; ?>" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
                                 </div>
                             </div>
                         <?php

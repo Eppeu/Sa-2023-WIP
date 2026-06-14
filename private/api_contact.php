@@ -1,6 +1,8 @@
 <?php
 
-// Api KEY, may be worth to keep
+session_start();
+if(!isset($_SESSION['is_admin']) && $_SESSION['is_admin'] != TRUE) header("Location: ../public/index.php");
+
 $apiKey = "3e680f5dbc343c0b4bae9c4d4b08ed48";
 $name_movie= urlencode($_POST["nomMovie"]);
 $Api_name = "https://api.themoviedb.org/3/search/movie?api_key={$apiKey}&query={$name_movie}";
@@ -10,7 +12,7 @@ curl_setopt($curl, CURLOPT_URL, $Api_name);
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true); 
 $response1 = curl_exec($curl);
 
-if ($response1 == '"page":1,"results":[],"total_pages":1,"total_results":0}') {
+if ($response1 == '"page":1,"results":[],"total_pages":1,"total_results":0}' || $response1 == NULL) {
     echo "Error: Le film n'a pas été trouée! ";
 } else {
     $data = json_decode($response1, true);

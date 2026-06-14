@@ -49,10 +49,7 @@
                                     <a class="nav-link bootstrap_nav_item_color" href="./soiree_create.php">Créer une soirée</a>
                                     <!-- lien de navigation -->
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./vote.php">Vote TEMP</a>
-                                    <!-- lien de navigation -->
-                                </li>
+                                
                                 <?php if(isset($_SESSION['is_admin']) && $_SESSION['is_admin']==TRUE) { ?>
                                 <li class="nav-item">
                                     <a class="nav-link bootstrap_nav_item_color" href="./new_film.php">Ajouter un film</a>
@@ -62,7 +59,7 @@
                             </ul>
 
                             <?php
-                            if(isset($_SESSION['nom_utilisateur'])) {
+                            if(isset($_SESSION['email'])) {
                                 ?>
                                 <ul class="navbar-nav mb-2 mb-lg-0 gap-2 me-0 d-none d-md-flex">
                                     <li class="nav-item">

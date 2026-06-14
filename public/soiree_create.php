@@ -9,42 +9,22 @@ function add($nomSoireePOST, $descriptionSoireePOST, $genreSoireePOST, $choixFil
 
     global $bdd;
 
-    // DEBUG TEMPORAIRE - à supprimer une fois le problème résolu
-    echo "<pre>";
-    echo "nomSoiree : '" . $nomSoireePOST . "'\n";
-    echo "DESCRIPTION : '" . $descriptionSoireePOST . "'\n";
-    echo "choixFilm1 : '" . $choixFilm1POST . "'\n";
-    echo "choixFilm2 : '" . $choixFilm2POST . "'\n";
-    echo "choixFilm3 : '" . $choixFilm3POST . "'\n";
-    echo "choixFilm4 : '" . $choixFilm4POST . "'\n";
-    echo "choixFilm5 : '" . $choixFilm5POST . "'\n";
-    echo "choixLieu1 : '" . $choixLieu1POST . "'\n";
-    echo "choixLieu2 : '" . $choixLieu2POST . "'\n";
-    echo "choixLieu3 : '" . $choixLieu3POST . "'\n";
-    echo "nb_personne_max : '" . $nb_personne_maxPOST . "'\n";
-    echo "date_debut : '" . $date_debutPOST . "'\n";
-    echo "date_fin : '" . $date_finPOST . "'\n";
-    echo "</pre>";
-    // FIN DEBUG
-
-    $nomSoiree   = nl2br(htmlspecialchars($nomSoireePOST));
-    $descriptionSoiree   = nl2br(htmlspecialchars($descriptionSoireePOST));
+    $nomSoiree= nl2br(htmlspecialchars($nomSoireePOST));
+    $descriptionSoiree = nl2br(htmlspecialchars($descriptionSoireePOST));
     $genreSoiree = nl2br(htmlspecialchars($genreSoireePOST));
 
-    // Bug 5 corrigé : conversion du format datetime-local → MySQL
     $date_debut = str_replace('T', ' ', $date_debutPOST);
-    $date_fin   = str_replace('T', ' ', $date_finPOST);
+    $date_fin = str_replace('T', ' ', $date_finPOST);
 
-    // Bug 2 corrigé : utilisation de 'formFile' partout
-    $time     = date('YmdHis');
+
+    $time= date('YmdHis');
     $filename = $time . basename($_FILES["formFile"]["name"]);
 
-    if (
-        !empty($nomSoiree) && !empty($descriptionSoiree) && !empty($choixFilm1POST) && !empty($choixFilm2POST) &&
+    if (!empty($nomSoiree) && !empty($descriptionSoiree) && !empty($choixFilm1POST) && !empty($choixFilm2POST) &&
         !empty($choixFilm3POST) && !empty($choixFilm4POST) && !empty($choixFilm5POST) &&
         !empty($nb_personne_maxPOST) && !empty($date_debut) && !empty($date_fin) &&
-        !empty($choixLieu1POST) && !empty($choixLieu2POST) && !empty($choixLieu3POST)
-    ) {
+        !empty($choixLieu1POST) && !empty($choixLieu2POST) && !empty($choixLieu3POST))
+    { 
         // Déplacement de l'image
         $path_directory = "../assets/public/";
         $file_directory = $path_directory . $filename;
@@ -55,33 +35,45 @@ function add($nomSoireePOST, $descriptionSoireePOST, $genreSoireePOST, $choixFil
             return;
         }
 
-        // Bug 3 corrigé : ordre des valeurs aligné sur l'ordre des colonnes INSERT
-        // Bug 4 corrigé : remplacement de ??????????? par image_soiree
-        $ajoutSoiree = $bdd->prepare(
-            "INSERT INTO soiree(nom_soiree, description_soiree, nb_personne_max, genre_soiree, date_debut, date_fin,
+        // Ajout du premier lieu à la BDD
+        $ajout_lieu_1 = $bdd->prepare("INSERT INTO lieu(adresse) VALUES(?)");
+        $ajout_lieu_1->execute([$choixLieu1POST]);
+        $id_lieu_1 = $bdd->lastInsertId();
+
+        // Ajout du deuxième lieu à la BDD
+        $ajout_lieu_2 = $bdd->prepare("INSERT INTO lieu(adresse) VALUES(?)");
+        $ajout_lieu_2->execute([$choixLieu2POST]);
+        $id_lieu_2 = $bdd->lastInsertId();
+
+        // Ajout du deuxième lieu à la BDD
+        $ajout_lieu_3 = $bdd->prepare("INSERT INTO lieu(adresse) VALUES(?)");
+        $ajout_lieu_3->execute([$choixLieu3POST]);
+        $id_lieu_3 = $bdd->lastInsertId();
+
+        $ajoutSoiree = $bdd->prepare("INSERT INTO soiree(nom_soiree, description_soiree, nb_personne_max, genre_soiree, date_debut, date_fin,
              choix_1_film, choix_2_film, choix_3_film, choix_4_film, choix_5_film,
              choix_1_lieu, choix_2_lieu, choix_3_lieu, image_soiree)
-             VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-        );
+             VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         $ajoutSoiree->execute([
-            $nomSoiree,         // nom_soiree
-            $descriptionSoiree, // description_soiree
-            $nb_personne_maxPOST, // nb_personne_max
-            $genreSoiree,       // genre_soiree
-            $date_debut,        // date_debut
-            $date_fin,          // date_fin
+            $nomSoiree,     // nom_soiree
+            $descriptionSoiree,     // description_soiree
+            $nb_personne_maxPOST,   // nb_personne_max
+            $genreSoiree,   // genre_soiree
+            $date_debut,    // date_debut
+            $date_fin,      // date_fin
             $choixFilm1POST,    // choix_1_film
             $choixFilm2POST,    // choix_2_film
             $choixFilm3POST,    // choix_3_film
             $choixFilm4POST,    // choix_4_film
             $choixFilm5POST,    // choix_5_film
-            $choixLieu1POST,    // choix_1_lieu
-            $choixLieu2POST,    // choix_2_lieu
-            $choixLieu3POST,    // choix_3_lieu
-            $image_path         // image_soiree
+            $id_lieu_1,   // id du lieu 1
+            $id_lieu_2,     // id du lieu 1
+            $id_lieu_3,     // id du lieu 1
+            $image_path     // image_soiree
         ]);
+        $id_soiree = $bdd->lastInsertId();
 
-        header('Location: ./soirees.php');
+        header('Location: ./soiree_infos.php?id_soiree='.$id_soiree);
         exit();
 
     } else {
@@ -89,7 +81,6 @@ function add($nomSoireePOST, $descriptionSoireePOST, $genreSoireePOST, $choixFil
     }
 }
 
-// Bug 1 corrigé : appel à add() décommenté
 if (isset($_POST["create_party"])) {
     add(
         $_POST['nomSoiree'],
@@ -314,10 +305,7 @@ $("#movie_select_5").click(function(){
                                     <a class="nav-link bootstrap_nav_item_color" href="./soiree_create.php">Créer une soirée</a>
                                     <!-- lien de navigation -->
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./vote.php">Vote TEMP</a>
-                                    <!-- lien de navigation -->
-                                </li>
+                                
                                 <?php if(isset($_SESSION['is_admin']) && $_SESSION['is_admin']==TRUE) { ?>
                                 <li class="nav-item">
                                     <a class="nav-link bootstrap_nav_item_color" href="./new_film.php">Ajouter un film</a>
@@ -327,7 +315,7 @@ $("#movie_select_5").click(function(){
                             </ul>
 
                             <?php
-                            if(isset($_SESSION['nom_utilisateur'])) {
+                            if(isset($_SESSION['email'])) {
                                 ?>
                                 <ul class="navbar-nav mb-2 mb-lg-0 gap-2 me-0 d-none d-md-flex">
                                     <li class="nav-item">
@@ -423,7 +411,7 @@ $("#movie_select_5").click(function(){
 
                 <div class="mb-3">
                     <label for="description_soiree" class="form-label">Nom de la soirée</label>
-                    <textarea class="input" placeholder="Entrez une description..." name="description_soiree" autocomplete="off" maxlength="3000"></textarea>
+                    <input type="text" class="form-control" placeholder="Entrez une description..." name="description_soiree" autocomplete="off" maxlength="3000"></input>
                 </div>
     
                 <!-- choix du genre de la soirée avec les propositions en formulaire de sélection -->
@@ -448,7 +436,7 @@ $("#movie_select_5").click(function(){
 
                 <!-- Partie sur la recherche des films -->
                 <div class="mb-3">
-                    <label for="formFile" class="form-label">Recherchez les films que vous voulez donner à choisir aux participants (3 maximum)</label>
+                    <label for="formFile" class="form-label">Recherchez les films que vous voulez donner à choisir aux participants (5 maximum)</label>
                     <input class="form-control mb-5" id="livesearch" type="text" placeholder="Search" aria-label="Search"/>
                 </div>
 
@@ -456,20 +444,19 @@ $("#movie_select_5").click(function(){
 
                 </div>
 
-                <!-- Les inputs cachés sont maintenant ICI, AVANT le div row, plus à l'intérieur -->
-<input type="hidden" name="choixFilm1" id="hidden_film_1" value="">
-<input type="hidden" name="choixFilm2" id="hidden_film_2" value="">
-<input type="hidden" name="choixFilm3" id="hidden_film_3" value="">
-<input type="hidden" name="choixFilm4" id="hidden_film_4" value="">
-<input type="hidden" name="choixFilm5" id="hidden_film_5" value="">
+                <input type="hidden" name="choixFilm1" id="hidden_film_1" value="">
+                <input type="hidden" name="choixFilm2" id="hidden_film_2" value="">
+                <input type="hidden" name="choixFilm3" id="hidden_film_3" value="">
+                <input type="hidden" name="choixFilm4" id="hidden_film_4" value="">
+                <input type="hidden" name="choixFilm5" id="hidden_film_5" value="">
 
-<div class="row mt-4 d-flex justify-content-between">
-    <div id="movie_select_1" class="col-2"></div>
-    <div id="movie_select_2" class="col-2"></div>
-    <div id="movie_select_3" class="col-2"></div>
-    <div id="movie_select_4" class="col-2"></div>
-    <div id="movie_select_5" class="col-2"></div>
-</div>
+                <div class="row mt-4 d-flex justify-content-between">
+                    <div id="movie_select_1" class="col-2"></div>
+                    <div id="movie_select_2" class="col-2"></div>
+                    <div id="movie_select_3" class="col-2"></div>
+                    <div id="movie_select_4" class="col-2"></div>
+                    <div id="movie_select_5" class="col-2"></div>
+                </div>
 
                 <div class="mb-3">
                     <label for="range4" class="form-label">Nombre de personnes maximales pouvant être invités</label>

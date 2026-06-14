@@ -1,6 +1,6 @@
 <?php
 session_start();
-
+$error = 0;
 if (isset($_POST['valider'])) {
     if (!empty($_POST['login']) and !empty($_POST['password'])) {
         require_once '../bdd/bdd_connexion.php';
@@ -11,38 +11,25 @@ if (isset($_POST['valider'])) {
         $bdd = connectBDS(); // Connexion à la BDD
 
             // Récupération du mot de passe haché de l'utilisateur depuis la base de données
-            $query = $bdd->prepare("SELECT * FROM utilisateur WHERE nom_utilisateur=:identifiant");
+            $query = $bdd->prepare("SELECT * FROM utilisateur WHERE email=:identifiant");
             $query->execute([':identifiant' => $login]);
             
             // Vérification du mot de passe
             if ($row = $query->fetch()) {
                 $hashedMdp = $row['mot_de_passe'];
                 if (password_verify($mdp, $hashedMdp)) {
-                    $_SESSION['nom_utilisateur'] = $row['nom_utilisateur'];
+                    $_SESSION['email'] = $row['email'];
                     if($row['is_admin']==TRUE){
                         $_SESSION['is_admin'] = TRUE;
                     }
                     header('Location: ./utilisateur.php');
                 } else {
-                    echo "
-                    <div class='modal'>
-                        <p>Identifiant ou mot de passe invalide</p>
-                    </div>";
+                    $error = 1;
                 }
             } else {
-                echo "
-                <div class='modal'>
-                    <p>Identifiant ou mot de passe invalide</p>
-                </div>";
+                $error = 1;
             }
-        } else {
-            echo "
-            <div class='modal'>
-                <p>Captcha invalide</p>
-            </div>";
         }
-    } else {
-        echo "Veuillez compléter tous les champs.";
     }
 
 $characts = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -106,10 +93,7 @@ $_SESSION['captcha'] = $code_aleatoire;
                                     <a class="nav-link bootstrap_nav_item_color" href="./soiree_create.php">Créer une soirée</a>
                                     <!-- lien de navigation -->
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./vote.php">Vote TEMP</a>
-                                    <!-- lien de navigation -->
-                                </li>
+                                
                                 <?php if(isset($_SESSION['is_admin']) && $_SESSION['is_admin']==TRUE) { ?>
                                 <li class="nav-item">
                                     <a class="nav-link bootstrap_nav_item_color" href="./new_film.php">Ajouter un film</a>
@@ -119,7 +103,7 @@ $_SESSION['captcha'] = $code_aleatoire;
                             </ul>
 
                             <?php
-                            if(isset($_SESSION['nom_utilisateur'])) {
+                            if(isset($_SESSION['email'])) {
                                 ?>
                                 <ul class="navbar-nav mb-2 mb-lg-0 gap-2 me-0 d-none d-md-flex">
                                     <li class="nav-item">
@@ -201,17 +185,36 @@ $_SESSION['captcha'] = $code_aleatoire;
             <h5>Se connecter</h5>
         </div>
         <div class="container my-5">
+        
+            <?php 
+            if ($error != 1 ) {
+                echo
+                '
+                    <div class="alert alert-light" role="alert">
+                    Veuillez remplir les champs.
+                    </div>
+                '; 
+            } else {
+                echo
+                '
+                    <div class="alert alert-danger" role="alert">
+                    E-mail ou mot de passe incorect.
+                    </div>
+                '; 
+            }
+
+            ?> 
 
             <form method="POST" action="" class="form">
                 <!-- partie formulaire avec login et password -->
                 <div class="mb-3">
-                    <label for="" class="form-label">Utilisateur</label>
-                    <input type="text" class="form-control" id="login" name="login" maxlength="30" placeholder="Utilisateur">
+                    <label for="" class="form-label">E-mail</label>
+                    <input type="text" class="form-control" id="login" name="login" maxlength="30" placeholder="johndoe@gmail.com">
                 </div>
 
                 <div class="mb-3">
                     <label for="" class="form-label">Mot de Passe</label>
-                    <input type="text" class="form-control" id="password" name="password" maxlength="30" placeholder="Password">
+                    <input type="password" class="form-control" id="password" name="password" maxlength="30" placeholder="Password">
                 </div>
 
                 <button type="submit" class="btn btn-ctm-red container-fluid p-3" name="valider">Se connecter</button>
