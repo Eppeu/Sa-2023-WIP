@@ -9,7 +9,7 @@ VALUES
 (7, 'user1','user1','user1@email.com','$2y$10$9PwTMWim/MDwxNJLpshlZ.5LmGg.H2SJ3WKWvpfCAg5tnSi9iktGq',FALSE), -- mdp : user1
 (8, 'user2','user2','user2@email.com','$2y$10$EWEgeYiqCMQc.OIU193.n./SGdcN5QRc2wa7jDD6CJ4d619pPSwUO',FALSE); -- mdp : user2
 
-INSERT INTO soiree(id_soiree, id_utilisateur, nom_soiree, description_soiree, nb_personne_max, genre_soiree, date_debut, date_fin, lieu_choisi, film_choisi, choix_1_film, choix_2_film, choix_3_film, choix_4_film, choix_5_film, choix_1_lieu, choix_2_lieu, choix_3_lieu, image_soiree)
+INSERT INTO soiree(id_soiree, id_utilisateur, nom_soiree, description_soiree, nb_personne_max, genre_soiree, date_debut, date_fin, date_limite_vote, lieu_choisi, film_choisi, choix_1_film, choix_2_film, choix_3_film, choix_4_film, choix_5_film, choix_1_lieu, choix_2_lieu, choix_3_lieu, image_soiree)
 VALUES
 (1, 1, "Le Lancement","Description 1", 15,"Animation", "2026-06-08 20:00", "2026-06-08 23:00", NULL, NULL, 106, 110, 111, 107, 119, 1, 2, 32, "../assets/public/20260611182217Screenshot_20260205_172327_RVX.jpg"),
 (2, 1, "Party Cozy","Description 2", 30, "Action", "2026-06-09 19:30", "2026-06-09 21:00", NULL, NULL, 75, 72, 86, 83, 78, 4, 5, 33, "../assets/public/20260611173629ena.png"),
