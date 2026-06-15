@@ -66,7 +66,6 @@ if(isset($_GET['id_soiree']) AND !empty($_GET['id_soiree'])){
     if(isset($_SESSION['email'])){
         // Récupère les informations de l'utilisateur connecté
         $utilisateur_infos_requete = $bdd->prepare("SELECT * FROM utilisateur WHERE email=?");
-
         $utilisateur_infos_requete->execute(array($_SESSION['email']));
         $utilisateur_infos = $utilisateur_infos_requete->fetch();
 
