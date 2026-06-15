@@ -43,6 +43,7 @@ $soireesSF_sort = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE gen
     <!-- Bootstrap Icons  -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <title>Les films</title>
+
 </head>
 
 <body  class="bg-ctm-terciary-color">
@@ -142,10 +143,6 @@ $soireesSF_sort = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE gen
                                     </a>
                                     <a href="./utilisateur.php" class="list-group-item list-group-item-action">
                                         Utilisateur
-                                        <!-- list group actif -->
-                                    </a>
-                                    <a href="./vote.php" class="list-group-item list-group-item-action">
-                                        Voter
                                         <!-- list group actif -->
                                     </a>
                                 </ul>

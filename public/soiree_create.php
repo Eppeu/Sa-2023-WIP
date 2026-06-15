@@ -1,5 +1,10 @@
 <?php
 session_start();
+// Si l'utilisateur n'est pas connecté, il est renvoyé à la page de connexion
+if(!$_SESSION['email']) {
+    header('Location: ./connexion.php');
+}
+
 require_once '../bdd/bdd_connexion.php';
 $bdd = connectBDS();
 
@@ -20,6 +25,10 @@ function add($nomSoireePOST, $descriptionSoireePOST, $genreSoireePOST, $choixFil
     $time= date('YmdHis');
     $filename = $time . basename($_FILES["formFile"]["name"]);
 
+    if ($date_debut > $date_fin) {
+        echo 'La date de début de soirée est supérieur à la date de fin.';
+    }
+    
     if (!empty($nomSoiree) && !empty($descriptionSoiree) && !empty($choixFilm1POST) && !empty($choixFilm2POST) &&
         !empty($choixFilm3POST) && !empty($choixFilm4POST) && !empty($choixFilm5POST) &&
         !empty($nb_personne_maxPOST) && !empty($date_debut) && !empty($date_fin) &&
@@ -50,27 +59,14 @@ function add($nomSoireePOST, $descriptionSoireePOST, $genreSoireePOST, $choixFil
         $ajout_lieu_3->execute([$choixLieu3POST]);
         $id_lieu_3 = $bdd->lastInsertId();
 
-        $ajoutSoiree = $bdd->prepare("INSERT INTO soiree(nom_soiree, description_soiree, nb_personne_max, genre_soiree, date_debut, date_fin,
-             choix_1_film, choix_2_film, choix_3_film, choix_4_film, choix_5_film,
-             choix_1_lieu, choix_2_lieu, choix_3_lieu, image_soiree)
-             VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        $ajoutSoiree->execute([
-            $nomSoiree,     // nom_soiree
-            $descriptionSoiree,     // description_soiree
-            $nb_personne_maxPOST,   // nb_personne_max
-            $genreSoiree,   // genre_soiree
-            $date_debut,    // date_debut
-            $date_fin,      // date_fin
-            $choixFilm1POST,    // choix_1_film
-            $choixFilm2POST,    // choix_2_film
-            $choixFilm3POST,    // choix_3_film
-            $choixFilm4POST,    // choix_4_film
-            $choixFilm5POST,    // choix_5_film
-            $id_lieu_1,   // id du lieu 1
-            $id_lieu_2,     // id du lieu 1
-            $id_lieu_3,     // id du lieu 1
-            $image_path     // image_soiree
-        ]);
+        // Récupère les informations de l'utilisateur connecté
+        $utilisateur_infos_requete = $bdd->prepare("SELECT * FROM utilisateur WHERE email=?");
+        $utilisateur_infos_requete->execute(array($_SESSION['email']));
+        $utilisateur_infos = $utilisateur_infos_requete->fetch();
+
+        $ajoutSoiree = $bdd->prepare("INSERT INTO soiree(id_utilisateur, nom_soiree, description_soiree, nb_personne_max, genre_soiree, date_debut, date_fin, choix_1_film, choix_2_film, choix_3_film, choix_4_film, choix_5_film, choix_1_lieu, choix_2_lieu, choix_3_lieu, image_soiree)
+             VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $ajoutSoiree->execute([$utilisateur_infos['id_utilisateur'], $nomSoiree, $descriptionSoiree, $nb_personne_maxPOST, $genreSoiree, $date_debut, $date_fin, $choixFilm1POST, $choixFilm2POST, $choixFilm3POST, $choixFilm4POST, $choixFilm5POST, $id_lieu_1, $id_lieu_2, $id_lieu_3, $image_path]);
         $id_soiree = $bdd->lastInsertId();
 
         header('Location: ./soiree_infos.php?id_soiree='.$id_soiree);
@@ -82,28 +78,12 @@ function add($nomSoireePOST, $descriptionSoireePOST, $genreSoireePOST, $choixFil
 }
 
 if (isset($_POST["create_party"])) {
-    add(
-        $_POST['nomSoiree'],
-        $_POST['description_soiree'],
-        $_POST['genre_movie'],
-        $_POST['choixFilm1'],
-        $_POST['choixFilm2'],
-        $_POST['choixFilm3'],
-        $_POST['choixFilm4'],
-        $_POST['choixFilm5'],
-        $_POST['choixLieu1'],
-        $_POST['choixLieu2'],
-        $_POST['choixLieu3'],
-        $_POST['nb_personne_max'],
-        $_POST['date_debut'],
-        $_POST['date_fin']
-    );
+    add($_POST['nomSoiree'], $_POST['description_soiree'], $_POST['genre_movie'], $_POST['choixFilm1'], $_POST['choixFilm2'], $_POST['choixFilm3'], $_POST['choixFilm4'], $_POST['choixFilm5'], $_POST['choixLieu1'], $_POST['choixLieu2'], $_POST['choixLieu3'], $_POST['nb_personne_max'], $_POST['date_debut'], $_POST['date_fin']);
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -130,7 +110,7 @@ $(document).ready(function(){
         
         if(result != "") {
             $.ajax({
-                url: "../private/livesearch.php",
+                url: "../private/livesearch",
                 type: "POST",
                 data:{result_search:result},
                 success: function(data) {
@@ -153,15 +133,11 @@ $(document).ready(function(){
     $(document).on ("click", ".card-click", function(){
         var filmId = $(this).data("id_film"); // récupère l'id du film cliqué
 
-        
-        console.log("filmId lu :", filmId);      // ← ajoute ça
-        console.log("movie_selection :", movie_selection); // ← et ça
-
         switch (movie_selection) {
             case 1:
                 $("#movie_select_1").html($(this).html()).addClass("card p-0 m-2");
                 $("#hidden_film_1").val(filmId); // remplit l'input caché
-                movie_selection++;
+                movie_selection = 2;
                 break;
         
             case 2:
@@ -247,27 +223,27 @@ $("#movie_select_5").click(function(){
 });
 
     
-    $("#add_place").click(function() {
-        if ($("#place").val() == "") {
-            return;
-        }
-        if (place_selection <= 4) {
-            var tache = $("#place").val();
-            var nouvelItem = $("<li>",{text:tache}).addClass("list-group-item list-group-item-danger");
-            nouvelItem.append('<input type="hidden" name="choixLieu'+place_selection+'" value="'+tache+'">');
-            $("ol").append(nouvelItem);
-            $("#place").val("").focus();
-            place_selection++;
-        } 
-        if (place_selection == 4) {
-            $("#add_place").attr('disabled','true');
-        } 
-    });
-    $("#remove_place").click(function() {
-        $("ol").empty();
-        $("#add_place").removeAttr('disabled');
-        place_selection = 1;
-    });	
+$("#add_place").click(function() {
+    if ($("#place").val() == "") {
+        return;
+    }
+    if (place_selection <= 4) {
+        var tache = $("#place").val();
+        var nouvelItem = $("<li>",{text:tache}).addClass("list-group-item list-group-item-danger");
+        nouvelItem.append('<input type="hidden" name="choixLieu'+place_selection+'" value="'+tache+'">');
+        $("ol").append(nouvelItem);
+        $("#place").val("").focus();
+        place_selection++;
+    } 
+    if (place_selection == 4) {
+        $("#add_place").attr('disabled','true');
+    } 
+});
+$("#remove_place").click(function() {
+    $("ol").empty();
+    $("#add_place").removeAttr('disabled');
+    place_selection = 1;
+});	
 
 });
 </script>
@@ -371,10 +347,6 @@ $("#movie_select_5").click(function(){
                                     </a>
                                     <a href="./utilisateur.php" class="list-group-item list-group-item-action">
                                         Utilisateur
-                                        <!-- list group actif -->
-                                    </a>
-                                    <a href="./vote.php" class="list-group-item list-group-item-action">
-                                        Voter
                                         <!-- list group actif -->
                                     </a>
                                 </ul>
@@ -492,7 +464,7 @@ $("#movie_select_5").click(function(){
                     <input type="text" name="place" class="form-control mb-4" id="place" placeholder="7 Rue George Clemenceau">
                     
                     <button id="add_place" type="button" class="btn btn-primary">Ajouter</button>
-<button id="remove_place" type="button" class="btn btn-primary">Supprimer</button>
+                    <button id="remove_place" type="button" class="btn btn-primary">Supprimer</button>
                 </div>
 
                 <div class="container mt-4">

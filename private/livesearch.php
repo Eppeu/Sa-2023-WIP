@@ -1,6 +1,6 @@
 <?php
-session_start();
-if(!isset($_SESSION['is_admin']) && $_SESSION['is_admin'] != TRUE) header("Location: ../public/index.php");
+// session_start();
+// if(!isset($_SESSION['is_admin']) && $_SESSION['is_admin'] != TRUE) header("Location: ../public/index.php");
 
 include("../bdd/db_infos.php");
 

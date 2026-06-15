@@ -13,9 +13,36 @@ $count_soirees = $bdd->prepare('SELECT * FROM soiree');
 $count_soirees->execute();
 $count = $count_soirees->rowCount();
 
+$query = $bdd->prepare("SELECT * FROM utilisateur WHERE email=:identifiant");
+$query->execute([':identifiant' => $_SESSION['email']]);
+$infosUtilisateur = $query->fetch();
+
 $soirees_populaire = $bdd->query("SELECT * FROM soiree ORDER BY nb_personne_max DESC LIMIT 10;");
 $soirees_horreur = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'horreur'; ");
 
+
+function generateCard($DBData) {
+    echo 
+    '<div class="row mx-3">
+        <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
+            <div id ="img-resize" class="row row-cols-2 row-cols-md-5 ms-1 my-3 g-5 flex-nowrap gap-3">';
+                while($DBInfo = $DBData->fetch()){
+                    echo '<div class="card p-0 m-0">
+                        <img src=' . $DBInfo["image_soiree"] . ' class="replace-img card-img-top object-fit-cover" alt="...">
+
+                        <div class="card-body bg-ctm-primary-color-subtle">
+                            <h5 class="card-title">' . $DBInfo["nom_soiree"] . '</h5>
+                            <p class="card-text lh-1">' . $DBInfo["description_soiree"] . '...<p>
+                        </div>
+                        <div class="card-footer p-0 border-0">
+                            <a href="./soiree_infos.php?id_soiree=' . $DBInfo["id_soiree"] . '"' . 'class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
+                        </div>
+                    </div>';
+                }
+        echo '</div>
+        </div>
+    </div>';
+}
 
 ?>
 
@@ -37,6 +64,15 @@ $soirees_horreur = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'horre
     <!-- Bootstrap Icons  -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <title>PopCo - Accueil</title>
+
+    <script>
+        $(document).ready(function(){
+            $(".replace-img").on('error', function() {
+                $(this).attr("src", "../assets/images/yuri_time.png");
+            });
+        });
+    </script>
+
 </head>
 
 <body class="bg-ctm-terciary-color">
@@ -82,15 +118,17 @@ $soirees_horreur = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'horre
                             <?php
                             if(isset($_SESSION['email'])) {
                                 ?>
-                                <ul class="navbar-nav mb-2 mb-lg-0 gap-2 me-0 d-none d-md-flex">
-                                    <li class="nav-item">
-                                        <a class="btn btn-ctm-red-subtle" href="./utilisateur.php">Votre profil</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="btn btn-ctm-red" href="../private/deconnexion.php">Se déconnecter</a>
-                                    </li>
-                                    <!-- Boutons pour créer un compte et se connecter -->
+                                <div class="dropdown dropstart">
+                                <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <h2><i class="bi bi-person fs-3 link-ctm-terciary-color-subtle me-4"></i></h2>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li class="mx-3"><?= $infosUtilisateur['nom_utilisateur'];?> <?= $infosUtilisateur['prenom_utilisateur'];?></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="./utilisateur.php">Votre profil</a></li>
+                                    <li><a class="dropdown-item" href="../private/deconnexion.php">Se déconnecter</a></li>
                                 </ul>
+                                </div>
                                 <?php
                             }else{
                                 ?>
@@ -138,10 +176,6 @@ $soirees_horreur = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'horre
                                         Utilisateur
                                         <!-- list group actif -->
                                     </a>
-                                    <a href="./vote.php" class="list-group-item list-group-item-action">
-                                        Voter
-                                        <!-- list group actif -->
-                                    </a>
                                 </ul>
 
                                 <div class="container-fluid d-md-flex justify-content-end gap-2">
@@ -158,96 +192,32 @@ $soirees_horreur = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'horre
     </header>
 
     <main class="container-fluid px-0">
-        <div class="bgImage"></div>
-        <div class="text-center py-5 callToAction">
-            <h5 class="fs-1">Organisez des soirées inoubliables !!</h5>
-            <p class="px-3 fs-3 sticker bg-ctm-red">Déjà <?php echo $count; ?> soirées créées !</p>
+        
+        <?php if(!isset($_SESSION['email'])) { ?>
+            <div class="bgImage"></div>
+            <div class="text-center py-5 callToAction">
+                <h5 class="fs-1">Organisez des soirées inoubliables !!</h5>
+                <p class="px-3 fs-3 sticker bg-ctm-red">Déjà <?php echo $count; ?> soirées créées !</p>
 
-            <p class="mt-5 fs-4">
-                Grâce à PopCo, trouvez des soirées où regarder de bons films ! <br/>
-                Rien de plus simple : cherchez une soirée, connectez-vous, votez le film qui vous intéresse le plus,<br/>
-                et le film qui remporte le plus de voix sera diffusé !<br/>
-            </p>
-        </div>
+                <p class="mt-5 fs-4">
+                    Grâce à PopCo, trouvez des soirées où regarder de bons films ! <br/>
+                    Rien de plus simple : cherchez une soirée, connectez-vous, votez le film qui vous intéresse le plus,<br/>
+                    et le film qui remporte le plus de voix sera diffusé !<br/>
+                </p>
+            </div>
+        <?php } ?>
         <!-- texte de présentation du site PopCo -->
         <div class="mainPart py-5 z-0">
 
             <h5 class="ms-5 fs-3 text-ctm-primary-color-subtle">Les soirées récemment ajoutées !</h5>
             <!-- Titre h5 -->
-            
-            <div class="row mx-3">
-                <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
-                    <div id ="img-resize" class="row row-cols-2 row-cols-md-5 ms-1 my-3 g-5 flex-nowrap gap-3">
-                        <?php
-                        while($all_soireesInfos = $all_soirees->fetch()){
-                        ?>
-                            <div class="card p-0 m-0">
-                                <img src=<?= $all_soireesInfos['image_soiree']?> class="card-img-top object-fit-cover" alt="...">
-
-                                <div class="card-body bg-ctm-primary-color-subtle">
-                                    <h5 class="card-title"><?= $all_soireesInfos['nom_soiree'];?></h5>
-                                    <p class="card-text lh-1"><?= $all_soireesInfos['description_soiree'];?>...<p>
-                                </div>
-                                <div class="card-footer p-0 border-0">
-                                    <a href="./soiree_infos.php?id_soiree=<?php echo $all_soireesInfos['id_soiree']; ?>" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
-                                </div>
-                            </div>
-                        <?php
-                        }
-                        ?>
-                    </div>
-                </div>
-            </div>
+            <?php generateCard($all_soirees); ?>
             <!-- card pour les soirées récemment ajoutées avec une barre de défilement -->
             <h5 class="ms-5 mt-4 fs-3">Les soirées populaires</h5>
-            <div class="row mx-3">
-                <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
-                    <div id ="img-resize" class="row row-cols-2 row-cols-md-5 ms-1 my-3 g-5 flex-nowrap gap-3">
-                        <?php
-                        while($soirees_populaireInfos = $soirees_populaire->fetch()){
-                        ?>
-                            <div class="card p-0 m-0">
-                                <img src=<?= $soirees_populaireInfos['image_soiree'];?> class="card-img-top object-fit-cover" alt="...">
-
-                                <div class="card-body bg-ctm-primary-color-subtle">
-                                    <h5 class="card-title"><?= $soirees_populaireInfos['nom_soiree'];?></h5>
-                                    <p class="card-text lh-1"><?= $soirees_populaireInfos['description_soiree'];?>...<p>
-                                </div>
-                                <div class="card-footer p-0 border-0">
-                                    <a href="./soiree_infos.php?id_soiree=<?php echo $soirees_populaireInfos['id_soiree']; ?>" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
-                                </div>
-                            </div>
-                        <?php
-                        }
-                        ?>
-                    </div>
-                </div>
-            </div>
+                <?php generateCard($soirees_populaire); ?>
             <!-- card pour les soirées populaires avec une barre de défilement-->
             <h5 class="ms-5 mt-4  fs-3">Thème film d'Horreur</h5>
-            <div class="row mx-3">
-                <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
-                    <div id ="img-resize" class="row row-cols-2 row-cols-md-5 ms-1 my-3 g-5 flex-nowrap gap-3">
-                        <?php
-                        while($soirees_horreurInfos = $soirees_horreur->fetch()){
-                        ?>
-                            <div class="card p-0 m-0">
-                                <img src=<?= $soirees_horreurInfos['image_soiree'];?> class="card-img-top object-fit-cover" alt="...">
-
-                                <div class="card-body bg-ctm-primary-color-subtle">
-                                    <h5 class="card-title"><?= $soirees_horreurInfos['nom_soiree'];?></h5>
-                                    <p class="card-text lh-1"><?= $soirees_horreurInfos['description_soiree'];?>...<p>
-                                </div>
-                                <div class="card-footer p-0 border-0">
-                                    <a href="./soiree_infos.php?id_soiree=<?php echo $soirees_horreurInfos['id_soiree']; ?>" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
-                                </div>
-                            </div>
-                        <?php
-                        }
-                        ?>
-                    </div>
-                </div>
-            </div>
+                <?php generateCard($soirees_horreur); ?>
         </div>
         <!-- card pour le thème film d'horreur avec une barre de défilement -->
     </main>

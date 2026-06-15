@@ -10,12 +10,13 @@ if (isset($_POST['valider'])) {
 
         $bdd = connectBDS(); // Connexion à la BDD
 
-            // Récupération du mot de passe haché de l'utilisateur depuis la base de données
-            $query = $bdd->prepare("SELECT * FROM utilisateur WHERE email=:identifiant");
-            $query->execute([':identifiant' => $login]);
+            // Récupération des informations de l'utilisateur depuis la base de données
+            $utilisateur_infos = $bdd->prepare("SELECT * FROM utilisateur WHERE email=?");
+            $utilisateur_infos->execute(array($login));
+            
             
             // Vérification du mot de passe
-            if ($row = $query->fetch()) {
+            if ($row = $utilisateur_infos->fetch()) {
                 $hashedMdp = $row['mot_de_passe'];
                 if (password_verify($mdp, $hashedMdp)) {
                     $_SESSION['email'] = $row['email'];
@@ -31,15 +32,6 @@ if (isset($_POST['valider'])) {
             }
         }
     }
-
-$characts = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-$characts .= '123456789';
-$code_aleatoire = '';
-for ($i = 0; $i < 4; $i++) {
-    $code_aleatoire .= substr($characts, rand() % (strlen($characts)), 1);
-}
-
-$_SESSION['captcha'] = $code_aleatoire;
 ?>
 
 <!DOCTYPE html>
@@ -159,10 +151,6 @@ $_SESSION['captcha'] = $code_aleatoire;
                                     </a>
                                     <a href="./utilisateur.php" class="list-group-item list-group-item-action">
                                         Utilisateur
-                                        <!-- list group actif -->
-                                    </a>
-                                    <a href="./vote.php" class="list-group-item list-group-item-action">
-                                        Voter
                                         <!-- list group actif -->
                                     </a>
                                 </ul>

@@ -1,29 +1,10 @@
 <!-- CONNEXION A LA BASE DE DONNEE-->
 <?php
 session_start();
-if(!$_SESSION['email']) {
-    header('Location: ./connexion.php');
-}
 
 require_once '../bdd/bdd_connexion.php';
 $bdd = connectBDS();
 
-
-// Sélection de tous les soirées (films)
-// $allUtilisateur = $bdd->query('SELECT * FROM utilisateur WHERE nom_utilisateur=""');
-
-$query = $bdd->prepare("SELECT * FROM utilisateur WHERE email=:identifiant");
-$query->execute([':identifiant' => $_SESSION['email']]);
-$infos_utilisateur = $query->fetch();
-
-// Récupère, si ça existe, les soirées auquels l'utilisateur a déjà voté
-$soiree_votee_requete = $bdd->prepare('SELECT s.*
-FROM vote v
-JOIN utilisateur u ON u.id_utilisateur = v.id_utilisateur
-JOIN soiree s ON s.id_soiree = v.id_soiree
-WHERE u.id_utilisateur = ?;');
-$soiree_votee_requete->execute(array($infos_utilisateur['id_utilisateur']));
-// $soiree_votee = $soiree_votee_requete->rowCount();
 ?>
 
 <!DOCTYPE html>
@@ -40,10 +21,19 @@ $soiree_votee_requete->execute(array($infos_utilisateur['id_utilisateur']));
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="../styles/main.css">
     <!-- Font Awesome pour les icônes -->
-        <script src="https://kit.fontawesome.com/4b69bc6b92.js" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/4b69bc6b92.js" crossorigin="anonymous"></script>
     <!-- Bootstrap Icons  -->
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <title>Les soirées</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <title>PopCo - Accueil</title>
+
+    <script>
+        $(document).ready(function(){
+            $(".replace-img").on('error', function() {
+                $(this).attr("src", "../assets/images/yuri_time.png");
+            });
+        });
+    </script>
+
 </head>
 
 <body class="bg-ctm-terciary-color">
@@ -80,7 +70,7 @@ $soiree_votee_requete->execute(array($infos_utilisateur['id_utilisateur']));
                                 
                                 <?php if(isset($_SESSION['is_admin']) && $_SESSION['is_admin']==TRUE) { ?>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./new_film.php">Ajouter un film</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="../private/movie_create.php">Ajouter un film</a>
                                     <!-- lien de navigation -->
                                 </li>
                                 <?php } ?>
@@ -89,15 +79,15 @@ $soiree_votee_requete->execute(array($infos_utilisateur['id_utilisateur']));
                             <?php
                             if(isset($_SESSION['email'])) {
                                 ?>
-                                <ul class="navbar-nav mb-2 mb-lg-0 gap-2 me-0 d-none d-md-flex">
-                                    <li class="nav-item">
-                                        <a class="btn btn-ctm-red-subtle" href="./utilisateur.php">Votre profil</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="btn btn-ctm-red" href="../private/deconnexion.php">Se déconnecter</a>
-                                    </li>
-                                    <!-- Boutons Rouges (un de couleur légère et l'autre non) pour créer un compte et se connecter -->
+                                <div class="dropdown dropstart">
+                                <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <h2><i class="bi bi-person fs-3 link-ctm-terciary-color-subtle me-4"></i></h2>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="./utilisateur.php">Votre profil</a></li>
+                                    <li><a class="dropdown-item" href="../private/deconnexion.php">Se déconnecter</a></li>
                                 </ul>
+                                </div>
                                 <?php
                             }else{
                                 ?>
@@ -161,51 +151,20 @@ $soiree_votee_requete->execute(array($infos_utilisateur['id_utilisateur']));
     </header>
 
     <main class="container-fluid px-0">
-        <div class="bgImage"></div>
-        <div class="text-center py-5 callToAction">
-            <h5 class="fs-1">Bonjour <?= $infos_utilisateur['nom_utilisateur'];?> !</h5>
+        
+        <div class ="text-center row">
+            <figure class = "figure mt-5">
+                <img src="../assets/icons/PopCo_logo_error.png" class="img-create img-fluid rounded-2" alt="...">
+            </figure>
+            <h1> Erreur 404</h1>
+            <p>La page que vous avez cherché n'existe pas</p>
+            <a class="btn btn-ctm-red col-6 mx-auto mb-4" href="./index.php">Accueil</a>
         </div>
-        <!-- affichage de la page avec texte -->
-        <div class="mainPart py-5">
-            <div class="row m-0">
-                <!-- affiche les informations de l'utilisateur -->
-                <div class="ms-5 col-11">
-                    <h5 class="fs-3">Vos informations</h5>
-                    <p class="mt-5">Nom : <?= $infos_utilisateur['nom_utilisateur'];?></p>
-                    <p>Prénom : <?= $infos_utilisateur['prenom_utilisateur'];?></p>
-                    <p>email : <?= $infos_utilisateur['email'];?></p>
-                    <h5 class="mt-5 fs-3">Les soirées auxquelles vous êtes inscrit(e)</h5>
-                </div>
 
-            <div id ="img-resize" class="row row-cols-5 mx-0 mb-3 pt-3 g-5">
-
-            <?php
-                while($soiree_votee = $soiree_votee_requete->fetch()){
-            ?>
-            <div class="col-12 col-sm-6 col-lg-4 col-xl-3" >
-                    <div class="card p-0 h-auto">
-                        <img src="<?= $soiree_votee['image_soiree'];?>" alt="...">
-
-                        <div class="card-body bg-ctm-primary-color-subtle">
-                            <h5 class="card-title"><?= $soiree_votee['nom_soiree'];?></h5>
-                            <p class="card-text lh-1"><?= $soiree_votee['description_soiree'];?><p>
-                        </div>
-                        <div class="card-footer p-0 border-0">
-                            <a href="./soiree_infos.php?id_soiree=<?php echo $soiree_votee['id_soiree']; ?>" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
-                        </div>
-                    </div>
-                </div>
-            <?php
-            }
-            ?>
-
-                <!-- carte des soirée ou l'utilisateur participe -->
-            </div>
-        </div>
     </main>
 
+    <!-- Footer avec les liens vers instagram, discord, facebook, mentions légales -->
     <footer id="footer_popco" class="container-fluid py-3 rounded-top-5 bg-ctm-primary-color">
-        <!-- Footer avec les liens vers instagram, discord, facebook, mentions légales -->
         <div class="row g-1 d-flex align-items-center">
             <div class="col-4 fs-2 ps-4">
                 <a href="" target="_blank" class="text-decoration-none link-ctm-terciary-color-subtle">
@@ -219,18 +178,16 @@ $soiree_votee_requete->execute(array($infos_utilisateur['id_utilisateur']));
                 </a>
                 
             </div>
-            <!-- icone lien vers les réseaux sociaux -->
             <div class="col-4 text-center">
                 <img src="../assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
                 <!-- Insertion de l'icône du logo PopCo -->
             </div>
-            <!-- logo bas de page ramenant a la page d'accueil -->
             <div class="col-4 py-3 text-start d-lg-block text-end pe-4">
                 <a class="text-decoration-none link-ctm-terciary-color-subtle" data-bs-toggle="modal" href="#popco_ml" role="button">
                 Mentions légales
                 </a>
-                <!-- bouton pop up mentions légales -->
                 <div class="modal fade" id="popco_ml" tabindex="-1" aria-labelledby="popco_mlLabel" aria-hidden="true">
+                    <!-- partie mentions légales sous la forme d'un modal -->
                     <div class="modal-dialog">
                         <div class="modal-content bg-ctm-terciary-color">
                         <div class="modal-header">
@@ -238,7 +195,6 @@ $soiree_votee_requete->execute(array($infos_utilisateur['id_utilisateur']));
                             <button type="button" class="btn-close link-ctm-primary-color-subtle" data-bs-dismiss="modal" aria-label="Close"></button>
                             <!-- bouton pour fermer les mentions légales (en forme de X)-->
                         </div>
-                        <!-- mise en forme des mentions légales -->
                         <div class="modal-body text-center lh-sm">
                             <p>
                                 Conformément aux dispositions de la loi n° 2004-575 du 21 juin 2004 pour la confiance en l'économie numérique, il est précisé aux utilisateurs du site PopCo l'identité des différents intervenants dans le cadre de sa réalisation et de son suivi.
@@ -264,11 +220,10 @@ $soiree_votee_requete->execute(array($infos_utilisateur['id_utilisateur']));
                                 Génération des mentions légales par Legalstart.
                             </p>
                         </div>
-                        <!-- contenus des mentions légales -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-ctm-secondary-color-subtle" data-bs-dismiss="modal">Close</button>
+                            <!-- bouton pour fermer les mentions légales "Close"-->
                         </div>
-                        <!-- bouton de fermeture des mentions légales -->
                         </div>
                     </div>
                 </div>
@@ -278,3 +233,4 @@ $soiree_votee_requete->execute(array($infos_utilisateur['id_utilisateur']));
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+</html>

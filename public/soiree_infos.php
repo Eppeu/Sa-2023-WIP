@@ -9,7 +9,7 @@ if(isset($_GET['id_soiree']) AND !empty($_GET['id_soiree'])){
     // Récupère l'id de l'élément voulu depuis l'URL
     $id_soiree_get = $_GET['id_soiree'];
 
-    // Récupère la colonne de l'id voulu
+    // Récupère la soirée à l'id voulu
     $soiree_infos_requete = $bdd->prepare('SELECT
     s.*,
     f1.nom_film AS film1_nom_film,
@@ -60,6 +60,25 @@ if(isset($_GET['id_soiree']) AND !empty($_GET['id_soiree'])){
     }
     else{
         echo "soiree introuvable. Vous allez être redirigé vers les soirees.";
+    }
+
+
+    if(isset($_SESSION['email'])){
+        // Récupère les informations de l'utilisateur connecté
+        $utilisateur_infos_requete = $bdd->prepare("SELECT * FROM utilisateur WHERE email=?");
+
+        $utilisateur_infos_requete->execute(array($_SESSION['email']));
+        $utilisateur_infos = $utilisateur_infos_requete->fetch();
+
+        // Récupère, si ça existe, le vote de l'utilisateur sur cette soirée
+        $vote_exist_requete = $bdd->prepare('SELECT vote.*
+        FROM vote
+        JOIN utilisateur ON utilisateur.id_utilisateur = vote.id_utilisateur
+        JOIN soiree ON soiree.id_soiree = vote.id_soiree
+        WHERE utilisateur.id_utilisateur = ? AND soiree.id_soiree = ?;');
+
+        $vote_exist_requete->execute(array($utilisateur_infos['id_utilisateur'], $id_soiree_get));
+        $vote_exist = $vote_exist_requete->rowCount() > 0;
     }
 }
 else{
@@ -185,10 +204,6 @@ else{
                                         Utilisateur
                                         <!-- list group actif -->
                                     </a>
-                                    <a href="./vote.php" class="list-group-item list-group-item-action">
-                                        Voter
-                                        <!-- list group actif -->
-                                    </a>
                                 </ul>
 
                                 <div class="container-fluid d-md-flex justify-content-end gap-2">
@@ -205,83 +220,75 @@ else{
     </header>
 
     <main>
-        <div class="container d-flex ms-5 ps-5 my-5 ">
-            <div class="row flex-column">
-                <div class="">
+        <div class="container-fluid flex-column mx-4 my-5 ">
+            <div class="row flex-sm-column flex-lg-row">
+                <div class="col-3 col-sm-2">
                     <img src="<?= $soiree_infos['image_soiree'] ?>" class="img-resize-choose rounded-2 object-fit-cover" alt="...">
                 </div>
-                <div class="my-3">
-                    <p id="caracteristics"></p>
-                </div>
-            </div>
-            <div class="row mx-3">
-                <div class="align-self-start col-6">
+                <div class="align-self-start col-3 col-sm-4 col-lg-3 offset-lg-1">
                     <h1 id="nom_soiree"><?= $soiree_infos['nom_soiree'] ?></h1>
+                    <p><?= $soiree_infos['description_soiree'] ?></p>
+                    <p>Genre : <?= $soiree_infos['genre_soiree'] ?></p>
                 </div>
-                <div class="align-self-start col-6">
+                <div class="align-self-start col-3 col-sm-4 col-lg-3">
                     <h3 id="genre_soiree">Nombre d'invités maximum : <?= $soiree_infos['nb_personne_max'] ?> personnes</h3>
+                    <p>Date de début : <?= $soiree_infos['date_debut'] ?></p>
+                    <p>Date de fin prévue : <?= $soiree_infos['date_fin'] ?></p>
+                    <p>Date de début : <?= $soiree_infos['date_debut'] ?></p>
                 </div>
-                <div class="align-self-stretch m-1">
-                    <p id=""><?= $soiree_infos['description_soiree'] ?></p>
-                    <p id="synopsis_soiree">Genre : <?= $soiree_infos['genre_soiree'] ?></p>
-                    <p id="">Date de début : <?= $soiree_infos['date_debut'] ?></p>
-                    <p id="">Date de fin prévue : <?= $soiree_infos['date_fin'] ?></p>
-                    <p id="">Date de début : <?= $soiree_infos['date_debut'] ?></p>
+                <div class="row col-4 col-lg-12 col-sm-12 ms-0 mt-4 d-flex flex-column gap-2">
+                    <div class="card p-0 flex-row overflow-hidden" style="height: 85px;">
+                        <img src="<?= $soiree_infos['film1_affiche'] ?>" class="object-fit-cover" style="width: 100px; flex-shrink: 0;">
+                        <div class="card-body bg-ctm-primary-color-subtle p-2 d-flex flex-column justify-content-center">
+                            <h6 class="card-title mb-0"><?= $soiree_infos['film1_nom_film'] ?></h6>
+                            <p class="card-caption mb-0">Nombre de vote pour ce film : <?= isset($votes_par_film[$soiree_infos['choix_1_film']]) ? $votes_par_film[$soiree_infos['choix_1_film']] : 0 ?></p>
+                        </div>
+                    </div>
+
+                    <div class="card p-0 flex-row overflow-hidden" style="height: 85px;">
+                        <img src="<?= $soiree_infos['film2_affiche'] ?>" class="object-fit-cover" style="width: 100px; flex-shrink: 0;">
+                        <div class="card-body bg-ctm-primary-color-subtle p-2 d-flex flex-column justify-content-center">
+                            <h6 class="card-title mb-0"><?= $soiree_infos['film2_nom_film'] ?></h6>
+                            <p class="card-caption mb-0">Nombre de vote pour ce film : <?= isset($votes_par_film[$soiree_infos['choix_2_film']]) ? $votes_par_film[$soiree_infos['choix_2_film']] : 0 ?></p>
+                        </div>
+                    </div>
+
+                    <div class="card p-0 flex-row overflow-hidden" style="height: 85px;">
+                        <img src="<?= $soiree_infos['film3_affiche'] ?>" class="object-fit-cover" style="width: 100px; flex-shrink: 0;">
+                        <div class="card-body bg-ctm-primary-color-subtle p-2 d-flex flex-column justify-content-center">
+                            <h6 class="card-title mb-0"><?= $soiree_infos['film3_nom_film'] ?></h6>
+                            <p class="card-caption mb-0">Nombre de vote pour ce film : <?= isset($votes_par_film[$soiree_infos['choix_3_film']]) ? $votes_par_film[$soiree_infos['choix_3_film']] : 0 ?></p>
+                        </div>
+                    </div>
+
+                    <div class="card p-0 flex-row overflow-hidden" style="height: 85px;">
+                        <img src="<?= $soiree_infos['film4_affiche'] ?>" class="object-fit-cover" style="width: 100px; flex-shrink: 0;">
+                        <div class="card-body bg-ctm-primary-color-subtle p-2 d-flex flex-column justify-content-center">
+                            <h6 class="card-title mb-0"><?= $soiree_infos['film4_nom_film'] ?></h6>
+                            <p class="card-caption mb-0">Nombre de vote pour ce film : <?= isset($votes_par_film[$soiree_infos['choix_4_film']]) ? $votes_par_film[$soiree_infos['choix_4_film']] : 0 ?></p>
+                        </div>
+                    </div>
+
+                    <div class="card p-0 flex-row overflow-hidden" style="height: 85px;">
+                        <img src="<?= $soiree_infos['film5_affiche'] ?>" class="object-fit-cover" style="width: 100px; flex-shrink: 0;">
+                        <div class="card-body bg-ctm-primary-color-subtle p-2 d-flex flex-column justify-content-center">
+                            <h6 class="card-title mb-0"><?= $soiree_infos['film5_nom_film'] ?></h6>
+                            <p class="card-caption mb-0">Nombre de vote pour ce film : <?= isset($votes_par_film[$soiree_infos['choix_5_film']]) ? $votes_par_film[$soiree_infos['choix_5_film']] : 0 ?></p>
+                        </div>
+                    </div>
                 </div>
             </div>
-            
-            <div class="row col-4 ms-auto d-flex flex-column gap-2">
-
-    <div class="card p-0 flex-row overflow-hidden" style="height: 85px;">
-        <img src="<?= $soiree_infos['film1_affiche'] ?>" class="object-fit-cover" style="width: 100px; flex-shrink: 0;">
-        <div class="card-body bg-ctm-primary-color-subtle p-2 d-flex flex-column justify-content-center">
-            <p class="card-caption mb-0 small">1er film proposé :</p>
-            <h6 class="card-title mb-0"><?= $soiree_infos['film1_nom_film'] ?></h6>
-            <p class="card-caption mb-0">Nombre de vote pour ce film : <?= isset($votes_par_film[$soiree_infos['choix_1_film']]) ? $votes_par_film[$soiree_infos['choix_1_film']] : 0 ?></p>
         </div>
-    </div>
 
-    <div class="card p-0 flex-row overflow-hidden" style="height: 85px;">
-        <img src="<?= $soiree_infos['film2_affiche'] ?>" class="object-fit-cover" style="width: 100px; flex-shrink: 0;">
-        <div class="card-body bg-ctm-primary-color-subtle p-2 d-flex flex-column justify-content-center">
-            <p class="card-caption mb-0 small">2ème film proposé :</p>
-            <h6 class="card-title mb-0"><?= $soiree_infos['film2_nom_film'] ?></h6>
-            <p class="card-caption mb-0">Nombre de vote pour ce film : <?= isset($votes_par_film[$soiree_infos['choix_2_film']]) ? $votes_par_film[$soiree_infos['choix_2_film']] : 0 ?></p>
-        </div>
-    </div>
-
-    <div class="card p-0 flex-row overflow-hidden" style="height: 85px;">
-        <img src="<?= $soiree_infos['film3_affiche'] ?>" class="object-fit-cover" style="width: 100px; flex-shrink: 0;">
-        <div class="card-body bg-ctm-primary-color-subtle p-2 d-flex flex-column justify-content-center">
-            <p class="card-caption mb-0 small">3ème film proposé :</p>
-            <h6 class="card-title mb-0"><?= $soiree_infos['film3_nom_film'] ?></h6>
-            <p class="card-caption mb-0">Nombre de vote pour ce film : <?= isset($votes_par_film[$soiree_infos['choix_3_film']]) ? $votes_par_film[$soiree_infos['choix_3_film']] : 0 ?></p>
-        </div>
-    </div>
-
-    <div class="card p-0 flex-row overflow-hidden" style="height: 85px;">
-        <img src="<?= $soiree_infos['film4_affiche'] ?>" class="object-fit-cover" style="width: 100px; flex-shrink: 0;">
-        <div class="card-body bg-ctm-primary-color-subtle p-2 d-flex flex-column justify-content-center">
-            <p class="card-caption mb-0 small">4ème film proposé :</p>
-            <h6 class="card-title mb-0"><?= $soiree_infos['film4_nom_film'] ?></h6>
-            <p class="card-caption mb-0">Nombre de vote pour ce film : <?= isset($votes_par_film[$soiree_infos['choix_4_film']]) ? $votes_par_film[$soiree_infos['choix_4_film']] : 0 ?></p>
-        </div>
-    </div>
-
-    <div class="card p-0 flex-row overflow-hidden" style="height: 85px;">
-        <img src="<?= $soiree_infos['film5_affiche'] ?>" class="object-fit-cover" style="width: 100px; flex-shrink: 0;">
-        <div class="card-body bg-ctm-primary-color-subtle p-2 d-flex flex-column justify-content-center">
-            <p class="card-caption mb-0 small">5ème film proposé :</p>
-            <h6 class="card-title mb-0"><?= $soiree_infos['film5_nom_film'] ?></h6>
-            <p class="card-caption mb-0">Nombre de vote pour ce film : <?= isset($votes_par_film[$soiree_infos['choix_5_film']]) ? $votes_par_film[$soiree_infos['choix_5_film']] : 0 ?></p>
-        </div>
-    </div>
-
-</div>
-        </div>
         <div class="ms-5 mb-5 col-9">
-            <a href="./vote.php?id_soiree=<?php echo $soiree_infos['id_soiree']; ?>" class="btn btn-ctm-red py-3 w-100 rounded-1">Voter !</a>
-        </div>
+            <?php if(isset($vote_exist) AND $vote_exist == TRUE){ // Si existe déjà vote pour id connecté et soirée sélectionnée : bouton disabled
+            ?>
+                <a disabled href="./vote.php?id_soiree=<?php echo $soiree_infos['id_soiree']; ?>" class="btn btn-ctm-red py-3 w-100 rounded-1 disabled">Vous avez déjà voté !</a>
+            <?php
+            }else{
+                ?>
+                <a href="./vote.php?id_soiree=<?php echo $soiree_infos['id_soiree']; ?>" class="btn btn-ctm-red py-3 w-100 rounded-1">Voter !</a>
+            <?php } ?>
         </div>
     </main>
 

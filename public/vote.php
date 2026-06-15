@@ -208,10 +208,6 @@ else{
                                         Utilisateur
                                         <!-- list group actif -->
                                     </a>
-                                    <a href="./vote.php" class="list-group-item list-group-item-action">
-                                        Voter
-                                        <!-- list group actif -->
-                                    </a>
                                 </ul>
 
                                 <div class="container-fluid d-md-flex justify-content-end gap-2">

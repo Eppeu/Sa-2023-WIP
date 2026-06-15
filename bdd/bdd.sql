@@ -49,12 +49,14 @@ CREATE TABLE IF NOT EXISTS lieu (
 
 CREATE TABLE IF NOT EXISTS soiree (
     id_soiree INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    id_utilisateur INT NOT NULL,
     nom_soiree VARCHAR(200) NOT NULL,
     description_soiree TEXT NOT NULL,
     nb_personne_max INT NOT NULL,
     genre_soiree VARCHAR(50),
     date_debut DATETIME NOT NULL,
     date_fin DATETIME NOT NULL,
+    date_limite_vote DATETIME NOT NULL, -- AJOUT RECENT
     lieu_choisi INT,
     film_choisi INT,
     choix_1_film INT NOT NULL,
