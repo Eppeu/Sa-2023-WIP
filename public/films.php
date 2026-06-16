@@ -23,6 +23,31 @@ $soireesSF_sort = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE gen
 
 // AIDE
 // $countSoirees = $bdd->prepare('SELECT *, LEFT(synopsis, 200) FROM film');
+
+function generateCard_Movie($DBData) {
+    echo 
+    '<div class="row mx-3">
+        <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
+            <div id ="img-resize" class="row row-cols-2 row-cols-md-5 ms-1 my-3 g-5 flex-nowrap gap-3">';
+                while($DBInfo = $DBData->fetch()){
+                    echo '<div class="card p-0 m-0">
+                        <img src=' . $DBInfo["affiche"] . ' class="replace-img card-img-top object-fit-cover" alt="...">
+
+                        <div class="card-body bg-ctm-primary-color-subtle">
+                            <h5 class="card-title">' . $DBInfo["nom_film"] . '</h5>
+                            <p class="card-text lh-1">' . $DBInfo["LEFT(synopsis, 200)"] . '...<p>
+                        </div>
+                        <div class="card-footer p-0 border-0">
+                            <a href="./film_infos.php?id_film=' . $DBInfo["id_film"] . '"' . 'class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
+                        </div>
+                    </div>';
+                }
+        echo '</div>
+        </div>
+    </div>';
+}
+
+
 ?>
 
 <!DOCTYPE html>
@@ -172,229 +197,39 @@ $soireesSF_sort = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE gen
         <div class="mainPart py-5">
             <!-- parties avec la liste des genres et leur film correspondant sous forme de card avec une barre de défilement -->
             <h5 class="ms-5 fs-3">Les films d'action</h5>
-            <div class="row mx-3">
-                <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
-                    <div id ="img-resize" class="row row-cols-2 row-cols-md-5 ms-1 my-3 g-5 flex-nowrap gap-3">
-                        <?php
-                        while($soireesAction_sortInfos = $soireesAction_sort->fetch()){
-                        ?>
-                            <div class="card p-0 m-0">
-                                <img src=<?= $soireesAction_sortInfos['affiche'];?> class="card-img-top object-fit-cover" alt="...">
-
-                                <div class="card-body bg-ctm-primary-color-subtle">
-                                    <h5 class="card-title"><?= $soireesAction_sortInfos['nom_film'];?></h5>
-                                    <p class="card-text lh-1"><?= $soireesAction_sortInfos['LEFT(synopsis, 200)'];?>...<p>
-                                </div>
-                                <div class="card-footer p-0 border-0">
-                                    <a href="./film_infos.php?id_film=<?= $soireesAction_sortInfos['id_film'] ?>" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus ?</a>
-                                </div>
-                            </div>
-                        <?php
-                        }
-                        ?>
-                    </div>
-                </div>
-            </div>
+            <?php generateCard_Movie($soireesAction_sort); ?>
             <!-- film d'action fin -->
-            <h5 class="ms-5 mt-4 fs-3">Les films fantastiques</h5>
-            <div class="row mx-3">
-                <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
-                    <div id ="img-resize" class="row row-cols-2 row-cols-md-5 ms-1 my-3 g-5 flex-nowrap gap-3">
-                        <?php
-                        while($soireesFanstastique_sortInfos = $soireesFanstastique_sort->fetch()){
-                        ?>
-                            <div class="card p-0 m-0">
-                                <img src=<?= $soireesFanstastique_sortInfos['affiche'];?>  class="card-img-top object-fit-cover" alt="...">
 
-                                <div class="card-body bg-ctm-primary-color-subtle">
-                                    <h5 class="card-title"><?= $soireesFanstastique_sortInfos['nom_film'];?></h5>
-                                    <p class="card-text lh-1"><?= $soireesFanstastique_sortInfos['LEFT(synopsis, 200)'];?>...<p>
-                                </div>
-                                <div class="card-footer p-0 border-0">
-                                    <a href="./film_infos.php?id_film=<?= $soireesFanstastique_sortInfos['id_film'] ?>" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
-                                </div>
-                            </div>
-                        <?php
-                        }
-                        ?>
-                    </div>
-                </div>
-            </div>
+            <h5 class="ms-5 mt-4 fs-3">Les films fantastiques</h5>
+            <?php generateCard_Movie($soireesFanstastique_sort); ?>
+
             <!-- film d'horreur fin -->
             <h5 class="ms-5 mt-4 fs-3">Les films d'horreur</h5>
-            <div class="row mx-3">
-                <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
-                    <div id ="img-resize" class="row row-cols-2 row-cols-md-5 ms-1 my-3 g-5 flex-nowrap gap-3">
-                        <?php
-                        while($soireesHorreur_sortInfos = $soireesHorreur_sort->fetch()){
-                        ?>
-                            <div class="card p-0 m-0">
-                                <img src=<?= $soireesHorreur_sortInfos['affiche'];?>  class="card-img-top object-fit-cover" alt="...">
+            <?php generateCard_Movie($soireesHorreur_sort); ?>
 
-                                <div class="card-body bg-ctm-primary-color-subtle">
-                                    <h5 class="card-title"><?= $soireesHorreur_sortInfos['nom_film'];?></h5>
-                                    <p class="card-text lh-1"><?= $soireesHorreur_sortInfos['LEFT(synopsis, 200)'];?>...<p>
-                                </div>
-                                <div class="card-footer p-0 border-0">
-                                    <a href="./film_infos.php?id_film=<?= $soireesHorreur_sortInfos['id_film'] ?>" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
-                                </div>
-                            </div>
-                        <?php
-                        }
-                        ?>
-                    </div>
-                </div>
-            </div>
             <!-- film fantastiques fin-->
             <h5 class="ms-5 mt-4 fs-3">Les films d'animation</h5>
-            <div class="row mx-3">
-                <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
-                    <div id ="img-resize" class="row row-cols-2 row-cols-md-5 ms-1 my-3 g-5 flex-nowrap gap-3">
-                        <?php
-                        while($soireesAnimation_sortInfos = $soireesAnimation_sort->fetch()){
-                        ?>
-                            <div class="card p-0 m-0">
-                                <img src=<?= $soireesAnimation_sortInfos['affiche'];?>  class="card-img-top object-fit-cover" alt="...">
+            <?php generateCard_Movie($soireesAnimation_sort); ?>
 
-                                <div class="card-body bg-ctm-primary-color-subtle">
-                                    <h5 class="card-title"><?= $soireesAnimation_sortInfos['nom_film'];?></h5>
-                                    <p class="card-text lh-1"><?= $soireesAnimation_sortInfos['LEFT(synopsis, 200)'];?>...<p>
-                                </div>
-                                <div class="card-footer p-0 border-0">
-                                    <a href="./film_infos.php?id_film=<?= $soireesAnimation_sortInfos['id_film'] ?>" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
-                                </div>
-                            </div>
-                        <?php
-                        }
-                        ?>
-                    </div>
-                </div>
-            </div>
             <!-- film d'animation fin -->
             <h5 class="ms-5 mt-4 fs-3">Les films de comédie</h5>
-            <div class="row mx-3">
-                <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
-                    <div id ="img-resize" class="row row-cols-2 row-cols-md-5 ms-1 my-3 g-5 flex-nowrap gap-3">
-                        <?php
-                        while($soireesComedy_sortInfos = $soireesComedy_sort->fetch()){
-                        ?>
-                            <div class="card p-0 m-0">
-                                <img src=<?= $soireesComedy_sortInfos['affiche'];?>  class="card-img-top object-fit-cover" alt="...">
+            <?php generateCard_Movie($soireesComedy_sort); ?>
 
-                                <div class="card-body bg-ctm-primary-color-subtle">
-                                    <h5 class="card-title"><?= $soireesComedy_sortInfos['nom_film'];?></h5>
-                                    <p class="card-text lh-1"><?= $soireesComedy_sortInfos['LEFT(synopsis, 200)'];?><p>
-                                </div>
-                                <div class="card-footer p-0 border-0">
-                                    <a href="./film_infos.php?id_film=<?= $soireesComedy_sortInfos['id_film'] ?>" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
-                                </div>
-                            </div>
-                        <?php
-                        }
-                        ?>
-                    </div>
-                </div>
-            </div>
             <!-- film comédie fin -->
             <h5 class="ms-5 mt-4 fs-3">Les films historiques</h5>
-            <div class="row mx-3">
-                <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
-                    <div id ="img-resize" class="row row-cols-2 row-cols-md-5 ms-1 my-3 g-5 flex-nowrap gap-3">
-                        <?php
-                        while($soireesHistorique_sortInfos = $soireesHistorique_sort->fetch()){
-                        ?>
-                            <div class="card p-0 m-0">
-                                <img src=<?= $soireesHistorique_sortInfos['affiche'];?>  class="card-img-top object-fit-cover" alt="...">
+            <?php generateCard_Movie($soireesHistorique_sort); ?>
 
-                                <div class="card-body bg-ctm-primary-color-subtle">
-                                    <h5 class="card-title"><?= $soireesHistorique_sortInfos['nom_film'];?></h5>
-                                    <p class="card-text lh-1"><?= $soireesHistorique_sortInfos['LEFT(synopsis, 200)'];?><p>
-                                </div>
-                                <div class="card-footer p-0 border-0">
-                                    <a href="./film_infos.php?id_film=<?= $soireesHistorique_sortInfos['id_film'] ?>" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
-                                </div>
-                            </div>
-                        <?php
-                        }
-                        ?>
-                    </div>
-                </div>
-            </div>
             <!-- film historique fin -->
             <h5 class="ms-5 mt-4 fs-3">Les films de thriller</h5>
-            <div class="row mx-3">
-                <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
-                    <div id ="img-resize" class="row row-cols-2 row-cols-md-5 ms-1 my-3 g-5 flex-nowrap gap-3">
-                        <?php
-                        while($soireesThriller_sortInfos = $soireesThriller_sort->fetch()){
-                        ?>
-                            <div class="card p-0 m-0">
-                                <img src=<?= $soireesThriller_sortInfos['affiche'];?> class="card-img-top object-fit-cover" alt="...">
+            <?php generateCard_Movie($soireesThriller_sort); ?>
 
-                                <div class="card-body bg-ctm-primary-color-subtle">
-                                    <h5 class="card-title"><?= $soireesThriller_sortInfos['nom_film'];?></h5>
-                                    <p class="card-text lh-1"><?= $soireesThriller_sortInfos['LEFT(synopsis, 200)'];?><p>
-                                </div>
-                                <div class="card-footer p-0 border-0">
-                                    <a href="./film_infos.php?id_film=<?= $soireesThriller_sortInfos['id_film'] ?>" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
-                                </div>
-                            </div>
-                        <?php
-                        }
-                        ?>
-                    </div>
-                </div>
-            </div>
             <!-- film thriller fin -->
             <h5 class="ms-5 mt-4 fs-3">Les films de Romance</h5>
-            <div class="row mx-3">
-                <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
-                    <div id ="img-resize" class="row row-cols-2 row-cols-md-5 ms-1 my-3 g-5 flex-nowrap gap-3">
-                        <?php
-                        while($soireesRomance_sortInfos = $soireesRomance_sort->fetch()){
-                        ?>
-                            <div class="card p-0 m-0">
-                                <img src=<?= $soireesRomance_sortInfos['affiche'];?> class="card-img-top object-fit-cover" alt="...">
+            <?php generateCard_Movie($soireesRomance_sort); ?>
 
-                                <div class="card-body bg-ctm-primary-color-subtle">
-                                    <h5 class="card-title"><?= $soireesRomance_sortInfos['nom_film'];?></h5>
-                                    <p class="card-text lh-1"><?= $soireesRomance_sortInfos['LEFT(synopsis, 200)'];?><p>
-                                </div>
-                                <div class="card-footer p-0 border-0">
-                                    <a href="./film_infos.php?id_film=<?= $soireesRomance_sortInfos['id_film'] ?>" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
-                                </div>
-                            </div>
-                        <?php
-                        }
-                        ?>
-                    </div>
-                </div>
-            </div>
             <!-- film romance fin -->
             <h5 class="ms-5 mt-4 fs-3">Les films de Science Fiction</h5>
-            <div class="row mx-3">
-                <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
-                    <div id ="img-resize" class="row row-cols-2 row-cols-md-5 ms-1 my-3 g-5 flex-nowrap gap-3">
-                        <?php
-                        while($soireesSF_sortInfos = $soireesSF_sort->fetch()){
-                        ?>
-                            <div class="card p-0 m-0">
-                                <img src=<?= $soireesSF_sortInfos['affiche'];?> class="card-img-top object-fit-cover" alt="...">
-
-                                <div class="card-body bg-ctm-primary-color-subtle">
-                                    <h5 class="card-title"><?= $soireesSF_sortInfos['nom_film'];?></h5>
-                                    <p class="card-text lh-1"><?= $soireesSF_sortInfos['LEFT(synopsis, 200)'];?><p>
-                                </div>
-                                <div class="card-footer p-0 border-0">
-                                    <a href="./film_infos.php?id_film=<?= $soireesSF_sortInfos['id_film'] ?>" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
-                                </div>
-                            </div>
-                        <?php
-                        }
-                        ?>
-                    </div>
-                </div>
-            </div>
+            <?php generateCard_Movie($soireesSF_sort); ?>
             <!-- film science fiction fin -->
         </div>
 

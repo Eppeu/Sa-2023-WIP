@@ -141,27 +141,43 @@ $(document).ready(function(){
                 break;
         
             case 2:
-                $("#movie_select_2").html($(this).html()).addClass("card p-0 m-2");
-                $("#hidden_film_2").val(filmId); // remplit l'input caché
-                movie_selection = 3;
+                if ( $(this).html() == $("#movie_select_1").html() ) {
+                    $(this).addClass("border-4 border-danger")
+                } else {
+                    $("#movie_select_2").html($(this).html()).addClass("card p-0 m-2");
+                    $("#hidden_film_2").val(filmId); // remplit l'input caché
+                    movie_selection = 3;
+                }
                 break;
 
             case 3:
-                $("#movie_select_3").html($(this).html()).addClass("card p-0 m-2");
-                $("#hidden_film_3").val(filmId); // remplit l'input caché
-                movie_selection = 4;
+                if ( $(this).html() == $("#movie_select_1").html() || $(this).html() == $("#movie_select_2").html() ) {
+                    $(this).addClass("border-4 border-danger")
+                } else {
+                    $("#movie_select_3").html($(this).html()).addClass("card p-0 m-2");
+                    $("#hidden_film_3").val(filmId); // remplit l'input caché
+                    movie_selection = 4;
+                }
                 break;
 
             case 4:
-                $("#movie_select_4").html($(this).html()).addClass("card p-0 m-2");
-                $("#hidden_film_4").val(filmId); // remplit l'input caché
-                movie_selection = 5;
+                if ( $(this).html() == $("#movie_select_1").html() || $(this).html() == $("#movie_select_2").html() || $(this).html() == $("#movie_select_3").html() ) {
+                    $(this).addClass("border-4 border-danger")
+                } else {
+                    $("#movie_select_4").html($(this).html()).addClass("card p-0 m-2");
+                    $("#hidden_film_4").val(filmId); // remplit l'input caché
+                    movie_selection = 5;
+                }
                 break;
 
             case 5:
-                $("#movie_select_5").html($(this).html()).addClass("card p-0 m-2");
-                $("#hidden_film_5").val(filmId); // remplit l'input caché
-                movie_selection = 6;
+                if ( $(this).html() == $("#movie_select_1").html() || $(this).html() == $("#movie_select_2").html() || $(this).html() == $("#movie_select_3").html() || $(this).html() == $("#movie_select_4").html() ) {
+                    $(this).addClass("border-4 border-danger")
+                } else {
+                    $("#movie_select_5").html($(this).html()).addClass("card p-0 m-2");
+                    $("#hidden_film_5").val(filmId); // remplit l'input caché
+                    movie_selection = 6;
+                }
                 break;
         }
     });
@@ -479,7 +495,6 @@ $("#remove_place").click(function() {
                     <input class="form-control" type="file" id="formFile" name="formFile" accept=".png,.jpg,.jpeg,.svg">
                 </div>
 
-                <button name="create_party" type="submit" class="btn btn-primary">Submit</button>
                 <!-- bouton pour soumettre la soirée -->
             </form>
 

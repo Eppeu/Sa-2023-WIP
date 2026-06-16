@@ -4,22 +4,47 @@ session_start();
 require_once '../bdd/bdd_connexion.php';
 $bdd = connectBDS();
 
-$allSoirees = $bdd->query('SELECT * FROM soiree');
+$allSoirees = $bdd->query('SELECT *,LEFT(description_soiree, 200) FROM soiree;');
 
-$soireesHorreur_sort = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'Horreur';");
-$soireesAction_sort = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'Action';");
-$soireesFanstastique_sort = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'Fantastique';");
-$soireesAnimation_sort = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'Animation';");
-$soireesComedy_sort = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'Comédie';");
-$soireesHistorique_sort = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'Historique';");
-$soireesThriller_sort = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'Thriller';");
+$soireesHorreur_sort = $bdd->query("SELECT *,LEFT(description_soiree, 200) FROM soiree WHERE genre_soiree = 'Horreur';");
+$soireesAction_sort = $bdd->query("SELECT *,LEFT(description_soiree, 200) FROM soiree WHERE genre_soiree = 'Action';");
+$soireesFanstastique_sort = $bdd->query("SELECT *,LEFT(description_soiree, 200) FROM soiree WHERE genre_soiree = 'Fantastique';");
+$soireesAnimation_sort = $bdd->query("SELECT *,LEFT(description_soiree, 200) FROM soiree WHERE genre_soiree = 'Animation';");
+$soireesComedy_sort = $bdd->query("SELECT *,LEFT(description_soiree, 200) FROM soiree WHERE genre_soiree = 'Comédie';");
+$soireesHistorique_sort = $bdd->query("SELECT *,LEFT(description_soiree, 200) FROM soiree WHERE genre_soiree = 'Historique';");
+$soireesThriller_sort = $bdd->query("SELECT *,LEFT(description_soiree, 200) FROM soiree WHERE genre_soiree = 'Thriller';");
 
 
 // Documentaty is broken for some reasons (Please Check this Astrid !), Wrong Token or invalid expression 
 // $soireesDocumentaire_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Documentaire'; "); 
 
-$soireesRomance_sort = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'Romance';");
-$soireesSF_sort = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'Science-Fiction'; ");
+$soireesRomance_sort = $bdd->query("SELECT *,LEFT(description_soiree, 200) FROM soiree WHERE genre_soiree = 'Romance';");
+$soireesSF_sort = $bdd->query("SELECT *,LEFT(description_soiree, 200) FROM soiree WHERE genre_soiree = 'Science-Fiction'; ");
+
+function generateCard_NoSlider($DBCondition) {
+    echo'
+    <div id ="img-resize" class="row row-cols-5 mx-0 mb-3 pt-3 g-5">';
+        while($DBConditionInfos = $DBCondition->fetch()){
+            echo '<div class="col-12 col-sm-6 col-lg-4 col-xl-3" >
+                <div class="card p-0 h-auto">
+                    <img src=' .$DBConditionInfos["image_soiree"] . ' ' . 'class="card-img-top object-fit-cover" alt="...">
+
+                    <div class="card-body bg-ctm-primary-color-subtle">
+                        <h5 class="card-title">' . $DBConditionInfos['nom_soiree'] . '</h5>
+                        <p class="card-text lh-1">' . $DBConditionInfos['LEFT(description_soiree, 200)'] . '...' . '<p>
+                    </div>
+                    <div class="card-footer p-0 border-0">
+                        <a href="./soiree_infos.php?id_soiree=' . $DBConditionInfos["id_soiree"] .'"' . 'class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
+                    </div>
+                </div>
+            </div>';
+        }
+
+    echo '</div>';
+
+}
+
+
 ?>
 
 <!DOCTYPE html>
@@ -215,29 +240,7 @@ $soireesSF_sort = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'Scienc
             </script>
             <!-- donne les information de chaque film en fonction du genre -->
 
-            <div id ="img-resize" class="row row-cols-5 mx-0 mb-3 pt-3 g-5">
-                <?php
-                while($allSoireesInfos = $allSoirees->fetch()){
-                ?>
-                    <div class="col-12 col-sm-6 col-lg-4 col-xl-3" >
-                        <div class="card p-0 h-auto">
-                            <img src=<?= $allSoireesInfos['image_soiree'];?> class="card-img-top object-fit-cover" alt="...">
-
-                            <div class="card-body bg-ctm-primary-color-subtle">
-                                <h5 class="card-title"><?= $allSoireesInfos['nom_soiree'];?></h5>
-                                <p class="card-text lh-1"><?= $allSoireesInfos['description_soiree'];?><p>
-                            </div>
-                            <div class="card-footer p-0 border-0">
-                                <a href="./soiree_infos.php?id_soiree=<?php echo $allSoireesInfos['id_soiree']; ?>" class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- crée les cartes de présentation pour tout les films -->
-                <?php
-                }
-                ?>
-
-            </div>
+            <?php generateCard_NoSlider($allSoirees); ?>
         </div>
     </main>
 

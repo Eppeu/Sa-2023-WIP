@@ -1,92 +1,98 @@
 <?php
 session_start();
+// Si l'utilisateur n'est pas connecté, il est renvoyé à la page de connexion
+if(!$_SESSION['email']) {
+    header('Location: ./connexion.php');
+}
 
 require_once '../bdd/bdd_connexion.php';
 $bdd = connectBDS();
 
-// Récupération des informations de l'utilisateur depuis la base de données
-$utilisateur_infos = $bdd->prepare("SELECT * FROM utilisateur WHERE email=?");
-$utilisateur_infos->execute(array($_SESSION['email']));
+$allSoirees = $bdd->query('SELECT * FROM film');
 
-// Vérifie que l'id a bien été récupéré
-if(isset($_GET['id_soiree']) AND !empty($_GET['id_soiree'])){
-    // Récupère l'id de l'élément voulu depuis l'URL
-    $id_soiree_get = $_GET['id_soiree'];
+if (isset($_POST['update_party'])) {
+    $UPDATE_soiree_id = $_POST['SoireeID'];
+    $UPDATE_soiree_name = $_POST['NameSoiree'];
+    $UPDATE_soiree_description = $_POST['DescriptionSoiree'];
+    $UPDATE_soiree_genre = $_POST['GenreSoiree'];
+    $UPDATE_soiree_nmbMax = $_POST['NumberSoiree'];
+    $UPDATE_soiree_dateS = $_POST['DateStartSoiree'];
+    $UPDATE_soiree_dateE = $_POST['DateEndSoiree'];
+    $UPDATE_soiree_lieu1 = $_POST['ChoixLieu1'];
+    $UPDATE_soiree_lieu2 = $_POST['ChoixLieu2'];
+    $UPDATE_soiree_lieu3 = $_POST['ChoixLieu3'];
+    $UPDATE_soiree_image = $_POST['ImageSoire'];
 
-    // Récupération des informations de la soirée, des films et des lieux et l'id de l'auteur de la soirée.
-    $soiree_infos_requete = $bdd->prepare('SELECT
-    s.*,
-    s.id_utilisateur AS id_user_movie,
-    f1.id_film AS film1_id_film, f1.nom_film AS film1_nom_film, f1.affiche AS film1_affiche,
-    f2.id_film AS film2_id_film, f2.nom_film AS film2_nom_film, f2.affiche AS film2_affiche,
-    f3.id_film AS film3_id_film, f3.nom_film AS film3_nom_film, f3.affiche AS film3_affiche,
-    f4.id_film AS film4_id_film, f4.nom_film AS film4_nom_film, f4.affiche AS film4_affiche,
-    f5.id_film AS film5_id_film, f5.nom_film AS film5_nom_film, f5.affiche AS film5_affiche,
-    l1.id_lieu AS lieu1_id, l1.adresse AS lieu1_adresse,
-    l2.id_lieu AS lieu2_id, l2.adresse AS lieu2_adresse,
-    l3.id_lieu AS lieu3_id, l3.adresse AS lieu3_adresse
+}
 
-    FROM soiree s
-    JOIN film f1 ON s.choix_1_film = f1.id_film
-    JOIN film f2 ON s.choix_2_film = f2.id_film
-    JOIN film f3 ON s.choix_3_film = f3.id_film
-    JOIN film f4 ON s.choix_4_film = f4.id_film
-    JOIN film f5 ON s.choix_5_film = f5.id_film
-    JOIN lieu l1 ON s.choix_1_lieu = l1.id_lieu
-    JOIN lieu l2 ON s.choix_2_lieu = l2.id_lieu
-    JOIN lieu l3 ON s.choix_3_lieu = l3.id_lieu
 
-    WHERE s.id_soiree = ?;');
 
-    $soiree_infos_requete->execute(array($id_soiree_get));
+function update($nomSoireeUPDATE, $descriptionSoireeUPDATE, $genreSoireeUPDATE, $choixLieu1UPDATE, $choixLieu2UPDATE, $choixLieu3UPDATE, $nb_personne_maxUPDATE, $date_debutUPDATE, $date_finUPDATE, $UPDATE_soiree_id) {
 
-    // Comptage du nombre de soirées
-    
-    // Compte les votes par film de la soirée
-    $count_votes_requete = $bdd->prepare('
-    SELECT choix_film, COUNT(*) AS nb_votes
-    FROM vote
-    WHERE id_soiree = ?
-    GROUP BY choix_film
-    ');
-    $count_votes_requete->execute([$id_soiree_get]);
+    global $bdd;
 
-    // Stocke les résultats dans un tableau indexé par id_film
-    $votes_par_film = [];
-    while ($row = $count_votes_requete->fetch()) {
-        $votes_par_film[$row['choix_film']] = $row['nb_votes'];
+    $nomSoiree= nl2br(htmlspecialchars($nomSoireeUPDATE));
+    $descriptionSoiree = nl2br(htmlspecialchars($descriptionSoireeUPDATE));
+    $genreSoiree = nl2br(htmlspecialchars($genreSoireeUPDATE));
+
+    $date_debut = str_replace('T', ' ', $date_debutUPDATE);
+    $date_fin = str_replace('T', ' ', $date_finUPDATE);
+
+    $time= date('YmdHis');
+    $filename = $time . basename($_FILES["formFile"]["name"]);
+
+    if ($date_debut > $date_fin) {
+        echo 'La date de début de soirée est supérieur à la date de fin.';
     }
     
+    if (!empty($nomSoiree) && !empty($descriptionSoiree) && 
+        !empty($nb_personne_maxUPDATE) && !empty($date_debut) && !empty($date_fin) &&
+        !empty($choixLieu1UPDATE) && !empty($choixLieu2UPDATE) && !empty($choixLieu3UPDATE))
+    { 
+        // Déplacement de l'image
+        $path_directory = "../assets/public/";
+        $file_directory = $path_directory . $filename;
+        if (move_uploaded_file($_FILES["formFile"]["tmp_name"], $file_directory)) {
+            $image_path = "../assets/public/" . $filename;
+        } else {
+            echo "Erreur lors du téléchargement de l'image.";
+            return;
+        }
 
-    // Si cette colonne existe, les données déjà éxistantes sont récupées
-    if($soiree_infos_requete->rowCount() > 0){
+        // Ajout du premier lieu à la BDD
+        $ajout_lieu_1 = $bdd->prepare("INSERT INTO lieu(adresse) VALUES(?)");
+        $ajout_lieu_1->execute([$choixLieu1UPDATE]);
+        $id_lieu_1 = $bdd->lastInsertId();
 
-        $soiree_infos = $soiree_infos_requete->fetch();
-    }
-    else{
-        echo "soiree introuvable. Vous allez être redirigé vers les soirees.";
-    }
+        // Ajout du deuxième lieu à la BDD
+        $ajout_lieu_2 = $bdd->prepare("INSERT INTO lieu(adresse) VALUES(?)");
+        $ajout_lieu_2->execute([$choixLieu2UPDATE]);
+        $id_lieu_2 = $bdd->lastInsertId();
 
+        // Ajout du deuxième lieu à la BDD
+        $ajout_lieu_3 = $bdd->prepare("INSERT INTO lieu(adresse) VALUES(?)");
+        $ajout_lieu_3->execute([$choixLieu3UPDATE]);
+        $id_lieu_3 = $bdd->lastInsertId();
 
-    if(isset($_SESSION['email'])){
         // Récupère les informations de l'utilisateur connecté
         $utilisateur_infos_requete = $bdd->prepare("SELECT * FROM utilisateur WHERE email=?");
         $utilisateur_infos_requete->execute(array($_SESSION['email']));
         $utilisateur_infos = $utilisateur_infos_requete->fetch();
 
-        // Récupère, si ça existe, le vote de l'utilisateur sur cette soirée
-        $vote_exist_requete = $bdd->prepare('SELECT vote.*
-        FROM vote
-        JOIN utilisateur ON utilisateur.id_utilisateur = vote.id_utilisateur
-        JOIN soiree ON soiree.id_soiree = vote.id_soiree
-        WHERE utilisateur.id_utilisateur = ? AND soiree.id_soiree = ?;');
+        $UPDATESoiree = $bdd->prepare("UPDATE soiree SET nom_soiree = ?, description_soiree = ?, nb_personne_max = ?, genre_soiree = ?, date_debut = ?, date_fin = ?, choix_1_lieu = ?, choix_2_lieu = ?, choix_3_lieu = ?, image_soiree = ? WHERE id_soiree = ?");
 
-        $vote_exist_requete->execute(array($utilisateur_infos['id_utilisateur'], $id_soiree_get));
-        $vote_exist = $vote_exist_requete->rowCount() > 0;
+        $UPDATESoiree->execute(Array($nomSoiree, $descriptionSoiree, $nb_personne_maxUPDATE, $genreSoiree, $date_debut, $date_fin, $id_lieu_1, $id_lieu_2, $id_lieu_3, $image_path, $UPDATE_soiree_id));
+
+        header('Location: ./soiree_infos.php?id_soiree='.$UPDATE_soiree_id);
+        exit();
+
+    } else {
+        echo "Veuillez compléter tous les champs.";
     }
 }
-else{
-    echo "Une erreur s'est produite, l'identifiant n'est pas parvenu à être récupéré, veuillez revenir à la page précédente.";
+
+if (isset($_POST["update_party_confirm"])) {
+    update($_POST['nomSoiree'], $_POST['description_soiree'], $_POST['genre_movie'], $_POST['choixLieu1'], $_POST['choixLieu2'], $_POST['choixLieu3'], $_POST['nb_personne_max'], $_POST['date_debut'], $_POST['date_fin'], $_POST['soireeID']);
 }
 ?>
 
@@ -106,9 +112,44 @@ else{
         <script src="https://kit.fontawesome.com/4b69bc6b92.js" crossorigin="anonymous"></script>
     <!-- Bootstrap Icons  -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <title>Informations de la soiree</title>
+    <title>Créer une soirée</title>
+
+<script>
+$(document).ready(function(){
+    let place_selection = 4;
+     $("#add_place").attr('disabled','true');
+     $("button[name='update_party_confirm']").removeAttr('disabled');
+    
+        $("#add_place").click(function() {
+            if ($("#place").val() == "") {
+                return;
+            }
+            if (place_selection <= 4) {
+                $("button[name='update_party_confirm']").attr('disabled','true');
+                var tache = $("#place").val();
+                var nouvelItem = $("<li>",{text:tache}).addClass("list-group-item list-group-item-danger");
+                nouvelItem.append('<input type="hidden" name="choixLieu'+place_selection+'" value="'+tache+'">');
+                $("ol").append(nouvelItem);
+                $("#place").val("").focus();
+                place_selection++;
+            } 
+            if (place_selection == 4) {
+                $("#add_place").attr('disabled','true');
+                $("button[name='update_party_confirm']").removeAttr('disabled');
+            } 
+        });
+        $("#remove_place").click(function() {
+            $("ol").empty();
+            $("#add_place").removeAttr('disabled');
+            $("button[name='update_party_confirm']").attr('disabled','true');
+            place_selection = 1;
+        });	
+
+});
+</script>
 
 </head>
+
 <body class="bg-ctm-terciary-color">
     <header> 
          <!-- Header contenant le menu de navigation version pour écran normal et version pour écran réduit -->
@@ -224,112 +265,116 @@ else{
     </header>
 
     <main>
-        <div class="container-fluid flex-column mx-4 my-5 ">
-            <div class="row flex-sm-column flex-lg-row">
-                <div class="col-3 col-sm-2">
-                    <img src="<?= $soiree_infos['image_soiree'] ?>" class="img-resize-choose rounded-2 object-fit-cover" alt="...">
-                </div>
-                <div class="align-self-start col-3 col-sm-4 col-lg-3 offset-lg-1">
-                    <h1 id="nom_soiree"><?= $soiree_infos['nom_soiree'] ?></h1>
-                    <p><?= $soiree_infos['description_soiree'] ?></p>
-                    <p>Genre : <?= $soiree_infos['genre_soiree'] ?></p>
-                </div>
-                <div class="align-self-start col-3 col-sm-4 col-lg-3">
-                    <h3 id="genre_soiree">Nombre d'invités maximum : <?= $soiree_infos['nb_personne_max'] ?> personnes</h3>
-                    <p>Date de début : <?= $soiree_infos['date_debut'] ?></p>
-                    <p>Date de fin prévue : <?= $soiree_infos['date_fin'] ?></p>
-                </div>
-                <div class="row col-4 col-lg-5 col-sm-6 ms-0 mt-4 d-flex flex-column gap-2">
-                    <div class="card p-0 flex-row overflow-hidden" style="height: 85px;">
-                        <img src="<?= $soiree_infos['film1_affiche'] ?>" class="object-fit-cover" style="width: 100px; flex-shrink: 0;">
-                        <div class="card-body bg-ctm-primary-color-subtle p-2 d-flex flex-column justify-content-center">
-                            <h6 class="card-title mb-0"><?= $soiree_infos['film1_nom_film'] ?></h6>
-                            <p class="card-caption mb-0">Nombre de vote pour ce film : <?= isset($votes_par_film[$soiree_infos['choix_1_film']]) ? $votes_par_film[$soiree_infos['choix_1_film']] : 0 ?></p>
-                        </div>
-                    </div>
-
-                    <div class="card p-0 flex-row overflow-hidden" style="height: 85px;">
-                        <img src="<?= $soiree_infos['film2_affiche'] ?>" class="object-fit-cover" style="width: 100px; flex-shrink: 0;">
-                        <div class="card-body bg-ctm-primary-color-subtle p-2 d-flex flex-column justify-content-center">
-                            <h6 class="card-title mb-0"><?= $soiree_infos['film2_nom_film'] ?></h6>
-                            <p class="card-caption mb-0">Nombre de vote pour ce film : <?= isset($votes_par_film[$soiree_infos['choix_2_film']]) ? $votes_par_film[$soiree_infos['choix_2_film']] : 0 ?></p>
-                        </div>
-                    </div>
-
-                    <div class="card p-0 flex-row overflow-hidden" style="height: 85px;">
-                        <img src="<?= $soiree_infos['film3_affiche'] ?>" class="object-fit-cover" style="width: 100px; flex-shrink: 0;">
-                        <div class="card-body bg-ctm-primary-color-subtle p-2 d-flex flex-column justify-content-center">
-                            <h6 class="card-title mb-0"><?= $soiree_infos['film3_nom_film'] ?></h6>
-                            <p class="card-caption mb-0">Nombre de vote pour ce film : <?= isset($votes_par_film[$soiree_infos['choix_3_film']]) ? $votes_par_film[$soiree_infos['choix_3_film']] : 0 ?></p>
-                        </div>
-                    </div>
-
-                    <div class="card p-0 flex-row overflow-hidden" style="height: 85px;">
-                        <img src="<?= $soiree_infos['film4_affiche'] ?>" class="object-fit-cover" style="width: 100px; flex-shrink: 0;">
-                        <div class="card-body bg-ctm-primary-color-subtle p-2 d-flex flex-column justify-content-center">
-                            <h6 class="card-title mb-0"><?= $soiree_infos['film4_nom_film'] ?></h6>
-                            <p class="card-caption mb-0">Nombre de vote pour ce film : <?= isset($votes_par_film[$soiree_infos['choix_4_film']]) ? $votes_par_film[$soiree_infos['choix_4_film']] : 0 ?></p>
-                        </div>
-                    </div>
-
-                    <div class="card p-0 flex-row overflow-hidden" style="height: 85px;">
-                        <img src="<?= $soiree_infos['film5_affiche'] ?>" class="object-fit-cover" style="width: 100px; flex-shrink: 0;">
-                        <div class="card-body bg-ctm-primary-color-subtle p-2 d-flex flex-column justify-content-center">
-                            <h6 class="card-title mb-0"><?= $soiree_infos['film5_nom_film'] ?></h6>
-                            <p class="card-caption mb-0">Nombre de vote pour ce film : <?= isset($votes_par_film[$soiree_infos['choix_5_film']]) ? $votes_par_film[$soiree_infos['choix_5_film']] : 0 ?></p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row col-5 offset-1 d-flex flex-column justify-content-center gap-3">
-
-                    <a class="btn btn-outline-primary btn-lg w-100" for="btn-lieu-1">
-                        <?= $soiree_infos['lieu1_adresse'] ?>
-                    </a>
-
-                    <a class="btn btn-outline-primary btn-lg w-100" for="btn-lieu-2">
-                        <?= $soiree_infos['lieu2_adresse'] ?>
-                    </a>
-
-                    <a class="btn btn-outline-primary btn-lg w-100" for="btn-lieu-3">
-                        <?= $soiree_infos['lieu3_adresse'] ?>
-                    </a>
-
-                </div>
-            </div>
+        <div class="text-center my-5 py-5">
+            <h5><?= $UPDATE_soiree_name; ?></h5>
         </div>
+        <h5 class="ms-5">Modifier les éléments de cette soirée</h5>
 
-        <div class="ms-5 mb-5 col-9">
-            <?php if(isset($vote_exist) AND $vote_exist == TRUE){ // Si existe déjà vote pour id connecté et soirée sélectionnée : bouton disabled
-            ?>
-                <a disabled href="./vote.php?id_soiree=<?php echo $soiree_infos['id_soiree']; ?>" class="btn btn-ctm-red py-3 w-100 rounded-1 disabled">Vous avez déjà voté !</a>
-            <?php
-            }else{
-                ?>
-                <a href="./vote.php?id_soiree=<?php echo $soiree_infos['id_soiree']; ?>" class="btn btn-ctm-red py-3 w-100 rounded-1">Voter !</a>
-            <?php } ?>
+        <div class="container my-5">
 
-            <?php if($utilisateur_infos['id_utilisateur'] == $soiree_infos['id_user_movie'] ){ // Check si la soirée a été créée par l'utilateur qui consulte la page
-            ?>
-            <form method='POST' action="./soiree_update">
-                <button name="update_party" type="submit" class="btn btn-primary">Modifier la soirée</button>
+            <form method="POST" action="" enctype="multipart/form-data">
+                <!-- partie formulaire -->
 
-                <input hidden name='SoireeID' id='name_s' value="<?= $soiree_infos['id_soiree'] ?>">
-                <input hidden name='NameSoiree' id='name_s' value="<?= $soiree_infos['nom_soiree'] ?>">
-                <input hidden name='DescriptionSoiree' id='desc_s' value="<?=$soiree_infos['description_soiree'] ?>">
-                <input hidden name='GenreSoiree' id='genre_s' value="<?= $soiree_infos['genre_soiree']; ?>">
-                <input hidden name='NumberSoiree' id='nmb_s' value="<?= $soiree_infos['nb_personne_max']; ?>">
-                <input hidden name='DateStartSoiree' id='DateS_s' value="<?= $soiree_infos['date_debut']; ?>">
-                <input hidden name='DateEndSoiree' id='DateE_s' value="<?= $soiree_infos['date_fin']; ?>">
-                <input hidden name='ChoixLieu1' id='CL1_s' value="<?= $soiree_infos['lieu1_adresse']; ?>">
-                <input hidden name='ChoixLieu2' id='CL2_s' value="<?= $soiree_infos['lieu2_adresse']; ?>">
-                <input hidden name='ChoixLieu3' id='CL3_s' value="<?= $soiree_infos['lieu3_adresse']; ?>">
-                <input hidden name='ImageSoire' id='img_s' value="<?= $soiree_infos['image_soiree']; ?>">
+                 <!-- Nom de la soirée -->
+                <div class="mb-3">
+                    <label for="nomSoiree" class="form-label">Nom de la soirée</label>
+                    <input type="text" class="form-control" name="nomSoiree" id="nomSoiree" maxlength="30" placeholder="Soirée film d'horreur" value="<?= $UPDATE_soiree_name; ?>" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="description_soiree" class="form-label">Description de la soirée</label>
+                    <input type="text" class="form-control" placeholder="Entrez une description..." name="description_soiree" autocomplete="off" maxlength="3000" value="<?= $UPDATE_soiree_description; ?>" required>
+                </div>
+    
+                <!-- choix du genre de la soirée avec les propositions en formulaire de sélection -->
+                <div class="mb-3">
+                    <label for="genre_movie">Genre de la soirée</label>
+                    <select class="form-select" aria-label="genre_movie" name="genre_movie" id="genre_movie">
+                    <option selected value="<?= $UPDATE_soiree_genre; ?>"><?= $UPDATE_soiree_genre; ?></option>
+                    <option value="">Sans genre</option>
+                    <option value="Horreur" >Horreur</option>
+                    <option value="Science-Fiction" >Science Fiction</option>
+                    <option value="Romance">Romance</option>
+                    <option value="Fantastique">Fantastique</option>
+                    <option value="action">Action</option>
+                    <option value="Animation">Animation</option>
+                    <option value="thriller">Thriller</option>
+                    <option value="comédie">Comédie</option>
+                    <option value="documentaire">Documentaire</option>
+                    <option value="historique">Historique</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="range4" class="form-label">Nombre de personnes maximales pouvant être invités</label>
+                    <input type="range" class="form-range" min="0" max="100" value="<?= $UPDATE_soiree_nmbMax; ?>" id="range4" name="nb_personne_max">
+                    <output for="range4" id="rangeValue" aria-hidden="true"></output>
+
+                    <script>
+                    // This is an example script, please modify as needed
+                    const rangeInput = document.getElementById('range4');
+                    const rangeOutput = document.getElementById('rangeValue');
+
+                    // Set initial value
+                    rangeOutput.textContent = rangeInput.value;
+
+                    rangeInput.addEventListener('input', function() {
+                        rangeOutput.textContent = this.value;
+                    });
+                    </script>
+                </div>
+
+                <!-- partie pour mettre les dates grâce à un calendrier -->
+                <div class="mb-3">
+                    <label for="date_fin">Date de début de  soirée :</label>
+                    <input type="datetime-local" id="date_debut" name="date_debut" min="2026-06-01" max="2099-12-31" value= "<?= $UPDATE_soiree_dateS; ?>" required />
+                </div>
+
+                <div class="mb-3">
+                    <label for="date_fin">Date de fin de la soirée :</label>
+                    <input type="datetime-local" id="date_fin" name="date_fin" min="2026-06-01" max="2099-12-31" value= "<?= $UPDATE_soiree_dateE; ?>" required />
+                </div>
+
+                <div class="mb-3">
+                    <label for="place" class="form-label">Choix de Lieu (3 Maxiumum)</label>
+                    <input type="text" name="place" class="form-control mb-4" id="place" placeholder="7 Rue George Clemenceau">
+                    
+                    <button id="add_place" type="button" class="btn btn-primary">Ajouter</button>
+                    <button id="remove_place" type="button" class="btn btn-primary">Supprimer</button>
+                </div>
+
+                <div class="container mt-4">
+                    <ol id="liste" class="list-group list-group-numbered">
+                        <li class="list-group-item list-group-item-danger">
+                            <?= $UPDATE_soiree_lieu1; ?>
+                            <input type="hidden" name="choixLieu1" value="<?= $UPDATE_soiree_lieu1; ?>">
+                        </li>
+                        <li class="list-group-item list-group-item-danger">
+                            <?= $UPDATE_soiree_lieu2; ?>
+                            <input type="hidden" name="choixLieu2" value="<?= $UPDATE_soiree_lieu2; ?>">
+                        </li>
+                        <li class="list-group-item list-group-item-danger">
+                            <?= $UPDATE_soiree_lieu3; ?>
+                            <input type="hidden" name="choixLieu3" value="<?= $UPDATE_soiree_lieu3; ?>">
+                        </li>
+                    </ol>
+                </div>
+
+                <div class="mb-3">
+                    <label for="formFile" class="form-label">Choisissez une image de fond pour votre soirée</label>
+                    <div id="emailHelp" class="form-text mb-3">Cette image accompagnera la présentation de votre soirée, pour donner l'ambiance que vous voulez transmettre  Veuillez ne pas mettre d'image offensante</div>
+
+                    <input class="form-control" type="file" id="formFile" name="formFile" accept=".png,.jpg,.jpeg,.svg" value ="<?= $UPDATE_soiree_image; ?>" required>
+                </div>
+
+                <input hidden name="soireeID" id="soireeID" value="<?= $UPDATE_soiree_id ?>">
+                <button name="update_party_confirm" type="submit" class="btn btn-primary" disabled>Submit</button>
+                <!-- bouton pour soumettre la soirée -->
             </form>
-            <?php } ?>
+
         </div>
     </main>
-
+    <!-- Footer avec les liens vers instagram, discord, facebook, mentions légales -->
     <footer id="footer_popco" class="container-fluid py-3 rounded-top-5 bg-ctm-primary-color">
         <div class="row g-1 d-flex align-items-center">
             <div class="col-4 fs-2 ps-4">
@@ -344,17 +389,15 @@ else{
                 </a>
                 
             </div>
-            <!-- icone lien vers les réseaux sociaux -->
             <div class="col-4 text-center">
                 <img src="../assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
-                <!-- Insertion de l'icône du logo PopCo -->
+                <!--Insertion de l'icône du logo PopCo -->
             </div>
-            <!-- logo bas de page ramenant a la page d'accueil -->
             <div class="col-4 py-3 text-start d-lg-block text-end pe-4">
                 <a class="text-decoration-none link-ctm-terciary-color-subtle" data-bs-toggle="modal" href="#popco_ml" role="button">
                 Mentions légales
                 </a>
-                <!-- bouton pop up mentions légales -->
+                <!-- partie mentions légales sous la forme d'un modal -->
                 <div class="modal fade" id="popco_ml" tabindex="-1" aria-labelledby="popco_mlLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content bg-ctm-terciary-color">
@@ -363,7 +406,6 @@ else{
                             <button type="button" class="btn-close link-ctm-primary-color-subtle" data-bs-dismiss="modal" aria-label="Close"></button>
                             <!-- bouton pour fermer les mentions légales (en forme de X)-->
                         </div>
-                        <!-- mise en forme des mentions légales -->
                         <div class="modal-body text-center lh-sm">
                             <p>
                                 Conformément aux dispositions de la loi n° 2004-575 du 21 juin 2004 pour la confiance en l'économie numérique, il est précisé aux utilisateurs du site PopCo l'identité des différents intervenants dans le cadre de sa réalisation et de son suivi.
@@ -389,11 +431,10 @@ else{
                                 Génération des mentions légales par Legalstart.
                             </p>
                         </div>
-                        <!-- contenus des mentions légales -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-ctm-secondary-color-subtle" data-bs-dismiss="modal">Close</button>
+                            <!-- bouton pour fermer les mentions légales "Close"-->
                         </div>
-                        <!-- bouton de fermeture des mentions légales -->
                         </div>
                     </div>
                 </div>
