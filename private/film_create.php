@@ -1,92 +1,65 @@
 <?php
-session_start();
+if (!isset($_POST['search_movie'])) {
+    session_start();
+    if(!isset($_SESSION['is_admin']) && $_SESSION['is_admin'] != TRUE) header("Location: ../public/index.php");
+} 
 
 require_once '../bdd/bdd_connexion.php';
 $bdd = connectBDS();
+$error = 0;
 
-// Vérifie si un utilisateur est connecté, sinon il est renvoyé à la page de connexion
-if(!isset($_SESSION['email'])) {
-    header('Location: ./connexion.php');
-}
+$allSoirees = $bdd->query('SELECT * FROM film');
 
-// Récupère l'utilisateur connecté
-$query = $bdd->prepare("SELECT * FROM utilisateur WHERE email=:identifiant");
-$query->execute([':identifiant' => $_SESSION['email']]);
-$infosUtilisateur = $query->fetch();
+if (isset($_POST['search_movie'])) include("api_contact.php");
 
-// Vérifie que l'id de la soirée a bien été récupéré
-if(isset($_GET['id_soiree']) AND !empty($_GET['id_soiree'])){
-    // Récupère l'id de l'élément voulu depuis l'URL
-    $id_soiree_get = $_GET['id_soiree'];
+function add_movie($name_movie,$nom_filmPOST,$synopsisPOST,$genrePOST,$date_sortiePOST,$affichePOST) {
+    global $bdd;
+    $name_movie_string = "'". $name_movie . "'";
+    $sql_command = 'SELECT * FROM film WHERE nom_film =' . $name_movie_string . ';';
+    $check_movie = $bdd->query($sql_command);
+    $Get_movie_BD = $check_movie->fetch();
+    if ($Get_movie_BD['nom_film'] == NULL) {
 
-    // Récupération des informations de la soirée, des films et des lieux
-    $soiree_infos_requete = $bdd->prepare('SELECT
-    s.*,
-    f1.id_film AS film1_id_film, f1.nom_film AS film1_nom_film, f1.affiche AS film1_affiche,
-    f2.id_film AS film2_id_film, f2.nom_film AS film2_nom_film, f2.affiche AS film2_affiche,
-    f3.id_film AS film3_id_film, f3.nom_film AS film3_nom_film, f3.affiche AS film3_affiche,
-    f4.id_film AS film4_id_film, f4.nom_film AS film4_nom_film, f4.affiche AS film4_affiche,
-    f5.id_film AS film5_id_film, f5.nom_film AS film5_nom_film, f5.affiche AS film5_affiche,
-    l1.id_lieu AS lieu1_id, l1.adresse AS lieu1_adresse,
-    l2.id_lieu AS lieu2_id, l2.adresse AS lieu2_adresse,
-    l3.id_lieu AS lieu3_id, l3.adresse AS lieu3_adresse
-
-    FROM soiree s
-    JOIN film f1 ON s.choix_1_film = f1.id_film
-    JOIN film f2 ON s.choix_2_film = f2.id_film
-    JOIN film f3 ON s.choix_3_film = f3.id_film
-    JOIN film f4 ON s.choix_4_film = f4.id_film
-    JOIN film f5 ON s.choix_5_film = f5.id_film
-    JOIN lieu l1 ON s.choix_1_lieu = l1.id_lieu
-    JOIN lieu l2 ON s.choix_2_lieu = l2.id_lieu
-    JOIN lieu l3 ON s.choix_3_lieu = l3.id_lieu
-
-    WHERE s.id_soiree = ?;');
-    
-    $soiree_infos_requete->execute(array($id_soiree_get));
-
-    // Si cette colonne existe, les données déjà éxistantes sont récupées
-    if($soiree_infos_requete->rowCount() > 0){
-
-        $soiree_infos = $soiree_infos_requete->fetch();
-    }
-    else{
-        echo "soiree introuvable. Vous allez être redirigé vers les soirees.";
-    }
-}
-else{
-    echo "Une erreur s'est produite, l'identifiant n'est pas parvenu à être récupéré, veuillez revenir à la page précédente.";
-}
+        $nom_film = nl2br(htmlspecialchars($nom_filmPOST));
+        $synopsis = nl2br(htmlspecialchars($synopsisPOST));
+        $genre = nl2br(htmlspecialchars($genrePOST));
+        $date_sortie = nl2br(htmlspecialchars($date_sortiePOST));
+        $affiche = nl2br(htmlspecialchars($affichePOST));
 
 
-    function add_vote($vote_film, $vote_lieu, $id_soiree, $id_utilisateur) {
-        global $bdd;
-
-        if (!empty($vote_film) && !empty($vote_lieu)) {
-            $creer = $bdd->prepare("INSERT INTO vote(id_soiree, id_utilisateur, choix_film, choix_lieu) VALUES(?, ?, ?, ?)");
-            if ($creer->execute([$id_soiree, $id_utilisateur, $vote_film, $vote_lieu])) {
-                header('Location: ./soiree_infos.php?id_soiree='.$id_soiree);
-                exit();
-            } else {
-                echo "Erreur lors de l'enregistrement du vote.";
-            }
-        } else {
-            echo "Veuillez compléter tous les champs.";
-        }
-    }
-
-    if (isset($_POST['vote_complet'])) {
-        add_vote(
-            $_POST['vote_film'],
-            $_POST['vote_lieu'],
-            $id_soiree_get,
-            $infosUtilisateur['id_utilisateur']
+        $movie_add = $bdd->prepare(
+            "INSERT INTO film(nom_film,synopsis,genre,date_sortie,affiche)
+                VALUES(?, ?, ?, ?, ?)"
         );
+        $movie_add->execute([
+            $nom_film,
+            $synopsis,
+            $genre,
+            $date_sortie,
+            $affiche
+        ]);
+
+        header("Location: ./movie_create.php");
+        exit();
+    } else {
+        $error = 1;
+        echo '
+        <div class="alert alert-danger m-0" role="alert">
+            Le film en question existe déjà dans la base de donnée.
+        </div>
+        ';
+    }
     }
 
-    if (isset($_POST['vote_complet'])) {
-        add_vote($_POST['vote_film'], $_POST['vote_lieu']);
-    }
+if (isset($_POST['movie_create'])) {
+    $nom_filmPOST = $_POST['nom_filmPOST'];
+    $synopsisPOST = $_POST['synopsisPOST'];
+    $genrePOST = $_POST['genrePOST'];
+    $date_sortiePOST = $_POST['date_sortiePOST'];
+    $affichePOST = $_POST['affichePOST'];
+    $name_movie = $_POST['name_movie'];
+    add_movie($name_movie,$nom_filmPOST,$synopsisPOST,$genrePOST, $date_sortiePOST,$affichePOST);
+}
 ?>
 
 <!DOCTYPE html>
@@ -106,7 +79,8 @@ else{
         <script src="https://kit.fontawesome.com/4b69bc6b92.js" crossorigin="anonymous"></script>
     <!-- Bootstrap Icons  -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <title>Les soirées</title>
+    <title>Nouveau Film</title>
+
 </head>
 
 <body class="bg-ctm-terciary-color">
@@ -115,7 +89,7 @@ else{
         <div class="container-fluid p-0">
                 <nav id="header_popco" class="navbar navbar-expand bg-ctm-primary-color rounded-bottom-5 ">
                     <div class="container-fluid">
-                        <a class="navbar-brand" href="./index.php">
+                        <a class="navbar-brand" href="../public/index.php">
                             <img src="../assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
                             <!-- Insertion de l'icône du logo PopCo -->
                         </a>
@@ -125,28 +99,25 @@ else{
                                  <!-- class de la barre de navigation (navbar) avec une marge de bas de 2 et de 0 à partir du breakpoint large -->
                                 <li class="nav-item active">
                                     <!-- item de navigation actif -->
-                                    <a class="nav-link" href="./index.php">Accueil</a>
+                                    <a class="nav-link" href="../public/index.php">Accueil</a>
                                     <!-- lien de navigation -->
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./soirees.php">Soirées</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="../public/soirees.php">Soirées</a>
                                     <!-- lien de navigation -->
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./films.php">Films</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="../public/films.php">Films</a>
                                     <!-- lien de navigation -->
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./soiree_create.php">Créer une soirée</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="../public/soiree_create.php">Créer une soirée</a>
                                     <!-- lien de navigation -->
                                 </li>
-                                
-                                <?php if(isset($_SESSION['is_admin']) && $_SESSION['is_admin']==TRUE) { ?>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="../private/movie_create.php">Ajouter un film</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="../public/vote.php">Vote TEMP</a>
                                     <!-- lien de navigation -->
                                 </li>
-                                <?php } ?>
                             </ul>
 
                             <?php
@@ -154,28 +125,30 @@ else{
                                 ?>
                                 <ul class="navbar-nav mb-2 mb-lg-0 gap-2 me-0 d-none d-md-flex">
                                     <li class="nav-item">
-                                        <a class="btn btn-ctm-red-subtle" href="./utilisateur.php">Votre profil</a>
+                                        <a class="btn btn-ctm-red-subtle" href="../public/utilisateur.php">Votre profil</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="btn btn-ctm-red" href="../private/deconnexion.php">Se déconnecter</a>
+                                        <a class="btn btn-ctm-red" href="../public/deconnexion.php">Se déconnecter</a>
                                     </li>
-                                    <!-- Boutons pour créer un compte et se connecter -->
+                                    <!-- Boutons Rouges (un de couleur légère et l'autre non) pour créer un compte et se connecter -->
                                 </ul>
                                 <?php
                             }else{
                                 ?>
                                 <ul class="navbar-nav mb-2 mb-lg-0 gap-2 me-0 d-none d-md-flex">
                                     <li class="nav-item">
-                                        <a class="btn btn-ctm-red-subtle" href="./connexion.php">Se connecter</a>
+                                        <a class="btn btn-ctm-red-subtle" href="../public/connexion.php">Se connecter</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="btn btn-ctm-red" href="./compte_create.php">Créer un compte</a>
+                                        <a class="btn btn-ctm-red" href="../public/compte_create.php">Créer un compte</a>
                                     </li>
                                 </ul>
                                 <!-- Boutons Rouges (un de couleur légère et l'autre non) pour créer un compte et se connecter -->
                                 
                         </div>
-                        <?php } ?>
+                        <?php
+                            }
+                            ?>
 
                         <a class="fs-1 d-block d-md-none text-success" data-bs-toggle="offcanvas" href="#menu_phone" aria-controls="offcanvasExample">
                         <i class="bi bi-list link-ctm-terciary-color"></i>
@@ -188,31 +161,35 @@ else{
                             </div>
                             <div class="offcanvas-body d-flex flex-column justify-content-between px-0">
                                 <ul class="list-group">
-                                    <a href="./index.php" class="list-group-item list-group-item-action active list-group-item-ctm-terciary-color-subtle" aria-current="true">
+                                    <a href="../public/index.php" class="list-group-item list-group-item-action active list-group-item-ctm-terciary-color-subtle" aria-current="true">
                                         Accueil
                                         <!-- list group actif -->
                                     </a>
-                                    <a href="./soirees.php" class="list-group-item list-group-item-action">
+                                    <a href="../public/public/public/soirees.php" class="list-group-item list-group-item-action">
                                         Les soirées
                                         <!-- list group actif -->
                                     </a>
-                                    <a href="./soiree_create.php" class="list-group-item list-group-item-action">
+                                    <a href=".../public/public/soiree_create.php" class="list-group-item list-group-item-action">
                                         Créer une soirée
                                         <!-- list group actif -->
                                     </a>
-                                    <a href="./films.php" class="list-group-item list-group-item-action">
+                                    <a href="../public/films.php" class="list-group-item list-group-item-action">
                                         Films proposés
                                         <!-- list group actif -->
                                     </a>
-                                    <a href="./utilisateur.php" class="list-group-item list-group-item-action">
+                                    <a href="../public/utilisateur.php" class="list-group-item list-group-item-action">
                                         Utilisateur
+                                        <!-- list group actif -->
+                                    </a>
+                                    <a href="../public/vote.php" class="list-group-item list-group-item-action">
+                                        Voter
                                         <!-- list group actif -->
                                     </a>
                                 </ul>
 
                                 <div class="container-fluid d-md-flex justify-content-end gap-2">
-                                    <a class="btn btn-ctm-red-subtle" href="./connexion.php">Se connecter</a>
-                                    <a class="btn btn-ctm-red" href="./compte_create.php">Créer un compte</a>
+                                    <a class="btn btn-ctm-red-subtle" href="../public/connexion.php">Se connecter</a>
+                                    <a class="btn btn-ctm-red" href="../public/compte_create.php">Créer un compte</a>
                                     <!-- Bouton rouge pour se connecter / créer un compte -->
                                 </div>
                             </div>
@@ -224,101 +201,89 @@ else{
     </header>
 
     <main>
-        <div class="container my-5" id="formulaireVote">
-        <h5 class="fs-3">Votez pour le film que vous aimeriez voir !</h5>
-        <p>Pour la soirée <strong><?= $soiree_infos['nom_soiree'] ?></strong>, choisissez un film et un lieu.</p>
+        <div class="text-center my-5 py-5">
+            <h5>Ajoutez un nouveau film</h5>
+        </div>
+        <h5 class="ms-5">Entrez les informations du film à ajouter.</h5>
 
-        <form method="POST" action="">
+        <div class="container my-5">
 
-            <!-- FILMS -->
-            <h5 class="mb-3">Film</h5>
-            <div class="container d-flex justify-content-between flex-wrap gap-3">
+            <?php 
+            if ($error === 1) { 
+                echo '
+                <div class="alert alert-danger" role="alert">
+                    Le film en question existe déjà dans la base de donnée.
+                </div>
+                ';
 
-                <div class="col-12 col-md-6 col-lg-2">
-                    <input type="radio" class="btn-check" id="btn-film-1" autocomplete="off" name="vote_film" value="<?= $soiree_infos['film1_id_film'] ?>">
-                    <label class="btn btn-lg w-100" for="btn-film-1">
-                        <figure>
-                            <img src="<?= $soiree_infos['film1_affiche'] ?>" class="figure-img img-fluid object-fit-cover" alt="">
-                            <figcaption><?= $soiree_infos['film1_nom_film'] ?></figcaption>
+            } ?>
+
+            <form method="POST" action="" enctype="multipart/form-data">
+                <!-- partie formulaire -->
+
+                 <!-- Nom de la soirée -->
+                <div class="mb-3">
+                    <label for="nomMovie" class="form-label">Nom du film:</label>
+                    <input type="text" class="form-control" name="nomMovie" id="nomMovie" maxlength="30" placeholder="Backrooms">
+                </div>
+
+                <button name="search_movie" type="submit" class="btn btn-ctm-red">Chercher</button>
+                <!-- bouton pour soumettre la soirée -->
+            </form>
+
+            
+            <?php if (isset($_POST['search_movie'])) { ?>
+            
+                <div id="temp_div" class ="row mt-3">
+                    <div class ="col-4">
+                        <figure class ="figure">
+                            <img src=<?= "https://image.tmdb.org/t/p/w500" . $data_fr["poster_path"]?> class="figure-img img-fluid rounded img-create" alt="...">
                         </figure>
-                    </label>
+                        
+                    </div>
+
+                    <div class="col-8">
+                        <div class ="row">
+                            <h1 class="col-6"><?=$data_fr["title"]?></h1>
+                            <h3 class="col-3"><?=$data_fr["genres"][0]["name"]?></h3>
+                            <h3 class="col-3"><?=substr($data_fr["release_date"], 0, 4)?></h3>
+                        </div>
+
+                        <div class ="row">
+                            <p><?=$data_fr["overview"]?></p>
+                        </div>
+                    </div>
+                    <h4 class ="mb-1">Est-ce le bon film ?</h4>
+                    <div class ="row gap-3">
+                        <form action="" method="POST">
+                            <input type="hidden" name="nom_filmPOST" value="<?= htmlspecialchars($data_fr["title"]) ?>">
+                            <input type="hidden" name="synopsisPOST" value="<?= htmlspecialchars($data_fr["overview"]) ?>">
+                            <input type="hidden" name="genrePOST" value="<?= htmlspecialchars($data_fr["genres"][0]["name"]) ?>">
+                            <input type="hidden" name="date_sortiePOST" value="<?= htmlspecialchars(substr($data_fr["release_date"], 0, 4)) ?>">
+                            <input type="hidden" name="affichePOST" value="<?= htmlspecialchars("https://image.tmdb.org/t/p/w500" . $data_fr["poster_path"]) ?>">
+                            <input type="hidden" name="name_movie" value="<?= htmlspecialchars($name_movie) ?>">
+
+                            <button name="movie_create" type="submit" class="btn btn-ctm-red col-4">Ajouter</button>
+                            <button name="movie_empty" type="button" class="btn btn-ctm-red-subtle col-4">Non (réessayer)</button>
+                        </form>
+                    </div>
                 </div>
 
-                <div class="col-12 col-md-6 col-lg-2">
-                    <input type="radio" class="btn-check" id="btn-film-2" autocomplete="off" name="vote_film" value="<?= $soiree_infos['film2_id_film'] ?>">
-                    <label class="btn btn-lg w-100" for="btn-film-2">
-                        <figure>
-                            <img src="<?= $soiree_infos['film2_affiche'] ?>" class="figure-img img-fluid object-fit-cover" alt="">
-                            <figcaption><?= $soiree_infos['film2_nom_film'] ?></figcaption>
-                        </figure>
-                    </label>
-                </div>
+                <script>
+                $(document).ready(function() {
+                    $("button[name='search_movie']").css('display','none');
+                    $("button[name='movie_empty']").click(function() {
+                        $("#temp_div").empty();
+                        $("button[name='search_movie']").css('display','block');
+                    })
+                });
+                </script>
 
-                <div class="col-12 col-md-6 col-lg-2">
-                    <input type="radio" class="btn-check" id="btn-film-3" autocomplete="off" name="vote_film" value="<?= $soiree_infos['film3_id_film'] ?>">
-                    <label class="btn btn-lg w-100" for="btn-film-3">
-                        <figure>
-                            <img src="<?= $soiree_infos['film3_affiche'] ?>" class="figure-img img-fluid object-fit-cover" alt="">
-                            <figcaption><?= $soiree_infos['film3_nom_film'] ?></figcaption>
-                        </figure>
-                    </label>
-                </div>
-
-                <div class="col-12 col-md-6 col-lg-2">
-                    <input type="radio" class="btn-check" id="btn-film-4" autocomplete="off" name="vote_film" value="<?= $soiree_infos['film4_id_film'] ?>">
-                    <label class="btn btn-lg w-100" for="btn-film-4">
-                        <figure>
-                            <img src="<?= $soiree_infos['film4_affiche'] ?>" class="figure-img img-fluid object-fit-cover" alt="">
-                            <figcaption><?= $soiree_infos['film4_nom_film'] ?></figcaption>
-                        </figure>
-                    </label>
-                </div>
-
-                <div class="col-12 col-md-6 col-lg-2">
-                    <input type="radio" class="btn-check" id="btn-film-5" autocomplete="off" name="vote_film" value="<?= $soiree_infos['film5_id_film'] ?>">
-                    <label class="btn btn-lg w-100" for="btn-film-5">
-                        <figure>
-                            <img src="<?= $soiree_infos['film5_affiche'] ?>" class="figure-img img-fluid object-fit-cover" alt="">
-                            <figcaption><?= $soiree_infos['film5_nom_film'] ?></figcaption>
-                        </figure>
-                    </label>
-                </div>
-
-            </div>
-
-            <!-- LIEUX -->
-            <h5 class="mt-5 mb-3">Lieu</h5>
-            <div class="container d-flex justify-content-start flex-wrap gap-3">
-
-                <div class="col-12 col-md-4 col-lg-3">
-                    <input type="radio" class="btn-check" id="btn-lieu-1" autocomplete="off" name="vote_lieu" value="<?= $soiree_infos['lieu1_id'] ?>">
-                    <label class="btn btn-outline-primary btn-lg w-100" for="btn-lieu-1">
-                        <?= $soiree_infos['lieu1_adresse'] ?>
-                    </label>
-                </div>
-
-                <div class="col-12 col-md-4 col-lg-3">
-                    <input type="radio" class="btn-check" id="btn-lieu-2" autocomplete="off" name="vote_lieu" value="<?= $soiree_infos['lieu2_id'] ?>">
-                    <label class="btn btn-outline-primary btn-lg w-100" for="btn-lieu-2">
-                        <?= $soiree_infos['lieu2_adresse'] ?>
-                    </label>
-                </div>
-
-                <div class="col-12 col-md-4 col-lg-3">
-                    <input type="radio" class="btn-check" id="btn-lieu-3" autocomplete="off" name="vote_lieu" value="<?= $soiree_infos['lieu3_id'] ?>">
-                    <label class="btn btn-outline-primary btn-lg w-100" for="btn-lieu-3">
-                        <?= $soiree_infos['lieu3_adresse'] ?>
-                    </label>
-                </div>
-
-            </div>
-
-            <button type="submit" name="vote_complet" class="btn btn-ctm-red mt-4 w-100 p-3">Voter</button>
-
-        </form>
+                
+                
+            <?php } ?>
         </div>
     </main>
-    
     <!-- Footer avec les liens vers instagram, discord, facebook, mentions légales -->
     <footer id="footer_popco" class="container-fluid py-3 rounded-top-5 bg-ctm-primary-color">
         <div class="row g-1 d-flex align-items-center">
@@ -336,6 +301,7 @@ else{
             </div>
             <div class="col-4 text-center">
                 <img src="../assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
+                <!--Insertion de l'icône du logo PopCo -->
             </div>
             <div class="col-4 py-3 text-start d-lg-block text-end pe-4">
                 <a class="text-decoration-none link-ctm-terciary-color-subtle" data-bs-toggle="modal" href="#popco_ml" role="button">

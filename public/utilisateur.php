@@ -161,7 +161,7 @@ $soiree_votee_requete->execute(array($infos_utilisateur['id_utilisateur']));
     </header>
 
     <main class="container-fluid px-0">
-        <div class="bgImage"></div>
+        <div class="bgImage1"></div>
         <div class="text-center py-5 callToAction">
             <h5 class="fs-1">Bonjour <?= $infos_utilisateur['nom_utilisateur'];?> !</h5>
         </div>

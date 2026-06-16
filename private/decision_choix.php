@@ -4,8 +4,7 @@
 $soirees_a_traiter = $bdd->query("
     SELECT id_soiree FROM soiree 
     WHERE date_limite_vote < NOW() 
-    AND film_choisi IS NULL
-");
+    AND film_choisi IS NULL;");
 
 foreach ($soirees_a_traiter as $soiree) {
     calculerResultat($soiree['id_soiree']);

@@ -22,7 +22,6 @@ if (isset($_POST['update_party'])) {
     $UPDATE_soiree_lieu2 = $_POST['ChoixLieu2'];
     $UPDATE_soiree_lieu3 = $_POST['ChoixLieu3'];
     $UPDATE_soiree_image = $_POST['ImageSoire'];
-
 }
 
 

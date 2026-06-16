@@ -13,9 +13,11 @@ $count_soirees = $bdd->prepare('SELECT * FROM soiree');
 $count_soirees->execute();
 $count = $count_soirees->rowCount();
 
-$query = $bdd->prepare("SELECT * FROM utilisateur WHERE email=:identifiant");
-$query->execute([':identifiant' => $_SESSION['email']]);
-$infosUtilisateur = $query->fetch();
+if(isset($_SESSION['email'])){
+    $query = $bdd->prepare("SELECT * FROM utilisateur WHERE email=:identifiant");
+    $query->execute([':identifiant' => $_SESSION['email']]);
+    $infosUtilisateur = $query->fetch();
+}
 
 $soirees_populaire = $bdd->query("SELECT * FROM soiree ORDER BY nb_personne_max DESC LIMIT 10;");
 $soirees_horreur = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'horreur'; ");
@@ -95,24 +97,26 @@ function generateCard($DBData) {
                                     <!-- lien de navigation -->
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./soirees.php">Soirées</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="./soirees">Soirées</a>
                                     <!-- lien de navigation -->
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./films.php">Films</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="./films">Films</a>
                                     <!-- lien de navigation -->
                                 </li>
+                                <?php if(isset($_SESSION['email'])) { ?>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./soiree_create.php">Créer une soirée</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="../private/film_create">Ajouter un film</a>
                                     <!-- lien de navigation -->
-                                </li>
-                                
-                                <?php if(isset($_SESSION['is_admin']) && $_SESSION['is_admin']==TRUE) { ?>
-                                <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="../private/movie_create.php">Ajouter un film</a>
-                                    <!-- lien de navigation -->
-                                </li>
+                                </li> 
+                                    <?php if(isset($_SESSION['is_admin']) && $_SESSION['is_admin']==TRUE) { ?>
+                                    <li class="nav-item">
+                                        <a class="nav-link bootstrap_nav_item_color" href="../private/film_create">Ajouter un film</a>
+                                        <!-- lien de navigation -->
+                                    </li>
+                                    <?php } ?>
                                 <?php } ?>
+
                             </ul>
 
                             <?php
@@ -125,8 +129,8 @@ function generateCard($DBData) {
                                 <ul class="dropdown-menu">
                                     <li class="mx-3"><?= $infosUtilisateur['nom_utilisateur'];?> <?= $infosUtilisateur['prenom_utilisateur'];?></li>
                                     <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="./utilisateur.php">Votre profil</a></li>
-                                    <li><a class="dropdown-item" href="../private/deconnexion.php">Se déconnecter</a></li>
+                                    <li><a class="dropdown-item" href="./utilisateur">Votre profil</a></li>
+                                    <li><a class="dropdown-item" href="../private/deconnexion">Se déconnecter</a></li>
                                 </ul>
                                 </div>
                                 <?php
@@ -134,14 +138,13 @@ function generateCard($DBData) {
                                 ?>
                                 <ul class="navbar-nav mb-2 mb-lg-0 gap-2 me-0 d-none d-md-flex">
                                     <li class="nav-item">
-                                        <a class="btn btn-ctm-red-subtle" href="./connexion.php">Se connecter</a>
+                                        <a class="btn btn-ctm-red-subtle" href="./connexion">Se connecter</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="btn btn-ctm-red" href="./compte_create.php">Créer un compte</a>
+                                        <a class="btn btn-ctm-red" href="./compte_create">Créer un compte</a>
                                     </li>
                                 </ul>
                                 <!-- Boutons Rouges (un de couleur légère et l'autre non) pour créer un compte et se connecter -->
-                                
                         </div>
                         <?php } ?>
 
@@ -156,33 +159,52 @@ function generateCard($DBData) {
                             </div>
                             <div class="offcanvas-body d-flex flex-column justify-content-between px-0">
                                 <ul class="list-group">
-                                    <a href="./index.php" class="list-group-item list-group-item-action active list-group-item-ctm-terciary-color-subtle" aria-current="true">
+                                    <a href="./index" class="list-group-item list-group-item-action active list-group-item-ctm-terciary-color-subtle" aria-current="true">
                                         Accueil
                                         <!-- list group actif -->
                                     </a>
-                                    <a href="./soirees.php" class="list-group-item list-group-item-action">
+                                    <a href="./soirees" class="list-group-item list-group-item-action">
                                         Les soirées
-                                        <!-- list group actif -->
-                                    </a>
-                                    <a href="./soiree_create.php" class="list-group-item list-group-item-action">
-                                        Créer une soirée
-                                        <!-- list group actif -->
-                                    </a>
+                                    </a>>
                                     <a href="./films.php" class="list-group-item list-group-item-action">
                                         Films proposés
-                                        <!-- list group actif -->
                                     </a>
-                                    <a href="./utilisateur.php" class="list-group-item list-group-item-action">
-                                        Utilisateur
-                                        <!-- list group actif -->
+                                    <?php if(isset($_SESSION['email'])) { ?>
+                                    <a href="./soiree_create" class="list-group-item list-group-item-action">
+                                        Film
                                     </a>
+                                    <?php } ?>
+                                    <?php if(isset($_SESSION['is_admin']) && $_SESSION['is_admin']==TRUE) { ?>
+                                        <a class="list-group-item list-group-item-action" href="../private/film_create">
+                                            Ajouter un film
+                                        </a>
+                                    <?php } ?>
                                 </ul>
 
-                                <div class="container-fluid d-md-flex justify-content-end gap-2">
-                                    <a class="btn btn-ctm-red-subtle" href="./connexion.php">Se connecter</a>
-                                    <a class="btn btn-ctm-red" href="./compte_create.php">Créer un compte</a>
-                                    <!-- Bouton rouge pour se connecter / créer un compte -->
-                                </div>
+                                <?php
+                                if(isset($_SESSION['email'])) {
+                                    ?>
+                                    <div class="dropdown dropstart">
+                                        <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <h2><i class="bi bi-person fs-3 link-ctm-terciary-color-subtle me-4"></i></h2>
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li class="mx-3"><?= $infosUtilisateur['nom_utilisateur'];?> <?= $infosUtilisateur['prenom_utilisateur'];?></li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li><a class="dropdown-item" href="./utilisateur">Votre profil</a></li>
+                                            <li><a class="dropdown-item" href="../private/deconnexion">Se déconnecter</a></li>
+                                        </ul>
+                                    </div>
+                                    <?php
+                                }else{
+                                    ?>
+                                    <div class="container-fluid d-md-flex justify-content-end gap-2">
+                                        <a class="btn btn-ctm-red-subtle" href="./connexion.php">Se connecter</a>
+                                        <a class="btn btn-ctm-red" href="./compte_create.php">Créer un compte</a>
+                                        <!-- Bouton rouge pour se connecter / créer un compte -->
+                                    </div>                            
+                                <?php } ?>
+
                             </div>
                         </div>
 
@@ -194,7 +216,7 @@ function generateCard($DBData) {
     <main class="container-fluid px-0">
         
         <?php if(!isset($_SESSION['email'])) { ?>
-            <div class="bgImage"></div>
+            <div class="bgImage1"></div>
             <div class="text-center py-5 callToAction">
                 <h5 class="fs-1">Organisez des soirées inoubliables !!</h5>
                 <p class="px-3 fs-3 sticker bg-ctm-red">Déjà <?php echo $count; ?> soirées créées !</p>

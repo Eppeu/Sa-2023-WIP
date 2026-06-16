@@ -186,7 +186,7 @@ function generateCard_Movie($DBData) {
     </header>
 
     <main class="container-fluid px-0">
-        <div class="bgImage"></div>
+        <div class="bgImage3"></div>
         <div class="text-center py-5 callToAction">
             <h5 class="fs-1">La liste des films à choisir !</h5>
             <p class="mt-5 fs-4">

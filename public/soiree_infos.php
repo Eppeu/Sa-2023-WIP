@@ -32,9 +32,9 @@ if(isset($_GET['id_soiree']) AND !empty($_GET['id_soiree'])){
     JOIN film f3 ON s.choix_3_film = f3.id_film
     JOIN film f4 ON s.choix_4_film = f4.id_film
     JOIN film f5 ON s.choix_5_film = f5.id_film
-    JOIN lieu l1 ON s.choix_1_lieu = l1.id_lieu
-    JOIN lieu l2 ON s.choix_2_lieu = l2.id_lieu
-    JOIN lieu l3 ON s.choix_3_lieu = l3.id_lieu
+    LEFT JOIN lieu l1 ON s.choix_1_lieu = l1.id_lieu
+    LEFT JOIN lieu l2 ON s.choix_2_lieu = l2.id_lieu
+    LEFT JOIN lieu l3 ON s.choix_3_lieu = l3.id_lieu
 
     WHERE s.id_soiree = ?;');
 

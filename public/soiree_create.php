@@ -398,7 +398,7 @@ $("#remove_place").click(function() {
                 </div>
 
                 <div class="mb-3">
-                    <label for="description_soiree" class="form-label">Nom de la soirée</label>
+                    <label for="description_soiree" class="form-label">Description de la soirée</label>
                     <input type="text" class="form-control" placeholder="Entrez une description..." name="description_soiree" autocomplete="off" maxlength="3000"></input>
                 </div>
     

@@ -181,7 +181,7 @@ function generateCard_NoSlider($DBCondition) {
     </header>
     
     <main class="container-fluid px-0">
-        <div class="bgImage"></div>
+        <div class="bgImage2"></div>
         <div class="text-center py-5 callToAction">
             <h5 id="test" class="fs-1">Retrouvez toutes les soirées ici !</h5>
         </div>
