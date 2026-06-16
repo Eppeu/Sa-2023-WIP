@@ -1,6 +1,4 @@
 <?php
-30 * * * * Astrid/Sa-2023-WIP/private/decision_choix.php
-
 require_once '../bdd/bdd_connexion.php';
 $bdd = connectBDS();
 

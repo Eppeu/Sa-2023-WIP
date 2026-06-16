@@ -11,11 +11,15 @@ $curl = curl_init();
 curl_setopt($curl, CURLOPT_URL, $Api_name);
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true); 
 $response1 = curl_exec($curl);
+$data = json_decode($response1, true);
 
-if ($response1 == '"page":1,"results":[],"total_pages":1,"total_results":0}' || $response1 == NULL) {
-    echo "Error: Le film n'a pas été trouée! ";
+if ($data["total_results"] == 0 ) {
+    echo "
+    <div class='alert alert-danger m-0' role='alert'>
+        Le film que vous avez marqué n'existe pas.
+    </div>
+    ";
 } else {
-    $data = json_decode($response1, true);
     $get_id = $data['results'][0]['id'];
     curl_setopt_array($curl, [
     CURLOPT_URL => "https://api.themoviedb.org/3/movie/{$get_id}?language=fr",

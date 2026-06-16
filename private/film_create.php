@@ -8,6 +8,13 @@ require_once '../bdd/bdd_connexion.php';
 $bdd = connectBDS();
 $error = 0;
 
+// Récupère les informations de l'utilisateur s'il est connecté
+if(isset($_SESSION['email'])){
+    $utilisateur_infos_requete = $bdd->prepare("SELECT * FROM utilisateur WHERE email=?");
+    $utilisateur_infos_requete->execute(array($_SESSION['email']));
+    $utilisateur_infos = $utilisateur_infos_requete->fetch();
+}
+
 $allSoirees = $bdd->query('SELECT * FROM film');
 
 if (isset($_POST['search_movie'])) include("api_contact.php");
@@ -228,7 +235,7 @@ if (isset($_POST['movie_create'])) {
         <div class="container my-5">
 
             <?php 
-            if ($error === 1) { 
+            if ($error == 1) { 
                 echo '
                 <div class="alert alert-danger" role="alert">
                     Le film en question existe déjà dans la base de donnée.
@@ -249,53 +256,58 @@ if (isset($_POST['movie_create'])) {
 
             
             <?php if (isset($_POST['search_movie'])) { ?>
-            
-                <div id="temp_div" class ="row mt-3">
-                    <div class ="col-4">
-                        <figure class ="figure">
-                            <img src=<?= "https://image.tmdb.org/t/p/w500" . $data_fr["poster_path"]?> class="figure-img img-fluid rounded img-create" alt="...">
-                        </figure>
-                        
-                    </div>
 
-                    <div class="col-8">
-                        <div class ="row">
-                            <h1 class="col-6"><?=$data_fr["title"]?></h1>
-                            <h3 class="col-3"><?=$data_fr["genres"][0]["name"]?></h3>
-                            <h3 class="col-3"><?=substr($data_fr["release_date"], 0, 4)?></h3>
+                <?php if ($data["total_results"] == 0) { ?>
+
+                <?php } else { ?>
+
+                    <div id="temp_div" class ="row mt-3">
+                        <div class ="col-4">
+                            <figure class ="figure">
+                                <img src=<?= "https://image.tmdb.org/t/p/w500" . $data_fr["poster_path"]?> class="figure-img img-fluid rounded img-create" alt="...">
+                            </figure>
+                            
                         </div>
 
-                        <div class ="row">
-                            <p><?=$data_fr["overview"]?></p>
+                        <div class="col-8">
+                            <div class ="row">
+                                <h1 class="col-6"><?=$data_fr["title"]?></h1>
+                                <h3 class="col-3"><?=$data_fr["genres"][0]["name"]?></h3>
+                                <h3 class="col-3"><?=substr($data_fr["release_date"], 0, 4)?></h3>
+                            </div>
+
+                            <div class ="row">
+                                <p><?=$data_fr["overview"]?></p>
+                            </div>
+                        </div>
+                        <h4 class ="mb-1">Est-ce le bon film ?</h4>
+                        <div class ="row gap-3">
+                            <form action="" method="POST">
+                                <input type="hidden" name="nom_filmPOST" value="<?= htmlspecialchars($data_fr["title"]) ?>">
+                                <input type="hidden" name="synopsisPOST" value="<?= htmlspecialchars($data_fr["overview"]) ?>">
+                                <input type="hidden" name="genrePOST" value="<?= htmlspecialchars($data_fr["genres"][0]["name"]) ?>">
+                                <input type="hidden" name="date_sortiePOST" value="<?= htmlspecialchars(substr($data_fr["release_date"], 0, 4)) ?>">
+                                <input type="hidden" name="affichePOST" value="<?= htmlspecialchars("https://image.tmdb.org/t/p/w500" . $data_fr["poster_path"]) ?>">
+                                <input type="hidden" name="name_movie" value="<?= htmlspecialchars($name_movie) ?>">
+
+                                <button name="movie_create" type="submit" class="btn btn-ctm-red col-4">Ajouter</button>
+                                <button name="movie_empty" type="button" class="btn btn-ctm-red-subtle col-4">Non (réessayer)</button>
+                            </form>
                         </div>
                     </div>
-                    <h4 class ="mb-1">Est-ce le bon film ?</h4>
-                    <div class ="row gap-3">
-                        <form action="" method="POST">
-                            <input type="hidden" name="nom_filmPOST" value="<?= htmlspecialchars($data_fr["title"]) ?>">
-                            <input type="hidden" name="synopsisPOST" value="<?= htmlspecialchars($data_fr["overview"]) ?>">
-                            <input type="hidden" name="genrePOST" value="<?= htmlspecialchars($data_fr["genres"][0]["name"]) ?>">
-                            <input type="hidden" name="date_sortiePOST" value="<?= htmlspecialchars(substr($data_fr["release_date"], 0, 4)) ?>">
-                            <input type="hidden" name="affichePOST" value="<?= htmlspecialchars("https://image.tmdb.org/t/p/w500" . $data_fr["poster_path"]) ?>">
-                            <input type="hidden" name="name_movie" value="<?= htmlspecialchars($name_movie) ?>">
 
-                            <button name="movie_create" type="submit" class="btn btn-ctm-red col-4">Ajouter</button>
-                            <button name="movie_empty" type="button" class="btn btn-ctm-red-subtle col-4">Non (réessayer)</button>
-                        </form>
-                    </div>
-                </div>
+                    <script>
+                    $(document).ready(function() {
+                        $("button[name='search_movie']").css('display','none');
+                        $("button[name='movie_empty']").click(function() {
+                            $("#temp_div").empty();
+                            $("button[name='search_movie']").css('display','block');
+                        })
+                    });
+                    </script>
 
-                <script>
-                $(document).ready(function() {
-                    $("button[name='search_movie']").css('display','none');
-                    $("button[name='movie_empty']").click(function() {
-                        $("#temp_div").empty();
-                        $("button[name='search_movie']").css('display','block');
-                    })
-                });
-                </script>
 
-                
+                <?php }  ?>
                 
             <?php } ?>
         </div>
@@ -370,3 +382,4 @@ if (isset($_POST['movie_create'])) {
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+</html>

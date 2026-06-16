@@ -6,15 +6,27 @@ $bdd = connectBDS();
 
 // Récupère les informations de l'utilisateur s'il est connecté
 if(isset($_SESSION['email'])){
-    $query = $bdd->prepare("SELECT * FROM utilisateur WHERE email=:identifiant");
-    $query->execute([':identifiant' => $_SESSION['email']]);
-    $utilisateur_infos = $query->fetch();
+    $utilisateur_infos_requete = $bdd->prepare("SELECT * FROM utilisateur WHERE email=?");
+    $utilisateur_infos_requete->execute(array($_SESSION['email']));
+    $utilisateur_infos = $utilisateur_infos_requete->fetch();
 }
 
 // Vérifie que l'id a bien été récupéré
 if(isset($_GET['id_soiree']) AND !empty($_GET['id_soiree'])){
     // Récupère l'id de l'élément voulu depuis l'URL
     $id_soiree_get = $_GET['id_soiree'];
+
+    // Récupère la soirée où la date de limite de vote est atteinte
+    $soiree_date_limite_requete = $bdd->prepare("SELECT id_soiree FROM soiree 
+    WHERE date_limite_vote < NOW() AND id_soiree=?;");
+    $soiree_date_limite_requete->execute(array($id_soiree_get));
+
+    if($soiree_date_limite = $soiree_date_limite_requete->fetch()){
+        $is_limit_reached = true;
+    }else{
+        $is_limit_reached = false;
+    }
+
 
     // Récupération des informations de la soirée, des films et des lieux et l'id de l'auteur de la soirée.
     $soiree_infos_requete = $bdd->prepare('SELECT
@@ -90,6 +102,14 @@ if(isset($_GET['id_soiree']) AND !empty($_GET['id_soiree'])){
 }
 else{
     echo "Une erreur s'est produite, l'identifiant n'est pas parvenu à être récupéré, veuillez revenir à la page précédente.";
+}
+
+function delete_soiree() {
+    global $bdd;
+    global $id_soiree_get;
+    $delete_soiree_db = $bdd->prepare('DELETE FROM soiree WHERE id_soiree = ?');
+    $delete_soiree_db->execute(array($id_soiree_get));
+    header("Location: ./soirees");
 }
 ?>
 
@@ -249,7 +269,7 @@ else{
     </header>
 
     <main>
-        <div class="container-fluid flex-column mx-4 my-5 ">
+        <div class="container flex-column mx-4 my-5 ">
             <div class="row flex-sm-column flex-lg-row">
                 <div class="col-3 col-sm-2">
                     <img src="<?= $soiree_infos['image_soiree'] ?>" class="img-resize-choose rounded-2 object-fit-cover" alt="...">
@@ -354,6 +374,26 @@ else{
                 <input hidden name='ImageSoire' id='img_s' value="<?= $soiree_infos['image_soiree']; ?>">
             </form>
             <?php } ?>
+
+            
+            <?php if($utilisateur_infos['id_utilisateur'] == $soiree_infos['id_user_movie'] ){ // Check si la soirée a été créée par l'utilateur qui consulte la page
+
+                if($is_limit_reached){ // Date de vote dépassée ?>
+                    <a class="btn btn-ctm-red" href="../private/decision_choix?id_soiree=<?= $soiree_infos['id_soiree'] ?>">Décider des résultats</a>
+                <?php }else{ // Date de vote pas dépassée ?> 
+                    <a class="btn disabled" href="../private/decision_choix?id_soiree=<?= $soiree_infos['id_soiree'] ?>">Décider des résultats ?></a>
+                <?php } ?>
+
+            <?php } ?>
+            
+            <?php if($utilisateur_infos['id_utilisateur'] == $soiree_infos['id_user_movie'] ){ // Check si la soirée a été créée par l'utilateur qui consulte la page
+            ?>
+                <?php if((isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == TRUE)){ ?>
+                        <form action="" method="POST">
+                            <button name='remove_film' type='submit' class='btn btn-ctm-red'>Supprimer le film</button>
+                        </form>
+                <?php } ?>
+            <?php } ?>
         </div>
     </main>
 
@@ -430,3 +470,4 @@ else{
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+</html>

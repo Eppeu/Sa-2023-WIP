@@ -8,6 +8,13 @@ require_once '../bdd/bdd_connexion.php';
 $bdd = connectBDS();
 $error = 0;
 
+// Récupère les informations de l'utilisateur s'il est connecté
+if(isset($_SESSION['email'])){
+    $utilisateur_infos_requete = $bdd->prepare("SELECT * FROM utilisateur WHERE email=?");
+    $utilisateur_infos_requete->execute(array($_SESSION['email']));
+    $utilisateur_infos = $utilisateur_infos_requete->fetch();
+}
+
 $allSoirees = $bdd->query('SELECT * FROM film');
 
 if (isset($_POST['search_movie'])) include("api_contact.php");
@@ -373,3 +380,4 @@ if (isset($_POST['movie_create'])) {
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+</html>

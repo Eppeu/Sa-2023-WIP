@@ -7,9 +7,9 @@ $bdd = connectBDS();
 
 // Récupère les informations de l'utilisateur s'il est connecté
 if(isset($_SESSION['email'])){
-    $query = $bdd->prepare("SELECT * FROM utilisateur WHERE email=:identifiant");
-    $query->execute([':identifiant' => $_SESSION['email']]);
-    $utilisateur_infos = $query->fetch();
+    $utilisateur_infos_requete = $bdd->prepare("SELECT * FROM utilisateur WHERE email=?");
+    $utilisateur_infos_requete->execute(array($_SESSION['email']));
+    $utilisateur_infos = $utilisateur_infos_requete->fetch();
 }
 ?>
 
