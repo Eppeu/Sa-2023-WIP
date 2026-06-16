@@ -12,6 +12,7 @@ if(isset($_SESSION['email'])){
 }
 
 $allSoirees = $bdd->query('SELECT *,LEFT(description_soiree, 200) FROM soiree;');
+$allSoireesSort = $bdd->query('SELECT *,LEFT(description_soiree, 200) FROM soiree;');
 
 $soireesHorreur_sort = $bdd->query("SELECT *,LEFT(description_soiree, 200) FROM soiree WHERE genre_soiree = 'Horreur';");
 $soireesAction_sort = $bdd->query("SELECT *,LEFT(description_soiree, 200) FROM soiree WHERE genre_soiree = 'Action';");
@@ -22,8 +23,7 @@ $soireesHistorique_sort = $bdd->query("SELECT *,LEFT(description_soiree, 200) FR
 $soireesThriller_sort = $bdd->query("SELECT *,LEFT(description_soiree, 200) FROM soiree WHERE genre_soiree = 'Thriller';");
 
 
-// Documentaty is broken for some reasons (Please Check this Astrid !), Wrong Token or invalid expression 
-// $soireesDocumentaire_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Documentaire'; "); 
+$soireesDocumentaire_sort = $bdd->query("SELECT *,LEFT(description_soiree, 200) FROM soiree WHERE genre_soiree = 'Documentaire'; "); 
 
 $soireesRomance_sort = $bdd->query("SELECT *,LEFT(description_soiree, 200) FROM soiree WHERE genre_soiree = 'Romance';");
 $soireesSF_sort = $bdd->query("SELECT *,LEFT(description_soiree, 200) FROM soiree WHERE genre_soiree = 'Science-Fiction'; ");
@@ -83,7 +83,7 @@ function generateCard_NoSlider($DBCondition) {
                             <img src="../assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
                             <!-- Insertion de l'icône du logo PopCo -->
                         </a>
-                        <div class="collapse navbar-collapse justify-content-between">
+                        <div class="collapse navbar-collapse justify-content-end justify-content-md-between">
                             <!-- navbar sous mode collapse avec justify content between -->
                             <ul class="navbar-nav mb-2 mb-lg-0 d-none d-md-flex">
                                  <!-- class de la barre de navigation (navbar) avec une marge de bas de 2 et de 0 à partir du breakpoint large -->
@@ -118,7 +118,7 @@ function generateCard_NoSlider($DBCondition) {
                             <?php
                             if(isset($_SESSION['email'])) {
                                 ?>
-                                <div class="dropdown dropstart">
+                                <div class="dropdown dropstart d-md-block d-none">
                                 <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     <h2><i class="bi bi-person fs-3 link-ctm-terciary-color-subtle me-4"></i></h2>
                                 </a>
@@ -144,7 +144,7 @@ function generateCard_NoSlider($DBCondition) {
                         </div>
                         <?php } ?>
 
-                        <a class="fs-1 d-block d-md-none text-success" data-bs-toggle="offcanvas" href="#menu_phone" aria-controls="offcanvasExample">
+                        <a class="fs-1 d-flex align-self-end d-md-none text-success" data-bs-toggle="offcanvas" href="#menu_phone" aria-controls="offcanvasExample">
                         <i class="bi bi-list link-ctm-terciary-color"></i>
                         </a>
                         <div class="offcanvas-md d-md-none offcanvas-end bg-ctm-terciary-color" tabindex="-1" id="menu_phone" aria-labelledby="menu_phoneLabel">
@@ -161,7 +161,7 @@ function generateCard_NoSlider($DBCondition) {
                                     </a>
                                     <a href="./soirees" class="list-group-item list-group-item-action">
                                         Les soirées
-                                    </a>>
+                                    </a>
                                     <a href="./films.php" class="list-group-item list-group-item-action">
                                         Films proposés
                                     </a>
@@ -180,13 +180,11 @@ function generateCard_NoSlider($DBCondition) {
                                 <?php
                                 if(isset($_SESSION['email'])) {
                                     ?>
-                                    <div class="dropdown dropstart">
+                                    <div class="dropup-center dropup">
                                         <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <h2><i class="bi bi-person fs-3 link-ctm-terciary-color-subtle me-4"></i></h2>
+                                            <h2><i class="bi bi-person fs-2 mx-2 link-ctm-terciary-color-subtle me-4 text-decoration-none"><?= $utilisateur_infos['nom_utilisateur'];?> <?= $utilisateur_infos['prenom_utilisateur'];?></i></h2>
                                         </a>
                                         <ul class="dropdown-menu">
-                                            <li class="mx-3"><?= $utilisateur_infos['nom_utilisateur'];?> <?= $utilisateur_infos['prenom_utilisateur'];?></li>
-                                            <li><hr class="dropdown-divider"></li>
                                             <li><a class="dropdown-item" href="../public/utilisateur">Votre profil</a></li>
                                             <li><a class="dropdown-item" href="../private/deconnexion">Se déconnecter</a></li>
                                         </ul>
@@ -222,7 +220,8 @@ function generateCard_NoSlider($DBCondition) {
                 </div>
                 <div class="col-auto">
                     <select name="movie_genre" id="genre_select" onchange='$.fn.load_new_content()' class="form-select ms-2" aria-label="Default select example">
-                        <option selected>Trier par genre...</option>
+                        <option selected disabled>Trier par genre...</option>
+                        <option value="Sans-genre">Sans genre</option>
                         <option value="Action">Action</option>
                         <option value="Fantastique">Fantastique</option>
                         <option value="Horreur">Horreur</option>
@@ -238,6 +237,7 @@ function generateCard_NoSlider($DBCondition) {
             </div>
             <!-- formulaire de selection en fonction des genres -->
 
+            <?php generateCard_NoSlider($allSoirees); ?>
             <!-- Méthode Ajax afin de load la BDD -->
             <script>
                 $(document).ready(function() {
@@ -258,18 +258,20 @@ function generateCard_NoSlider($DBCondition) {
                         } else if (model == "Thriller") {
                             $("#img-resize").html("<?php while($soireesThriller_sortInfos = $soireesThriller_sort->fetch()){ ?> <div class='col-12 col-sm-6 col-lg-4 col-xl-3'><div class='card p-0 h-auto'><img src=<?php echo addslashes($soireesThriller_sortInfos['image_soiree']);?> class='card-img-top object-fit-cover' alt='...'><div class='card-body bg-ctm-primary-color-subtle'><h5 class='card-title'><?php echo addslashes($soireesThriller_sortInfos['nom_soiree']);?></h5><p class='card-text lh-1'><?php echo addslashes($soireesThriller_sortInfos['description_soiree']);?>...</p></div> <div class='card-footer p-0 border-0'> <a href='./soiree_infos.php?id_soiree=<?php echo $soireesThriller_sortInfos['id_soiree']; ?>' class='btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1'>En savoir plus</a> </div> </div></div> <?php } ?>");
                         } else if (model == "Documentaire") { // Is broken, check line 15-16 for more infos
-                            $("#img-resize").html(""); 
+                            $("#img-resize").html("<?php while($soireesDocumentaire_sortInfo = $soireesDocumentaire_sort->fetch()){ ?> <div class='col-12 col-sm-6 col-lg-4 col-xl-3'><div class='card p-0 h-auto'><img src=<?php echo addslashes($soireesDocumentaire_sortInfo['image_soiree']);?> class='card-img-top object-fit-cover' alt='...'><div class='card-body bg-ctm-primary-color-subtle'><h5 class='card-title'><?php echo addslashes($soireesDocumentaire_sortInfo['nom_soiree']);?></h5><p class='card-text lh-1'><?php echo addslashes($soireesDocumentaire_sortInfo['description_soiree']);?>...</p></div> <div class='card-footer p-0 border-0'> <a href='./soiree_infos.php?id_soiree=<?php echo $soireesDocumentaire_sortInfo['id_soiree']; ?>' class='btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1'>En savoir plus</a> </div> </div></div> <?php } ?>");
                         } else if (model == "Romance") {
                             $("#img-resize").html("<?php while($soireesRomance_sortInfos = $soireesRomance_sort->fetch()){ ?> <div class='col-12 col-sm-6 col-lg-4 col-xl-3'><div class='card p-0 h-auto'><img src=<?php echo addslashes($soireesRomance_sortInfos['image_soiree']);?> class='card-img-top object-fit-cover' alt='...'><div class='card-body bg-ctm-primary-color-subtle'><h5 class='card-title'><?php echo addslashes($soireesRomance_sortInfos['nom_soiree']);?></h5><p class='card-text lh-1'><?php echo addslashes($soireesRomance_sortInfos['description_soiree']);?>...</p></div> <div class='card-footer p-0 border-0'> <a href='./soiree_infos.php?id_soiree=<?php echo $soireesRomance_sortInfos['id_soiree']; ?>' class='btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1'>En savoir plus</a> </div> </div></div> <?php } ?>");
                         } else if (model == "Science-Fiction") {
                             $("#img-resize").html("<?php while($soireesSF_sortInfos = $soireesSF_sort->fetch()){ ?> <div class='col-12 col-sm-6 col-lg-4 col-xl-3'><div class='card p-0 h-auto'><img src=<?php echo addslashes($soireesSF_sortInfos['image_soiree']);?>  class='card-img-top object-fit-cover' alt='...'><div class='card-body bg-ctm-primary-color-subtle'><h5 class='card-title'><?php echo addslashes($soireesSF_sortInfos['nom_soiree']);?></h5><p class='card-text lh-1'><?php echo addslashes($soireesSF_sortInfos['description_soiree']);?>...</p></div> <div class='card-footer p-0 border-0'> <a href='./soiree_infos.php?id_soiree=<?php echo $soireesSF_sortInfos['id_soiree']; ?>' class='btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1'>En savoir plus</a> </div> </div></div> <?php } ?>");
+                        } else if (model == "Science-Fiction") {
+                            $("#img-resize").html("<?php while($soireesSF_sortInfos = $soireesSF_sort->fetch()){ ?> <div class='col-12 col-sm-6 col-lg-4 col-xl-3'><div class='card p-0 h-auto'><img src=<?php echo addslashes($soireesSF_sortInfos['image_soiree']);?>  class='card-img-top object-fit-cover' alt='...'><div class='card-body bg-ctm-primary-color-subtle'><h5 class='card-title'><?php echo addslashes($soireesSF_sortInfos['nom_soiree']);?></h5><p class='card-text lh-1'><?php echo addslashes($soireesSF_sortInfos['description_soiree']);?>...</p></div> <div class='card-footer p-0 border-0'> <a href='./soiree_infos.php?id_soiree=<?php echo $soireesSF_sortInfos['id_soiree']; ?>' class='btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1'>En savoir plus</a> </div> </div></div> <?php } ?>");
+                        } else if (model == "Sans-genre") {
+                            $("#img-resize").html("<?php while($allSoireesInfo = $allSoireesSort->fetch()){ ?> <div class='col-12 col-sm-6 col-lg-4 col-xl-3'><div class='card p-0 h-auto'><img src=<?php echo addslashes($allSoireesInfo['image_soiree']);?>  class='card-img-top object-fit-cover' alt='...'><div class='card-body bg-ctm-primary-color-subtle'><h5 class='card-title'><?php echo addslashes($allSoireesInfo['nom_soiree']);?></h5><p class='card-text lh-1'><?php echo addslashes($allSoireesInfo['description_soiree']);?>...</p></div> <div class='card-footer p-0 border-0'> <a href='./soiree_infos.php?id_soiree=<?php echo $allSoireesInfo['id_soiree']; ?>' class='btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1'>En savoir plus</a> </div> </div></div> <?php } ?>");
                         }
                     };
                 });
             </script>
             <!-- donne les information de chaque film en fonction du genre -->
-
-            <?php generateCard_NoSlider($allSoirees); ?>
         </div>
     </main>
 

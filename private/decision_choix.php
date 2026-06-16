@@ -25,8 +25,6 @@ function calculerResultat($id_soiree) {
     // Récupère tous les résultats d'un coup et les mets dans un tableau
     $resultats_films = $votes_films->fetchAll();
 
-    // Si personne a voté, ouf le flop
-    // LAISSE VIDE COMME CA ?
     if (empty($resultats_films)) {
         return; // personne n'a voté, on ne fait rien
     }
@@ -83,5 +81,8 @@ function calculerResultat($id_soiree) {
         WHERE id_soiree = ?
     ');
     $update->execute([$film_gagnant, $lieu_gagnant, $id_soiree]);
+
+    header('Location: ../public/soirees.php');
+    echo "test";
 }
 ?>

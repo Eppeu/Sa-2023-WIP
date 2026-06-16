@@ -27,10 +27,8 @@ if(isset($_GET['id_soiree']) AND !empty($_GET['id_soiree'])){
         $is_limit_reached = false;
     }
 
-
     // Récupération des informations de la soirée, des films et des lieux et l'id de l'auteur de la soirée.
-    $soiree_infos_requete = $bdd->prepare('SELECT
-    s.*,
+    $soiree_infos_requete = $bdd->prepare('SELECT s.*,
     s.id_utilisateur AS id_user_movie,
     f1.id_film AS film1_id_film, f1.nom_film AS film1_nom_film, f1.affiche AS film1_affiche,
     f2.id_film AS film2_id_film, f2.nom_film AS film2_nom_film, f2.affiche AS film2_affiche,
@@ -39,7 +37,10 @@ if(isset($_GET['id_soiree']) AND !empty($_GET['id_soiree'])){
     f5.id_film AS film5_id_film, f5.nom_film AS film5_nom_film, f5.affiche AS film5_affiche,
     l1.id_lieu AS lieu1_id, l1.adresse AS lieu1_adresse,
     l2.id_lieu AS lieu2_id, l2.adresse AS lieu2_adresse,
-    l3.id_lieu AS lieu3_id, l3.adresse AS lieu3_adresse
+    l3.id_lieu AS lieu3_id, l3.adresse AS lieu3_adresse,
+    s.choix_1_film AS choix_1_lieu,
+    s.choix_2_film AS choix_2_lieu,
+    s.choix_3_film AS choix_3_lieu
 
     FROM soiree s
     JOIN film f1 ON s.choix_1_film = f1.id_film
@@ -55,24 +56,6 @@ if(isset($_GET['id_soiree']) AND !empty($_GET['id_soiree'])){
 
     $soiree_infos_requete->execute(array($id_soiree_get));
 
-    // Comptage du nombre de soirées
-    
-    // Compte les votes par film de la soirée
-    $count_votes_requete = $bdd->prepare('
-    SELECT choix_film, COUNT(*) AS nb_votes
-    FROM vote
-    WHERE id_soiree = ?
-    GROUP BY choix_film
-    ');
-    $count_votes_requete->execute([$id_soiree_get]);
-
-    // Stocke les résultats dans un tableau indexé par id_film
-    $votes_par_film = [];
-    while ($row = $count_votes_requete->fetch()) {
-        $votes_par_film[$row['choix_film']] = $row['nb_votes'];
-    }
-    
-
     // Si cette colonne existe, les données déjà éxistantes sont récupées
     if($soiree_infos_requete->rowCount() > 0){
 
@@ -81,7 +64,26 @@ if(isset($_GET['id_soiree']) AND !empty($_GET['id_soiree'])){
     else{
         echo "soiree introuvable. Vous allez être redirigé vers les soirees.";
     }
+    
+    // Compte les votes par FILM de la soirée
+    $count_votes_film_requete = $bdd->prepare('SELECT choix_film, COUNT(*) AS nb_votes
+    FROM vote
+    WHERE id_soiree = ?
+    GROUP BY choix_film;');
+    $count_votes_film_requete->execute([$id_soiree_get]);
 
+    // Stocke les résultats dans un tableau indexé par id_film
+    $votes_par_film = [];
+    while ($row = $count_votes_film_requete->fetch()) {
+        $votes_par_film[$row['choix_film']] = $row['nb_votes'];
+    }
+
+
+    $get_count_sql = $bdd->prepare("SELECT COUNT(vote.choix_film) FROM vote JOIN soiree ON 
+    vote.id_soiree = soiree.id_soiree WHERE soiree.id_soiree = ?;");
+    $get_count_sql->execute(array($id_soiree_get));
+
+    
 
     if(isset($_SESSION['email'])){
         // Récupère les informations de l'utilisateur connecté
@@ -103,15 +105,8 @@ if(isset($_GET['id_soiree']) AND !empty($_GET['id_soiree'])){
 else{
     echo "Une erreur s'est produite, l'identifiant n'est pas parvenu à être récupéré, veuillez revenir à la page précédente.";
 }
-
-function delete_soiree() {
-    global $bdd;
-    global $id_soiree_get;
-    $delete_soiree_db = $bdd->prepare('DELETE FROM soiree WHERE id_soiree = ?');
-    $delete_soiree_db->execute(array($id_soiree_get));
-    header("Location: ./soirees");
-}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -142,7 +137,7 @@ function delete_soiree() {
                             <img src="../assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
                             <!-- Insertion de l'icône du logo PopCo -->
                         </a>
-                        <div class="collapse navbar-collapse justify-content-between">
+                        <div class="collapse navbar-collapse justify-content-end justify-content-md-between">
                             <!-- navbar sous mode collapse avec justify content between -->
                             <ul class="navbar-nav mb-2 mb-lg-0 d-none d-md-flex">
                                  <!-- class de la barre de navigation (navbar) avec une marge de bas de 2 et de 0 à partir du breakpoint large -->
@@ -177,7 +172,7 @@ function delete_soiree() {
                             <?php
                             if(isset($_SESSION['email'])) {
                                 ?>
-                                <div class="dropdown dropstart">
+                                <div class="dropdown dropstart d-md-block d-none">
                                 <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     <h2><i class="bi bi-person fs-3 link-ctm-terciary-color-subtle me-4"></i></h2>
                                 </a>
@@ -203,7 +198,7 @@ function delete_soiree() {
                         </div>
                         <?php } ?>
 
-                        <a class="fs-1 d-block d-md-none text-success" data-bs-toggle="offcanvas" href="#menu_phone" aria-controls="offcanvasExample">
+                        <a class="fs-1 d-flex align-self-end d-md-none text-success" data-bs-toggle="offcanvas" href="#menu_phone" aria-controls="offcanvasExample">
                         <i class="bi bi-list link-ctm-terciary-color"></i>
                         </a>
                         <div class="offcanvas-md d-md-none offcanvas-end bg-ctm-terciary-color" tabindex="-1" id="menu_phone" aria-labelledby="menu_phoneLabel">
@@ -220,7 +215,7 @@ function delete_soiree() {
                                     </a>
                                     <a href="./soirees" class="list-group-item list-group-item-action">
                                         Les soirées
-                                    </a>>
+                                    </a>
                                     <a href="./films.php" class="list-group-item list-group-item-action">
                                         Films proposés
                                     </a>
@@ -239,13 +234,11 @@ function delete_soiree() {
                                 <?php
                                 if(isset($_SESSION['email'])) {
                                     ?>
-                                    <div class="dropdown dropstart">
+                                    <div class="dropup-center dropup">
                                         <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <h2><i class="bi bi-person fs-3 link-ctm-terciary-color-subtle me-4"></i></h2>
+                                            <h2><i class="bi bi-person fs-2 mx-2 link-ctm-terciary-color-subtle me-4 text-decoration-none"><?= $utilisateur_infos['nom_utilisateur'];?> <?= $utilisateur_infos['prenom_utilisateur'];?></i></h2>
                                         </a>
                                         <ul class="dropdown-menu">
-                                            <li class="mx-3"><?= $utilisateur_infos['nom_utilisateur'];?> <?= $utilisateur_infos['prenom_utilisateur'];?></li>
-                                            <li><hr class="dropdown-divider"></li>
                                             <li><a class="dropdown-item" href="../public/utilisateur">Votre profil</a></li>
                                             <li><a class="dropdown-item" href="../private/deconnexion">Se déconnecter</a></li>
                                         </ul>
@@ -269,93 +262,124 @@ function delete_soiree() {
     </header>
 
     <main>
-        <div class="container flex-column mx-4 my-5 ">
-            <div class="row flex-sm-column flex-lg-row">
-                <div class="col-3 col-sm-2">
-                    <img src="<?= $soiree_infos['image_soiree'] ?>" class="img-resize-choose rounded-2 object-fit-cover" alt="...">
+<div class="container flex-column my-5">
+    <div class="row flex-sm-column flex-lg-row">
+        
+        <div class="col-12 col-sm-2">
+            <img src="<?= $soiree_infos['image_soiree'] ?>" class="img-resize-choose rounded-2 object-fit-cover" alt="...">
+        </div>
+        
+        <div class="align-self-start col-12 col-sm-4 col-lg-3 offset-lg-1">
+            <h1 id="nom_soiree"><?= $soiree_infos['nom_soiree'] ?></h1>
+            <p><?= $soiree_infos['description_soiree'] ?></p>
+            <p>Genre : <?= $soiree_infos['genre_soiree'] ?></p>
+        </div>
+        
+        <div class="align-self-start col-12 col-sm-4 col-lg-3">
+            <h3 id="genre_soiree">Nombre d'invités maximum : <?= $soiree_infos['nb_personne_max'] ?> personnes</h3>
+            <p>Date de début : <?= $soiree_infos['date_debut'] ?></p>
+            <p>Date de fin prévue : <?= $soiree_infos['date_fin'] ?></p>
+            <p>Date de vote limite prévue : <?= $soiree_infos['date_limite_vote'] ?></p>
+        </div>
+
+        <div class="col-12 col-lg-5 col-sm-6 mt-4 d-flex flex-column gap-2">
+            <div class="card p-0 flex-row overflow-hidden" style="height: 85px;">
+                <img src="<?= $soiree_infos['film1_affiche'] ?>" class="object-fit-cover" style="width: 100px; flex-shrink: 0;">
+                <div class="card-body bg-ctm-primary-color-subtle p-2 d-flex flex-column justify-content-center">
+                    <h6 class="card-title mb-0"><?= $soiree_infos['film1_nom_film'] ?></h6>
+                    <p class="card-caption mb-0">Nombre de vote pour ce film : <?= isset($votes_par_film[$soiree_infos['choix_1_film']]) ? $votes_par_film[$soiree_infos['choix_1_film']] : 0 ?></p>
+                    <?php if(isset($soiree_infos['film_choisi']) && $soiree_infos['film1_id_film'] == $soiree_infos['film_choisi']){ ?>
+                        <span class="badge text-bg-primary rounded-pill">Film choisi !</span>
+                    <?php } ?>
                 </div>
-                <div class="align-self-start col-3 col-sm-4 col-lg-3 offset-lg-1">
-                    <h1 id="nom_soiree"><?= $soiree_infos['nom_soiree'] ?></h1>
-                    <p><?= $soiree_infos['description_soiree'] ?></p>
-                    <p>Genre : <?= $soiree_infos['genre_soiree'] ?></p>
+            </div>
+
+            <div class="card p-0 flex-row overflow-hidden" style="height: 85px;">
+                <img src="<?= $soiree_infos['film2_affiche'] ?>" class="object-fit-cover" style="width: 100px; flex-shrink: 0;">
+                <div class="card-body bg-ctm-primary-color-subtle p-2 d-flex flex-column justify-content-center">
+                    <h6 class="card-title mb-0"><?= $soiree_infos['film2_nom_film'] ?></h6>
+                    <p class="card-caption mb-0">Nombre de vote pour ce film : <?= isset($votes_par_film[$soiree_infos['choix_2_film']]) ? $votes_par_film[$soiree_infos['choix_2_film']] : 0 ?></p>
+                    <?php if(isset($soiree_infos['film_choisi']) && $soiree_infos['film2_id_film'] == $soiree_infos['film_choisi']){ ?>
+                        <span class="badge text-bg-primary rounded-pill">Film choisi !</span>
+                    <?php } ?>
                 </div>
-                <div class="align-self-start col-3 col-sm-4 col-lg-3">
-                    <h3 id="genre_soiree">Nombre d'invités maximum : <?= $soiree_infos['nb_personne_max'] ?> personnes</h3>
-                    <p>Date de début : <?= $soiree_infos['date_debut'] ?></p>
-                    <p>Date de fin prévue : <?= $soiree_infos['date_fin'] ?></p>
-                     <p>Date de vote limite prévue : <?= $soiree_infos['date_limite_vote'] ?></p>
+            </div>
+
+            <div class="card p-0 flex-row overflow-hidden" style="height: 85px;">
+                <img src="<?= $soiree_infos['film3_affiche'] ?>" class="object-fit-cover" style="width: 100px; flex-shrink: 0;">
+                <div class="card-body bg-ctm-primary-color-subtle p-2 d-flex flex-column justify-content-center">
+                    <h6 class="card-title mb-0"><?= $soiree_infos['film3_nom_film'] ?></h6>
+                    <p class="card-caption mb-0">Nombre de vote pour ce film : <?= isset($votes_par_film[$soiree_infos['choix_3_film']]) ? $votes_par_film[$soiree_infos['choix_3_film']] : 0 ?></p>
+                    <?php if(isset($soiree_infos['film_choisi']) && $soiree_infos['film3_id_film'] == $soiree_infos['film_choisi']){ ?>
+                        <span class="badge text-bg-primary rounded-pill">Film choisi !</span>
+                    <?php } ?>
                 </div>
-                <div class="row col-4 col-lg-5 col-sm-6 ms-0 mt-4 d-flex flex-column gap-2">
-                    <div class="card p-0 flex-row overflow-hidden" style="height: 85px;">
-                        <img src="<?= $soiree_infos['film1_affiche'] ?>" class="object-fit-cover" style="width: 100px; flex-shrink: 0;">
-                        <div class="card-body bg-ctm-primary-color-subtle p-2 d-flex flex-column justify-content-center">
-                            <h6 class="card-title mb-0"><?= $soiree_infos['film1_nom_film'] ?></h6>
-                            <p class="card-caption mb-0">Nombre de vote pour ce film : <?= isset($votes_par_film[$soiree_infos['choix_1_film']]) ? $votes_par_film[$soiree_infos['choix_1_film']] : 0 ?></p>
-                        </div>
-                    </div>
+            </div>
 
-                    <div class="card p-0 flex-row overflow-hidden" style="height: 85px;">
-                        <img src="<?= $soiree_infos['film2_affiche'] ?>" class="object-fit-cover" style="width: 100px; flex-shrink: 0;">
-                        <div class="card-body bg-ctm-primary-color-subtle p-2 d-flex flex-column justify-content-center">
-                            <h6 class="card-title mb-0"><?= $soiree_infos['film2_nom_film'] ?></h6>
-                            <p class="card-caption mb-0">Nombre de vote pour ce film : <?= isset($votes_par_film[$soiree_infos['choix_2_film']]) ? $votes_par_film[$soiree_infos['choix_2_film']] : 0 ?></p>
-                        </div>
-                    </div>
-
-                    <div class="card p-0 flex-row overflow-hidden" style="height: 85px;">
-                        <img src="<?= $soiree_infos['film3_affiche'] ?>" class="object-fit-cover" style="width: 100px; flex-shrink: 0;">
-                        <div class="card-body bg-ctm-primary-color-subtle p-2 d-flex flex-column justify-content-center">
-                            <h6 class="card-title mb-0"><?= $soiree_infos['film3_nom_film'] ?></h6>
-                            <p class="card-caption mb-0">Nombre de vote pour ce film : <?= isset($votes_par_film[$soiree_infos['choix_3_film']]) ? $votes_par_film[$soiree_infos['choix_3_film']] : 0 ?></p>
-                        </div>
-                    </div>
-
-                    <div class="card p-0 flex-row overflow-hidden" style="height: 85px;">
-                        <img src="<?= $soiree_infos['film4_affiche'] ?>" class="object-fit-cover" style="width: 100px; flex-shrink: 0;">
-                        <div class="card-body bg-ctm-primary-color-subtle p-2 d-flex flex-column justify-content-center">
-                            <h6 class="card-title mb-0"><?= $soiree_infos['film4_nom_film'] ?></h6>
-                            <p class="card-caption mb-0">Nombre de vote pour ce film : <?= isset($votes_par_film[$soiree_infos['choix_4_film']]) ? $votes_par_film[$soiree_infos['choix_4_film']] : 0 ?></p>
-                        </div>
-                    </div>
-
-                    <div class="card p-0 flex-row overflow-hidden" style="height: 85px;">
-                        <img src="<?= $soiree_infos['film5_affiche'] ?>" class="object-fit-cover" style="width: 100px; flex-shrink: 0;">
-                        <div class="card-body bg-ctm-primary-color-subtle p-2 d-flex flex-column justify-content-center">
-                            <h6 class="card-title mb-0"><?= $soiree_infos['film5_nom_film'] ?></h6>
-                            <p class="card-caption mb-0">Nombre de vote pour ce film : <?= isset($votes_par_film[$soiree_infos['choix_5_film']]) ? $votes_par_film[$soiree_infos['choix_5_film']] : 0 ?></p>
-                        </div>
-                    </div>
+            <div class="card p-0 flex-row overflow-hidden" style="height: 85px;">
+                <img src="<?= $soiree_infos['film4_affiche'] ?>" class="object-fit-cover" style="width: 100px; flex-shrink: 0;">
+                <div class="card-body bg-ctm-primary-color-subtle p-2 d-flex flex-column justify-content-center">
+                    <h6 class="card-title mb-0"><?= $soiree_infos['film4_nom_film'] ?></h6>
+                    <p class="card-caption mb-0">Nombre de vote pour ce film : <?= isset($votes_par_film[$soiree_infos['choix_4_film']]) ? $votes_par_film[$soiree_infos['choix_4_film']] : 0 ?></p>
+                    <?php if(isset($soiree_infos['film_choisi']) && $soiree_infos['film4_id_film'] == $soiree_infos['film_choisi']){ ?>
+                        <span class="badge text-bg-primary rounded-pill">Film choisi !</span>
+                    <?php } ?>
                 </div>
+            </div>
 
-                <div class="row col-5 offset-1 d-flex flex-column justify-content-center gap-3">
-
-                    <a class="btn btn-outline-primary btn-lg w-100" for="btn-lieu-1">
-                        <?= $soiree_infos['lieu1_adresse'] ?>
-                    </a>
-
-                    <a class="btn btn-outline-primary btn-lg w-100" for="btn-lieu-2">
-                        <?= $soiree_infos['lieu2_adresse'] ?>
-                    </a>
-
-                    <a class="btn btn-outline-primary btn-lg w-100" for="btn-lieu-3">
-                        <?= $soiree_infos['lieu3_adresse'] ?>
-                    </a>
-
+            <div class="card p-0 flex-row overflow-hidden" style="height: 85px;">
+                <img src="<?= $soiree_infos['film5_affiche'] ?>" class="object-fit-cover" style="width: 100px; flex-shrink: 0;">
+                <div class="card-body bg-ctm-primary-color-subtle p-2 d-flex flex-column justify-content-center">
+                    <h6 class="card-title mb-0"><?= $soiree_infos['film5_nom_film'] ?></h6>
+                    <p class="card-caption mb-0">Nombre de vote pour ce film : <?= isset($votes_par_film[$soiree_infos['choix_5_film']]) ? $votes_par_film[$soiree_infos['choix_5_film']] : 0 ?></p>
+                    <?php if(isset($soiree_infos['film_choisi']) && $soiree_infos['film5_id_film'] == $soiree_infos['film_choisi']){ ?>
+                        <span class="badge text-bg-primary rounded-pill">Film choisi !</span>
+                    <?php } ?>
                 </div>
             </div>
         </div>
 
+        <div class="col-12 col-md-5 offset-md-1 d-flex flex-column justify-content-center gap-3 mt-4">
+            <a class="btn btn-outline-primary btn-lg w-100" for="btn-lieu-1">
+                <?= $soiree_infos['lieu1_adresse'] ?>
+                <p class="card-caption mb-0">Nombre de vote pour ce lieu : <?= isset($votes_par_film[$soiree_infos['choix_1_lieu']]) ? $votes_par_film[$soiree_infos['choix_1_lieu']] : 0 ?></p>
+                
+                <?php if(isset($soiree_infos['lieu_choisi']) && $soiree_infos['lieu1_id'] == $soiree_infos['lieu_choisi']){ ?>
+                    <span class="badge text-bg-primary rounded-pill">Lieu choisi !</span>
+                <?php } ?>
+            </a>
+            <a class="btn btn-outline-primary btn-lg w-100" for="btn-lieu-2">
+                <?= $soiree_infos['lieu2_adresse'] ?>
+                <p class="card-caption mb-0">Nombre de vote pour ce lieu : <?= isset($votes_par_film[$soiree_infos['choix_2_lieu']]) ? $votes_par_film[$soiree_infos['choix_2_lieu']] : 0 ?></p>
+
+                <?php if(isset($soiree_infos['lieu_choisi']) && $soiree_infos['lieu2_id'] == $soiree_infos['lieu_choisi']){ ?>
+                    <span class="badge text-bg-primary rounded-pill">Lieu choisi !</span>
+                <?php } ?>
+            </a>
+            <a class="btn btn-outline-primary btn-lg w-100" for="btn-lieu-3">
+                <?= $soiree_infos['lieu3_adresse'] ?>
+                <p class="card-caption mb-0">Nombre de vote pour ce lieu : <?= isset($votes_par_film[$soiree_infos['choix_3_lieu']]) ? $votes_par_film[$soiree_infos['choix_3_lieu']] : 0 ?></p>
+
+                <?php if(isset($soiree_infos['lieu_choisi']) && $soiree_infos['lieu3_id'] == $soiree_infos['lieu_choisi']){ ?>
+                    <span class="badge text-bg-primary rounded-pill">Lieu choisi !</span>
+                <?php } ?>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
         <div class="ms-5 mb-5 col-9">
-            <?php if(isset($vote_exist) AND $vote_exist == TRUE){ // Si existe déjà vote pour id connecté et soirée sélectionnée : bouton disabled
+            <?php if(isset($vote_exist) AND $vote_exist == TRUE || ($get_count = $get_count_sql->fetch() >= $soiree_infos["nb_personne_max"] )){ // Si existe déjà vote pour id connecté et soirée sélectionnée : bouton disabled
             ?>
-                <a disabled href="./vote.php?id_soiree=<?php echo $soiree_infos['id_soiree']; ?>" class="btn btn-ctm-red py-3 w-100 rounded-1 disabled">Vous avez déjà voté !</a>
+                <a disabled href="./vote.php?id_soiree=<?php echo $soiree_infos['id_soiree']; ?>" class="btn btn-ctm-red py-3 w-100 rounded-1 disabled">Vous avez déjà voté ou il n'y a plus de places !</a>
             <?php
             }else{
                 ?>
-                <a href="./vote.php?id_soiree=<?php echo $soiree_infos['id_soiree']; ?>" class="btn btn-ctm-red py-3 w-100 rounded-1">Voter !</a>
+                <a href="./vote.php?id_soiree=<?php echo $soiree_infos['id_soiree']; ?>" class="btn btn-ctm-red py-3 w-100 rounded-1">Voter et s'inscrire !</a>
             <?php } ?>
 
-            <?php if($utilisateur_infos['id_utilisateur'] == $soiree_infos['id_user_movie'] ){ // Check si la soirée a été créée par l'utilateur qui consulte la page
+            <?php if(isset($utilisateur_infos['id_utilisateur']) && ($utilisateur_infos['id_utilisateur']) == $soiree_infos['id_user_movie'] ){ // Check si la soirée a été créée par l'utilateur qui consulte la page
             ?>
             <form method='POST' action="./soiree_update">
                 <button name="update_party" type="submit" class="btn btn-primary">Modifier la soirée</button>
@@ -376,24 +400,27 @@ function delete_soiree() {
             <?php } ?>
 
             
-            <?php if($utilisateur_infos['id_utilisateur'] == $soiree_infos['id_user_movie'] ){ // Check si la soirée a été créée par l'utilateur qui consulte la page
+            <?php if(isset($utilisateur_infos['id_utilisateur']) && $utilisateur_infos['id_utilisateur'] == $soiree_infos['id_user_movie'] ){ // Check si la soirée a été créée par l'utilateur qui consulte la page
 
                 if($is_limit_reached){ // Date de vote dépassée ?>
                     <a class="btn btn-ctm-red" href="../private/decision_choix?id_soiree=<?= $soiree_infos['id_soiree'] ?>">Décider des résultats</a>
                 <?php }else{ // Date de vote pas dépassée ?> 
-                    <a class="btn disabled" href="../private/decision_choix?id_soiree=<?= $soiree_infos['id_soiree'] ?>">Décider des résultats ?></a>
+                    <a class="btn disabled" href="../private/decision_choix?id_soiree=<?= $soiree_infos['id_soiree'] ?>">Décider des résultats</a>
                 <?php } ?>
 
             <?php } ?>
             
-            <?php if($utilisateur_infos['id_utilisateur'] == $soiree_infos['id_user_movie'] ){ // Check si la soirée a été créée par l'utilateur qui consulte la page
+            <?php if(isset($utilisateur_infos['id_utilisateur']) && $utilisateur_infos['id_utilisateur'] == $soiree_infos['id_user_movie'] || 
+            (isset($_SESSION['is_admin']) && $_SESSION['is_admin']==TRUE) ){
             ?>
-                <?php if((isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == TRUE)){ ?>
-                        <form action="" method="POST">
-                            <button name='remove_film' type='submit' class='btn btn-ctm-red'>Supprimer le film</button>
-                        </form>
-                <?php } ?>
+                <a id="del_soiree" href="./delete_soiree?id_soiree=<?=$soiree_infos['id_soiree'];?>" class ="btn btn-ctm-red">Supprimer la soirée</a>
             <?php } ?>
+
+            <script>
+                $("#del_soiree").click(function() {
+                    confirm("Supprimer cette soirée ?");
+                });
+            </script>
         </div>
     </main>
 

@@ -71,7 +71,7 @@ if(isset($_SESSION['email'])){
                             <img src="../assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
                             <!-- Insertion de l'icône du logo PopCo -->
                         </a>
-                        <div class="collapse navbar-collapse justify-content-between">
+                        <div class="collapse navbar-collapse justify-content-end justify-content-md-between">
                             <!-- navbar sous mode collapse avec justify content between -->
                             <ul class="navbar-nav mb-2 mb-lg-0 d-none d-md-flex">
                                  <!-- class de la barre de navigation (navbar) avec une marge de bas de 2 et de 0 à partir du breakpoint large -->
@@ -106,7 +106,7 @@ if(isset($_SESSION['email'])){
                             <?php
                             if(isset($_SESSION['email'])) {
                                 ?>
-                                <div class="dropdown dropstart">
+                                <div class="dropdown dropstart d-md-block d-none">
                                 <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     <h2><i class="bi bi-person fs-3 link-ctm-terciary-color-subtle me-4"></i></h2>
                                 </a>
@@ -132,7 +132,7 @@ if(isset($_SESSION['email'])){
                         </div>
                         <?php } ?>
 
-                        <a class="fs-1 d-block d-md-none text-success" data-bs-toggle="offcanvas" href="#menu_phone" aria-controls="offcanvasExample">
+                        <a class="fs-1 d-flex align-self-end d-md-none text-success" data-bs-toggle="offcanvas" href="#menu_phone" aria-controls="offcanvasExample">
                         <i class="bi bi-list link-ctm-terciary-color"></i>
                         </a>
                         <div class="offcanvas-md d-md-none offcanvas-end bg-ctm-terciary-color" tabindex="-1" id="menu_phone" aria-labelledby="menu_phoneLabel">
@@ -149,7 +149,7 @@ if(isset($_SESSION['email'])){
                                     </a>
                                     <a href="./soirees" class="list-group-item list-group-item-action">
                                         Les soirées
-                                    </a>>
+                                    </a>
                                     <a href="./films.php" class="list-group-item list-group-item-action">
                                         Films proposés
                                     </a>
@@ -168,13 +168,11 @@ if(isset($_SESSION['email'])){
                                 <?php
                                 if(isset($_SESSION['email'])) {
                                     ?>
-                                    <div class="dropdown dropstart">
+                                    <div class="dropup-center dropup">
                                         <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <h2><i class="bi bi-person fs-3 link-ctm-terciary-color-subtle me-4"></i></h2>
+                                            <h2><i class="bi bi-person fs-2 mx-2 link-ctm-terciary-color-subtle me-4 text-decoration-none"><?= $utilisateur_infos['nom_utilisateur'];?> <?= $utilisateur_infos['prenom_utilisateur'];?></i></h2>
                                         </a>
                                         <ul class="dropdown-menu">
-                                            <li class="mx-3"><?= $utilisateur_infos['nom_utilisateur'];?> <?= $utilisateur_infos['prenom_utilisateur'];?></li>
-                                            <li><hr class="dropdown-divider"></li>
                                             <li><a class="dropdown-item" href="../public/utilisateur">Votre profil</a></li>
                                             <li><a class="dropdown-item" href="../private/deconnexion">Se déconnecter</a></li>
                                         </ul>
