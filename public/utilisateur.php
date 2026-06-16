@@ -9,12 +9,12 @@ require_once '../bdd/bdd_connexion.php';
 $bdd = connectBDS();
 
 
-// Sélection de tous les soirées (films)
-// $allUtilisateur = $bdd->query('SELECT * FROM utilisateur WHERE nom_utilisateur=""');
-
-$query = $bdd->prepare("SELECT * FROM utilisateur WHERE email=:identifiant");
-$query->execute([':identifiant' => $_SESSION['email']]);
-$infos_utilisateur = $query->fetch();
+// Récupère les informations de l'utilisateur s'il est connecté
+if(isset($_SESSION['email'])){
+    $query = $bdd->prepare("SELECT * FROM utilisateur WHERE email=:identifiant");
+    $query->execute([':identifiant' => $_SESSION['email']]);
+    $utilisateur_infos = $query->fetch();
+}
 
 // Récupère, si ça existe, les soirées auquels l'utilisateur a déjà voté
 $soiree_votee_requete = $bdd->prepare('SELECT s.*
@@ -22,7 +22,7 @@ FROM vote v
 JOIN utilisateur u ON u.id_utilisateur = v.id_utilisateur
 JOIN soiree s ON s.id_soiree = v.id_soiree
 WHERE u.id_utilisateur = ?;');
-$soiree_votee_requete->execute(array($infos_utilisateur['id_utilisateur']));
+$soiree_votee_requete->execute(array($utilisateur_infos['id_utilisateur']));
 // $soiree_votee = $soiree_votee_requete->rowCount();
 ?>
 
@@ -52,7 +52,7 @@ $soiree_votee_requete->execute(array($infos_utilisateur['id_utilisateur']));
         <div class="container-fluid p-0">
                 <nav id="header_popco" class="navbar navbar-expand bg-ctm-primary-color rounded-bottom-5 ">
                     <div class="container-fluid">
-                        <a class="navbar-brand" href="./index.php">
+                        <a class="navbar-brand" href="../public/index.php">
                             <img src="../assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
                             <!-- Insertion de l'icône du logo PopCo -->
                         </a>
@@ -62,55 +62,58 @@ $soiree_votee_requete->execute(array($infos_utilisateur['id_utilisateur']));
                                  <!-- class de la barre de navigation (navbar) avec une marge de bas de 2 et de 0 à partir du breakpoint large -->
                                 <li class="nav-item active">
                                     <!-- item de navigation actif -->
-                                    <a class="nav-link" href="./index.php">Accueil</a>
+                                    <a class="nav-link" href="../public/index.php">Accueil</a>
                                     <!-- lien de navigation -->
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./soirees.php">Soirées</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="../public/soirees">Soirées</a>
                                     <!-- lien de navigation -->
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./films.php">Films</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="../public/films">Films</a>
                                     <!-- lien de navigation -->
                                 </li>
+                                <?php if(isset($_SESSION['email'])) { ?>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./soiree_create.php">Créer une soirée</a>
+                                    <a class="nav-link bootstrap_nav_item_color" href="../public/soiree_create.php">Créer une soirée</a>
                                     <!-- lien de navigation -->
-                                </li>
-                                
-                                <?php if(isset($_SESSION['is_admin']) && $_SESSION['is_admin']==TRUE) { ?>
-                                <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="./new_film.php">Ajouter un film</a>
-                                    <!-- lien de navigation -->
-                                </li>
+                                </li> 
+                                    <?php if(isset($_SESSION['is_admin']) && $_SESSION['is_admin']==TRUE) { ?>
+                                    <li class="nav-item">
+                                        <a class="nav-link bootstrap_nav_item_color" href="../private/film_create">Ajouter un film</a>
+                                        <!-- lien de navigation -->
+                                    </li>
+                                    <?php } ?>
                                 <?php } ?>
+
                             </ul>
 
                             <?php
                             if(isset($_SESSION['email'])) {
                                 ?>
-                                <ul class="navbar-nav mb-2 mb-lg-0 gap-2 me-0 d-none d-md-flex">
-                                    <li class="nav-item">
-                                        <a class="btn btn-ctm-red-subtle" href="./utilisateur.php">Votre profil</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="btn btn-ctm-red" href="../private/deconnexion.php">Se déconnecter</a>
-                                    </li>
-                                    <!-- Boutons Rouges (un de couleur légère et l'autre non) pour créer un compte et se connecter -->
+                                <div class="dropdown dropstart">
+                                <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <h2><i class="bi bi-person fs-3 link-ctm-terciary-color-subtle me-4"></i></h2>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li class="mx-3"><?= $utilisateur_infos['nom_utilisateur'];?> <?= $utilisateur_infos['prenom_utilisateur'];?></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="../public/utilisateur">Votre profil</a></li>
+                                    <li><a class="dropdown-item" href="../private/deconnexion">Se déconnecter</a></li>
                                 </ul>
+                                </div>
                                 <?php
                             }else{
                                 ?>
                                 <ul class="navbar-nav mb-2 mb-lg-0 gap-2 me-0 d-none d-md-flex">
                                     <li class="nav-item">
-                                        <a class="btn btn-ctm-red-subtle" href="./connexion.php">Se connecter</a>
+                                        <a class="btn btn-ctm-red-subtle" href="../public/connexion">Se connecter</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="btn btn-ctm-red" href="./compte_create.php">Créer un compte</a>
+                                        <a class="btn btn-ctm-red" href="../public/compte_create">Créer un compte</a>
                                     </li>
                                 </ul>
                                 <!-- Boutons Rouges (un de couleur légère et l'autre non) pour créer un compte et se connecter -->
-                                
                         </div>
                         <?php } ?>
 
@@ -125,33 +128,52 @@ $soiree_votee_requete->execute(array($infos_utilisateur['id_utilisateur']));
                             </div>
                             <div class="offcanvas-body d-flex flex-column justify-content-between px-0">
                                 <ul class="list-group">
-                                    <a href="./index.php" class="list-group-item list-group-item-action active list-group-item-ctm-terciary-color-subtle" aria-current="true">
+                                    <a href="./index" class="list-group-item list-group-item-action active list-group-item-ctm-terciary-color-subtle" aria-current="true">
                                         Accueil
                                         <!-- list group actif -->
                                     </a>
-                                    <a href="./soirees.php" class="list-group-item list-group-item-action">
+                                    <a href="./soirees" class="list-group-item list-group-item-action">
                                         Les soirées
-                                        <!-- list group actif -->
-                                    </a>
-                                    <a href="./soiree_create.php" class="list-group-item list-group-item-action">
-                                        Créer une soirée
-                                        <!-- list group actif -->
-                                    </a>
+                                    </a>>
                                     <a href="./films.php" class="list-group-item list-group-item-action">
                                         Films proposés
-                                        <!-- list group actif -->
                                     </a>
-                                    <a href="./utilisateur.php" class="list-group-item list-group-item-action">
-                                        Utilisateur
-                                        <!-- list group actif -->
+                                    <?php if(isset($_SESSION['email'])) { ?>
+                                    <a href="../public/soiree_create" class="list-group-item list-group-item-action">
+                                        Film
                                     </a>
+                                    <?php } ?>
+                                    <?php if(isset($_SESSION['is_admin']) && $_SESSION['is_admin']==TRUE) { ?>
+                                        <a class="list-group-item list-group-item-action" href="../private/film_create">
+                                            Ajouter un film
+                                        </a>
+                                    <?php } ?>
                                 </ul>
 
-                                <div class="container-fluid d-md-flex justify-content-end gap-2">
-                                    <a class="btn btn-ctm-red-subtle" href="./connexion.php">Se connecter</a>
-                                    <a class="btn btn-ctm-red" href="./compte_create.php">Créer un compte</a>
-                                    <!-- Bouton rouge pour se connecter / créer un compte -->
-                                </div>
+                                <?php
+                                if(isset($_SESSION['email'])) {
+                                    ?>
+                                    <div class="dropdown dropstart">
+                                        <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <h2><i class="bi bi-person fs-3 link-ctm-terciary-color-subtle me-4"></i></h2>
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li class="mx-3"><?= $utilisateur_infos['nom_utilisateur'];?> <?= $utilisateur_infos['prenom_utilisateur'];?></li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li><a class="dropdown-item" href="../public/utilisateur">Votre profil</a></li>
+                                            <li><a class="dropdown-item" href="../private/deconnexion">Se déconnecter</a></li>
+                                        </ul>
+                                    </div>
+                                    <?php
+                                }else{
+                                    ?>
+                                    <div class="container-fluid d-md-flex justify-content-end gap-2">
+                                        <a class="btn btn-ctm-red-subtle" href="../public/connexion.php">Se connecter</a>
+                                        <a class="btn btn-ctm-red" href="../public/compte_create.php">Créer un compte</a>
+                                        <!-- Bouton rouge pour se connecter / créer un compte -->
+                                    </div>                            
+                                <?php } ?>
+
                             </div>
                         </div>
 
@@ -163,7 +185,7 @@ $soiree_votee_requete->execute(array($infos_utilisateur['id_utilisateur']));
     <main class="container-fluid px-0">
         <div class="bgImage1"></div>
         <div class="text-center py-5 callToAction">
-            <h5 class="fs-1">Bonjour <?= $infos_utilisateur['nom_utilisateur'];?> !</h5>
+            <h5 class="fs-1">Bonjour <?= $utilisateur_infos['nom_utilisateur'];?> !</h5>
         </div>
         <!-- affichage de la page avec texte -->
         <div class="mainPart py-5">
@@ -171,9 +193,9 @@ $soiree_votee_requete->execute(array($infos_utilisateur['id_utilisateur']));
                 <!-- affiche les informations de l'utilisateur -->
                 <div class="ms-5 col-11">
                     <h5 class="fs-3">Vos informations</h5>
-                    <p class="mt-5">Nom : <?= $infos_utilisateur['nom_utilisateur'];?></p>
-                    <p>Prénom : <?= $infos_utilisateur['prenom_utilisateur'];?></p>
-                    <p>email : <?= $infos_utilisateur['email'];?></p>
+                    <p class="mt-5">Nom : <?= $utilisateur_infos['nom_utilisateur'];?></p>
+                    <p>Prénom : <?= $utilisateur_infos['prenom_utilisateur'];?></p>
+                    <p>email : <?= $utilisateur_infos['email'];?></p>
                     <h5 class="mt-5 fs-3">Les soirées auxquelles vous êtes inscrit(e)</h5>
                 </div>
 
