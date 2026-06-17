@@ -1,6 +1,7 @@
 <!-- CONNEXION A LA BASE DE DONNEE-->
 <?php
 session_start();
+
 if(!$_SESSION['email']) {
     header('Location: ./connexion.php');
 }

@@ -21,10 +21,7 @@ $soireesAnimation_sort = $bdd->query("SELECT *,LEFT(description_soiree, 200) FRO
 $soireesComedy_sort = $bdd->query("SELECT *,LEFT(description_soiree, 200) FROM soiree WHERE genre_soiree = 'Comédie';");
 $soireesHistorique_sort = $bdd->query("SELECT *,LEFT(description_soiree, 200) FROM soiree WHERE genre_soiree = 'Historique';");
 $soireesThriller_sort = $bdd->query("SELECT *,LEFT(description_soiree, 200) FROM soiree WHERE genre_soiree = 'Thriller';");
-
-
 $soireesDocumentaire_sort = $bdd->query("SELECT *,LEFT(description_soiree, 200) FROM soiree WHERE genre_soiree = 'Documentaire'; "); 
-
 $soireesRomance_sort = $bdd->query("SELECT *,LEFT(description_soiree, 200) FROM soiree WHERE genre_soiree = 'Romance';");
 $soireesSF_sort = $bdd->query("SELECT *,LEFT(description_soiree, 200) FROM soiree WHERE genre_soiree = 'Science-Fiction'; ");
 
@@ -71,8 +68,8 @@ function generateCard_NoSlider($DBCondition) {
     <!-- Bootstrap Icons  -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <title>Les soirées</title>
-
 </head>
+
 <body class="bg-ctm-terciary-color">
     <header> 
          <!-- Header contenant le menu de navigation version pour écran normal et version pour écran réduit -->

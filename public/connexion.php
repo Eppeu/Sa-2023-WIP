@@ -19,10 +19,13 @@ if (isset($_POST['valider'])) {
             if ($row = $utilisateur_infos->fetch()) {
                 $hashedMdp = $row['mot_de_passe'];
                 if (password_verify($mdp, $hashedMdp)) {
+
                     $_SESSION['email'] = $row['email'];
+
                     if($row['is_admin']==TRUE){
                         $_SESSION['is_admin'] = TRUE;
                     }
+                    
                     header('Location: ./utilisateur.php');
                 } else {
                     $error = 1;

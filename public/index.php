@@ -1,7 +1,8 @@
-<!-- CONNEXION A LA BASE DE DONNEE-->
 <?php
+// Débute une session, nécessaire pour vérifier la connexion utilisateur à l'aide des variables globales comme $_SESSION['quelque_chose']
 session_start();
 
+// $bdd permet de se connecter à la base de données (PHPMyAdmin)
 require_once '../bdd/bdd_connexion.php';
 $bdd = connectBDS();
 
@@ -22,6 +23,11 @@ if(isset($_SESSION['email'])){
 
 $soirees_populaire = $bdd->query("SELECT * FROM soiree ORDER BY nb_personne_max DESC LIMIT 10;");
 $soirees_horreur = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'horreur'; ");
+
+// S'OCCUPER DE CA
+// $get_count_sql = $bdd->prepare("SELECT COUNT(vote.choix_film) FROM vote JOIN soiree ON 
+// vote.id_soiree = soiree.id_soiree WHERE soiree.id_soiree = ?;");
+// $get_count_sql->execute(array($id_soiree_get));
 
 
 function generateCard($DBData) {

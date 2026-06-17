@@ -25,6 +25,7 @@ function add_movie($name_movie,$nom_filmPOST,$synopsisPOST,$genrePOST,$date_sort
     $sql_command = 'SELECT * FROM film WHERE nom_film =' . $name_movie_string . ';';
     $check_movie = $bdd->query($sql_command);
     $Get_movie_BD = $check_movie->fetch();
+    
     if ($Get_movie_BD['nom_film'] == NULL) {
 
         $nom_film = nl2br(htmlspecialchars($nom_filmPOST));
@@ -86,8 +87,7 @@ if (isset($_POST['movie_create'])) {
         <script src="https://kit.fontawesome.com/4b69bc6b92.js" crossorigin="anonymous"></script>
     <!-- Bootstrap Icons  -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <title>Nouveau Film</title>
-
+    <title>Ajouter un film</title>
 </head>
 
 <body class="bg-ctm-terciary-color">
