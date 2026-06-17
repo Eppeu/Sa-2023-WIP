@@ -35,7 +35,8 @@ function generateCard_NoSlider($DBCondition) {
 
                     <div class="card-body bg-ctm-primary-color-subtle">
                         <h5 class="card-title">' . $DBConditionInfos['nom_soiree'] . '</h5>
-                        <p class="card-text lh-1">' . $DBConditionInfos['LEFT(description_soiree, 200)'] . '...' . '<p>
+                        <p class="card-text lh-1">Nombre de participants : ' . $DBConditionInfos['nb_personne_max'] . '</p>
+                        <p class="card-text lh-1">' . $DBConditionInfos['LEFT(description_soiree, 200)'] . '...' . '</p>
                     </div>
                     <div class="card-footer p-0 border-0">
                         <a href="./soiree_infos.php?id_soiree=' . $DBConditionInfos["id_soiree"] .'"' . 'class="btn btn-ctm-red py-3 w-100 rounded-0 rounded-bottom-1">En savoir plus</a>
