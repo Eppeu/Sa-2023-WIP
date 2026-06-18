@@ -1,6 +1,7 @@
 <?php
 
 session_start();
+// Si le client n'est pas connecté et n'est pas un utilisateur admin, il est redirigé à la page d'accueil
 if(!isset($_SESSION['is_admin']) && $_SESSION['is_admin'] != TRUE) header("Location: ../public/index.php");
 
 $apiKey = "3e680f5dbc343c0b4bae9c4d4b08ed48";

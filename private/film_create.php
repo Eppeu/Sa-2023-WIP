@@ -1,6 +1,8 @@
 <?php
 if (!isset($_POST['search_movie'])) {
     session_start();
+    
+    // Si le client n'est pas connecté et n'est pas un utilisateur admin, il est redirigé à la page d'accueil
     if(!isset($_SESSION['is_admin']) && $_SESSION['is_admin'] != TRUE) header("Location: ../public/index.php");
 } 
 

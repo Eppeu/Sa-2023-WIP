@@ -7,7 +7,9 @@ require_once '../bdd/bdd_connexion.php';
 $bdd = connectBDS();
 
 // Sélection de tous les soirées (films)
-$all_soirees = $bdd->query('SELECT * FROM soiree ORDER BY id_soiree DESC LIMIT 10;');
+$all_soirees = $bdd->query('SELECT *,LEFT(description_soiree, 200) FROM soiree WHERE date_fin > NOW() ORDER BY id_soiree DESC LIMIT 10;');
+$soirees_populaire = $bdd->query("SELECT soiree.* FROM vote JOIN soiree ON vote.id_soiree  = soiree.id_soiree WHERE soiree.date_fin > NOW() GROUP BY soiree.id_soiree ORDER BY COUNT(vote.choix_film) DESC LIMIT 10;");
+
 
 // Comptage du nombre de soirées
 $count_soirees = $bdd->prepare('SELECT * FROM soiree');
@@ -20,15 +22,6 @@ if(isset($_SESSION['email'])){
     $utilisateur_infos_requete->execute(array($_SESSION['email']));
     $utilisateur_infos = $utilisateur_infos_requete->fetch();
 }
-
-$soirees_populaire = $bdd->query("SELECT * FROM soiree ORDER BY nb_personne_max DESC LIMIT 10;");
-$soirees_horreur = $bdd->query("SELECT * FROM soiree WHERE genre_soiree = 'horreur'; ");
-
-// S'OCCUPER DE CA
-// $get_count_sql = $bdd->prepare("SELECT COUNT(vote.choix_film) FROM vote JOIN soiree ON 
-// vote.id_soiree = soiree.id_soiree WHERE soiree.id_soiree = ?;");
-// $get_count_sql->execute(array($id_soiree_get));
-
 
 function generateCard($DBData) {
     echo 
@@ -61,13 +54,13 @@ function generateCard($DBData) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../styles/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Dongle&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" sizes="32x32" href="../assets/icons/PopCo_favicon.ico">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/style.css">
     <!-- Font Awesome pour les icônes -->
     <script src="https://kit.fontawesome.com/4b69bc6b92.js" crossorigin="anonymous"></script>
     <!-- Bootstrap Icons  -->
@@ -243,10 +236,7 @@ function generateCard($DBData) {
             <h5 class="ms-5 mt-4 fs-3">Les soirées populaires</h5>
                 <?php generateCard($soirees_populaire); ?>
             <!-- card pour les soirées populaires avec une barre de défilement-->
-            <h5 class="ms-5 mt-4  fs-3">Thème film d'Horreur</h5>
-                <?php generateCard($soirees_horreur); ?>
         </div>
-        <!-- card pour le thème film d'horreur avec une barre de défilement -->
     </main>
 
     <!-- Footer avec les liens vers instagram, discord, facebook, mentions légales -->

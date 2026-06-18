@@ -1,6 +1,8 @@
 <?php
 session_start();
+
 $error = 0;
+
 if (isset($_POST['valider'])) {
     if (!empty($_POST['login']) and !empty($_POST['password'])) {
         require_once '../bdd/bdd_connexion.php';
@@ -199,6 +201,7 @@ if(isset($_SESSION['email'])){
     </header>
 
     <main>
+
         <div class="text-center my-5 py-5">
             <h5>Se connecter</h5>
         </div>
@@ -216,7 +219,7 @@ if(isset($_SESSION['email'])){
                 echo
                 '
                     <div class="alert alert-danger" role="alert">
-                    E-mail ou mot de passe incorect.
+                    E-mail ou mot de passe incorrect.
                     </div>
                 '; 
             }

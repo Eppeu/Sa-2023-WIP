@@ -1,4 +1,5 @@
 <?php
+
 require_once '../bdd/bdd_connexion.php';
 $bdd = connectBDS();
 

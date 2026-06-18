@@ -21,16 +21,9 @@ $soireesComedy_sort = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE
 $soireesHistorique_sort = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE genre = 'Historique'; ");
 $soireesThriller_sort = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE genre = 'Thriller'; ");
 $soireesDocumentaire_sort = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE genre = 'Documentaire'; ");
-
-
-// Documentaty is broken for some reasons (Please Check this Astrid !), Wrong Token or invalid expression 
-// $soireesDocumentaire_sort = $bdd->query("SELECT * FROM film WHERE genre = 'Documentaire'; "); 
-
 $soireesRomance_sort = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE genre = 'Romance'; ");
 $soireesSF_sort = $bdd->query("SELECT *, LEFT(synopsis, 200) FROM film WHERE genre = 'Science-Fiction'; ");
 
-// AIDE
-// $countSoirees = $bdd->prepare('SELECT *, LEFT(synopsis, 200) FROM film');
 
 function generateCard_Movie($DBData) {
     echo 
@@ -64,13 +57,13 @@ function generateCard_Movie($DBData) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../styles/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Dongle&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" sizes="32x32" href="../assets/icons/PopCo_favicon.ico">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/style.css">
     <!-- Font Awesome pour les icônes -->
         <script src="https://kit.fontawesome.com/4b69bc6b92.js" crossorigin="anonymous"></script>
     <!-- Bootstrap Icons  -->

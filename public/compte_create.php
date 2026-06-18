@@ -174,7 +174,16 @@ if(isset($_SESSION['email'])){
         </div>
         <div class="container my-5">
 
-            <form method="POST" action="./utilisateur_create.php" class="form">
+            <?php if(isset($_COOKIE['account_created']) && $_COOKIE['account_created'] == "true") { 
+                echo
+                '
+                    <div class="alert alert-danger" role="alert">
+                    Cet appareil a déjà créé un compte. Veuillez vous connecter sur ce compte.
+                    </div>
+                '; 
+            } ?>
+
+            <form method="POST" action="../private/utilisateur_create.php" class="form">
                 <!-- partie formulaire -->
                 <div class="mb-3">
                     <label for="nom" class="form-label">Nom</label>

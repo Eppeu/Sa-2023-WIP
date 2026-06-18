@@ -105,7 +105,7 @@ html {
 
 .bgImage3{
     position: absolute;
-    background-image: url(../assets/images/PageFilms.jpg);
+    background-image: url(../assets/images/PagesFilms.jpg);
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -185,4 +185,26 @@ main {
 .img-create {
     width:250px ;
     height:250px;
+}
+
+.card {
+    height: 380px;
+}
+
+.accordion{
+    --bs-accordion-bg: #212529;
+}
+
+.accordion-body {
+    --bs-accordion-bg: #212529;
+}
+
+.accordion-button{
+    color: #ffffff;
+}
+
+.accordion-button::after{
+    background-color: #ffffff;
+    border-radius: 50%;
+    
 }

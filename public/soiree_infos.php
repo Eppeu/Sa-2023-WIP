@@ -38,9 +38,9 @@ if(isset($_GET['id_soiree']) AND !empty($_GET['id_soiree'])){
     l1.id_lieu AS lieu1_id, l1.adresse AS lieu1_adresse,
     l2.id_lieu AS lieu2_id, l2.adresse AS lieu2_adresse,
     l3.id_lieu AS lieu3_id, l3.adresse AS lieu3_adresse,
-    s.choix_1_film AS choix_1_lieu,
-    s.choix_2_film AS choix_2_lieu,
-    s.choix_3_film AS choix_3_lieu
+    s.choix_1_lieu AS choix_1_lieu,
+    s.choix_2_lieu AS choix_2_lieu,
+    s.choix_3_lieu AS choix_3_lieu
 
     FROM soiree s
     JOIN film f1 ON s.choix_1_film = f1.id_film
@@ -58,7 +58,6 @@ if(isset($_GET['id_soiree']) AND !empty($_GET['id_soiree'])){
 
     // Si cette colonne existe, les données déjà éxistantes sont récupées
     if($soiree_infos_requete->rowCount() > 0){
-
         $soiree_infos = $soiree_infos_requete->fetch();
     }
     else{
@@ -66,7 +65,7 @@ if(isset($_GET['id_soiree']) AND !empty($_GET['id_soiree'])){
     }
     
     // Compte les votes par FILM de la soirée
-    $count_votes_film_requete = $bdd->prepare('SELECT choix_film, COUNT(*) AS nb_votes
+    $count_votes_film_requete = $bdd->prepare('SELECT choix_film, COUNT(*) AS nb_votes_film
     FROM vote
     WHERE id_soiree = ?
     GROUP BY choix_film;');
@@ -75,8 +74,35 @@ if(isset($_GET['id_soiree']) AND !empty($_GET['id_soiree'])){
     // Stocke les résultats dans un tableau indexé par id_film
     $votes_par_film = [];
     while ($row = $count_votes_film_requete->fetch()) {
-        $votes_par_film[$row['choix_film']] = $row['nb_votes'];
+        $votes_par_film[$row['choix_film']] = $row['nb_votes_film'];
     }
+
+
+    // Comptage nombre lieu
+    $count_votes_lieu_requete = $bdd->prepare('SELECT choix_lieu, COUNT(*) AS nb_votes_lieu
+    FROM vote
+    WHERE id_soiree = ?
+    GROUP BY choix_lieu;');
+    $count_votes_lieu_requete->execute([$id_soiree_get]);
+
+    $votes_par_lieu = [];
+    while ($row = $count_votes_lieu_requete->fetch()) {
+        $votes_par_lieu[$row['choix_lieu']] = $row['nb_votes_lieu'];
+    }
+
+    // // Stocke les résultats dans un tableau indexé par id_film
+    // $votes_par_lieu = [];
+    // while ($row = $count_votes_lieu_requete->fetch()) {
+    //     $votes_par_lieu[$row['choix_lieu']] = $row['nb_votes_lieu'];
+    // }
+
+    // // Comptage 
+    // $count_soirees = $bdd->prepare('SELECT * AS nb_votes_lieu
+    // FROM vote
+    // WHERE id_soiree = ?
+    // GROUP BY nb_votes_lieu;');
+    // $count_soirees->execute();
+    // $count_vote_lieu = $count_soirees->rowCount();
 
     // Compte le nombre de votes totaux de la soirée
     $get_count_sql = $bdd->prepare("SELECT * FROM vote JOIN soiree ON 
@@ -322,7 +348,7 @@ else{
                         <img src="<?= $soiree_infos['film4_affiche'] ?>" class="object-fit-cover" style="width: 100px; flex-shrink: 0;">
                         <div class="card-body bg-ctm-primary-color-subtle p-2 d-flex flex-column justify-content-center">
                             <h6 class="card-title mb-0"><?= $soiree_infos['film4_nom_film'] ?></h6>
-                            <p class="card-caption mb-0">Nombre de vote pour ce film : <?= isset($votes_par_film[$soiree_infos['choix_4_film']]) ? $votes_par_film[$soiree_infos        ['choix_4_film']] : 0 ?></p>
+                            <p class="card-caption mb-0">Nombre de vote pour ce film : <?= isset($votes_par_film[$soiree_infos['choix_4_film']]) ? $votes_par_film[$soiree_infos['choix_4_film']] : 0 ?></p>
                             <?php if(isset($soiree_infos['film_choisi']) && $soiree_infos['film4_id_film'] == $soiree_infos['film_choisi']){ ?>
                                 <span class="badge text-bg-primary rounded-pill">Film choisi !</span>
                             <?php } ?>
@@ -333,7 +359,7 @@ else{
                         <img src="<?= $soiree_infos['film5_affiche'] ?>" class="object-fit-cover" style="width: 100px; flex-shrink: 0;">
                         <div class="card-body bg-ctm-primary-color-subtle p-2 d-flex flex-column justify-content-center">
                             <h6 class="card-title mb-0"><?= $soiree_infos['film5_nom_film'] ?></h6>
-                            <p class="card-caption mb-0">Nombre de vote pour ce film : <?= isset($votes_par_film[$soiree_infos['choix_5_film']]) ? $votes_par_film[$soiree_infos        ['choix_5_film']] : 0 ?></p>
+                            <p class="card-caption mb-0">Nombre de vote pour ce film : <?= isset($votes_par_film[$soiree_infos['choix_5_film']]) ? $votes_par_film[$soiree_infos['choix_5_film']] : 0 ?></p>
                             <?php if(isset($soiree_infos['film_choisi']) && $soiree_infos['film5_id_film'] == $soiree_infos['film_choisi']){ ?>
                                 <span class="badge text-bg-primary rounded-pill">Film choisi !</span>
                             <?php } ?>
@@ -344,15 +370,15 @@ else{
                 <div class="col-12 col-md-5 offset-md-1 d-flex flex-column justify-content-center gap-3 mt-4">
                     <a class="btn btn-outline-primary btn-lg w-100" for="btn-lieu-1">
                         <?= $soiree_infos['lieu1_adresse'] ?>
-                        <p class="card-caption mb-0">Nombre de vote pour ce lieu : <?= isset($votes_par_film[$soiree_infos['choix_1_lieu']]) ? $votes_par_film[$soiree_infos        ['choix_1_lieu']] : 0 ?></p>
-                        
+                        <p class="card-caption mb-0">Nombre de vote pour ce lieu : <?= isset($votes_par_lieu[$soiree_infos['lieu1_id']]) ? $votes_par_lieu[$soiree_infos['lieu1_id']] : 0 ?></p>
+                
                         <?php if(isset($soiree_infos['lieu_choisi']) && $soiree_infos['lieu1_id'] == $soiree_infos['lieu_choisi']){ ?>
                             <span class="badge text-bg-primary rounded-pill">Lieu choisi !</span>
                         <?php } ?>
                     </a>
                     <a class="btn btn-outline-primary btn-lg w-100" for="btn-lieu-2">
                         <?= $soiree_infos['lieu2_adresse'] ?>
-                        <p class="card-caption mb-0">Nombre de vote pour ce lieu : <?= isset($votes_par_film[$soiree_infos['choix_2_lieu']]) ? $votes_par_film[$soiree_infos        ['choix_2_lieu']] : 0 ?></p>
+                        <p class="card-caption mb-0">Nombre de vote pour ce lieu : <?= isset($votes_par_lieu[$soiree_infos['lieu2_id']]) ? $votes_par_lieu[$soiree_infos['lieu2_id']] : 0 ?></p>
         
                         <?php if(isset($soiree_infos['lieu_choisi']) && $soiree_infos['lieu2_id'] == $soiree_infos['lieu_choisi']){ ?>
                             <span class="badge text-bg-primary rounded-pill">Lieu choisi !</span>
@@ -360,7 +386,7 @@ else{
                     </a>
                     <a class="btn btn-outline-primary btn-lg w-100" for="btn-lieu-3">
                         <?= $soiree_infos['lieu3_adresse'] ?>
-                        <p class="card-caption mb-0">Nombre de vote pour ce lieu : <?= isset($votes_par_film[$soiree_infos['choix_3_lieu']]) ? $votes_par_film[$soiree_infos        ['choix_3_lieu']] : 0 ?></p>
+                        <p class="card-caption mb-0">Nombre de vote pour ce lieu : <?= isset($votes_par_lieu[$soiree_infos['lieu3_id']]) ? $votes_par_lieu[$soiree_infos['lieu3_id']] : 0 ?></p>
         
                         <?php if(isset($soiree_infos['lieu_choisi']) && $soiree_infos['lieu3_id'] == $soiree_infos['lieu_choisi']){ ?>
                             <span class="badge text-bg-primary rounded-pill">Lieu choisi !</span>
@@ -415,7 +441,7 @@ else{
             <?php if(isset($utilisateur_infos['id_utilisateur']) && $utilisateur_infos['id_utilisateur'] == $soiree_infos['id_user_movie'] || 
             (isset($_SESSION['is_admin']) && $_SESSION['is_admin']==TRUE) ){
             ?>
-                <a id="del_soiree" href="./delete_soiree?id_soiree=<?=$soiree_infos['id_soiree'];?>" class ="btn btn-ctm-red">Supprimer la soirée</a>
+                <a id="del_soiree" href="./soiree_delete?id_soiree=<?=$soiree_infos['id_soiree'];?>" class ="btn btn-ctm-red">Supprimer la soirée</a>
             <?php } ?>
 
             <script>

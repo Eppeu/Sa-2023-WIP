@@ -1,14 +1,11 @@
 <?php
-if (!isset($_POST['search_movie'])) {
-    session_start();
-
-    // Si le client n'est pas connecté et n'est pas un utilisateur admin, il est redirigé à la page d'accueil
-    if(!isset($_SESSION['is_admin']) && $_SESSION['is_admin'] != TRUE) header("Location: ../public/index.php");
-} 
+session_start();
 
 require_once '../bdd/bdd_connexion.php';
 $bdd = connectBDS();
-$error = 0;
+
+// Si le client n'est pas connecté et n'est pas un utilisateur admin, il est redirigé à la page d'accueil
+if(!isset($_SESSION['is_admin']) && $_SESSION['is_admin'] != TRUE) header("Location: ../public/index.php");
 
 // Récupère les informations de l'utilisateur s'il est connecté
 if(isset($_SESSION['email'])){
@@ -17,59 +14,31 @@ if(isset($_SESSION['email'])){
     $utilisateur_infos = $utilisateur_infos_requete->fetch();
 }
 
-$allSoirees = $bdd->query('SELECT * FROM film');
+$all_films = $bdd->query('SELECT *, LEFT(synopsis, 50) FROM film');
+$all_soirees = $bdd->prepare("SELECT 
+s.*, 
+LEFT(description_soiree, 50),
+s.id_utilisateur AS id_user_movie,
+createur.email AS email_createur,
+COALESCE(fchoisi.nom_film, 'Non choisi') AS film_choisi_ou_non_nom,
+COALESCE(lchoisi.adresse, 'Non choisi') AS lieu_choisi_ou_non_nom
 
-if (isset($_POST['search_movie'])) include("api_contact.php");
+FROM soiree s
+LEFT JOIN film fchoisi ON s.film_choisi = fchoisi.id_film
+LEFT JOIN lieu lchoisi ON s.lieu_choisi = lchoisi.id_lieu
+LEFT JOIN utilisateur createur ON s.id_utilisateur = createur.id_utilisateur;");
+$all_soirees->execute();
 
-function add_movie($name_movie,$nom_filmPOST,$synopsisPOST,$genrePOST,$date_sortiePOST,$affichePOST) {
-    global $bdd;
-    $name_movie_string = "'". $name_movie . "'";
-    $sql_command = 'SELECT * FROM film WHERE nom_film =' . $name_movie_string . ';';
-    $check_movie = $bdd->query($sql_command);
-    $Get_movie_BD = $check_movie->fetch();
-    
-    if ($Get_movie_BD['nom_film'] == NULL) {
+$all_utilisateurs = $bdd->query("SELECT 
+*, COALESCE(
+      CASE WHEN 
+         is_admin = 0
+         THEN 'Non' 
+         ELSE 'Oui'
+         END, 
+      is_admin) is_admin_display
+FROM utilisateur");
 
-        $nom_film = nl2br(htmlspecialchars($nom_filmPOST));
-        $synopsis = nl2br(htmlspecialchars($synopsisPOST));
-        $genre = nl2br(htmlspecialchars($genrePOST));
-        $date_sortie = nl2br(htmlspecialchars($date_sortiePOST));
-        $affiche = nl2br(htmlspecialchars($affichePOST));
-
-
-        $movie_add = $bdd->prepare(
-            "INSERT INTO film(nom_film,synopsis,genre,date_sortie,affiche)
-                VALUES(?, ?, ?, ?, ?)"
-        );
-        $movie_add->execute([
-            $nom_film,
-            $synopsis,
-            $genre,
-            $date_sortie,
-            $affiche
-        ]);
-
-        header("Location: ./movie_create.php");
-        exit();
-    } else {
-        $error = 1;
-        echo '
-        <div class="alert alert-danger m-0" role="alert">
-            Le film en question existe déjà dans la base de donnée.
-        </div>
-        ';
-    }
-    }
-
-if (isset($_POST['movie_create'])) {
-    $nom_filmPOST = $_POST['nom_filmPOST'];
-    $synopsisPOST = $_POST['synopsisPOST'];
-    $genrePOST = $_POST['genrePOST'];
-    $date_sortiePOST = $_POST['date_sortiePOST'];
-    $affichePOST = $_POST['affichePOST'];
-    $name_movie = $_POST['name_movie'];
-    add_movie($name_movie,$nom_filmPOST,$synopsisPOST,$genrePOST, $date_sortiePOST,$affichePOST);
-}
 ?>
 
 <!DOCTYPE html>
@@ -78,21 +47,22 @@ if (isset($_POST['movie_create'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../styles/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Dongle&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" sizes="32x32" href="../assets/icons/PopCo_favicon.ico">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/style.css">
     <!-- Font Awesome pour les icônes -->
         <script src="https://kit.fontawesome.com/4b69bc6b92.js" crossorigin="anonymous"></script>
     <!-- Bootstrap Icons  -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <title>Ajouter un film</title>
+    <title>Dashboard - PopCo</title>
+
 </head>
 
-<body class="bg-ctm-terciary-color">
+<body  class="bg-ctm-terciary-color">
     <header> 
          <!-- Header contenant le menu de navigation version pour écran normal et version pour écran réduit -->
         <div class="container-fluid p-0">
@@ -226,89 +196,152 @@ if (isset($_POST['movie_create'])) {
         </div>
     </header>
 
-    <main>
-        <div class="text-center my-5 py-5">
-            <h5>Ajoutez un nouveau film</h5>
+    <main class="container-fluid px-0">
+        <div class="bgImage3"></div>
+        <div class="text-center py-5 callToAction">
+            <h5 class="fs-1">Dashboard administrateur</h5>
+            <p class="mt-5 fs-4">
+                Retrouvez ci-dessous tous les films, les soirées et les utilisateurs de PopCo !
+            </p>
         </div>
-        <h5 class="ms-5">Entrez les informations du film à ajouter.</h5>
 
-        <div class="container my-5">
+        <div class="mainPart p-5 d-flex flex-column gap-4">
+            <div class="accordion mx-5" id="accordion_films">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#tous_les_films" aria-expanded="false" aria-controls="element1">
+                            <span class="fw-bold">Tous les films</span>
+                        </button>
+                    </h2>
 
-            <?php 
-            if ($error === 1) { 
-                echo '
-                <div class="alert alert-danger" role="alert">
-                    Le film en question existe déjà dans la base de donnée.
-                </div>
-                ';
-
-            } ?>
-
-            <form method="POST" action="" enctype="multipart/form-data">
-                <!-- partie formulaire -->
-
-                 <!-- Nom de la soirée -->
-                <div class="mb-3">
-                    <label for="nomMovie" class="form-label">Nom du film:</label>
-                    <input type="text" class="form-control" name="nomMovie" id="nomMovie" maxlength="30" placeholder="Backrooms">
-                </div>
-
-                <button name="search_movie" type="submit" class="btn btn-ctm-red">Chercher</button>
-                <!-- bouton pour soumettre la soirée -->
-            </form>
-
-            
-            <?php if (isset($_POST['search_movie'])) { ?>
-            
-                <div id="temp_div" class ="row mt-3">
-                    <div class ="col-4">
-                        <figure class ="figure">
-                            <img src=<?= "https://image.tmdb.org/t/p/w500" . $data_fr["poster_path"]?> class="figure-img img-fluid rounded img-create" alt="...">
-                        </figure>
-                        
-                    </div>
-
-                    <div class="col-8">
-                        <div class ="row">
-                            <h1 class="col-6"><?=$data_fr["title"]?></h1>
-                            <h3 class="col-3"><?=$data_fr["genres"][0]["name"]?></h3>
-                            <h3 class="col-3"><?=substr($data_fr["release_date"], 0, 4)?></h3>
-                        </div>
-
-                        <div class ="row">
-                            <p><?=$data_fr["overview"]?></p>
+                    <div id="tous_les_films" class="accordion-collapse collapse" data-bs-parent="#accordion1">
+                        <div class="accordion-body">
+                            <div class="table-responsive">
+                                <table class="table py-5 table-dark">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">id</th>
+                                            <th scope="col">Nom</th>
+                                            <th scope="col">Synopsis</th>
+                                            <th scope="col">Genre</th>
+                                            <th scope="col">Date de sortie</th>
+                                            <th scope="col">Affiche</th>
+                                            <th scope="col">Supprimer</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php while($all_films_infos = $all_films->fetch()){ ?>
+                                        <tr>
+                                        <th scope="row"><?=$all_films_infos["id_film"]?></th>
+                                        <td><?=$all_films_infos["nom_film"]?></td>
+                                        <td><?=$all_films_infos["LEFT(synopsis, 50)"]?></td>
+                                        <td><?=$all_films_infos["genre"]?></td>
+                                        <td><?=$all_films_infos["date_sortie"]?></td>
+                                        <td><?=$all_films_infos["affiche"]?></td>
+                                        <td> <a target="_blank" class="btn btn-ctm-red" href="../private/film_delete?id_film=<?=$all_films_infos["id_film"]?>">Supprimer </td>
+                                        </tr>
+                                        <?php } ?>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
-                    <h4 class ="mb-1">Est-ce le bon film ?</h4>
-                    <div class ="row gap-3">
-                        <form action="" method="POST">
-                            <input type="hidden" name="nom_filmPOST" value="<?= htmlspecialchars($data_fr["title"]) ?>">
-                            <input type="hidden" name="synopsisPOST" value="<?= htmlspecialchars($data_fr["overview"]) ?>">
-                            <input type="hidden" name="genrePOST" value="<?= htmlspecialchars($data_fr["genres"][0]["name"]) ?>">
-                            <input type="hidden" name="date_sortiePOST" value="<?= htmlspecialchars(substr($data_fr["release_date"], 0, 4)) ?>">
-                            <input type="hidden" name="affichePOST" value="<?= htmlspecialchars("https://image.tmdb.org/t/p/w500" . $data_fr["poster_path"]) ?>">
-                            <input type="hidden" name="name_movie" value="<?= htmlspecialchars($name_movie) ?>">
+                </div>
+            </div>
 
-                            <button name="movie_create" type="submit" class="btn btn-ctm-red col-4">Ajouter</button>
-                            <button name="movie_empty" type="button" class="btn btn-ctm-red-subtle col-4">Non (réessayer)</button>
-                        </form>
+            <div class="accordion mx-5" id="accordion_soirees">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#toutes_les_soirees" aria-expanded="false" aria-controls="element1">
+                            <span class="fw-bold">Toutes les soirées</span>
+                        </button>
+                    </h2>
+
+                    <div id="toutes_les_soirees" class="accordion-collapse collapse" data-bs-parent="#accordion1">
+                        <div class="accordion-body">
+                            <div class="table-responsive">
+                                <table class="table py-5 table-dark">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">id</th>
+                                            <th scope="col">Créateur</th>
+                                            <th scope="col">Nom</th>
+                                            <th scope="col">Description</th>
+                                            <th scope="col">Genre</th>
+                                            <th scope="col">Nombre maximum d'invités</th>
+                                            <th scope="col">Date de début</th>
+                                            <th scope="col">Date de fin</th>
+                                            <th scope="col">Date limite de vote</th>
+                                            <th scope="col">Lieu choisi</th>
+                                            <th scope="col">Film choisi</th>
+                                            <th scope="col">Supprimer</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php while($all_soirees_infos = $all_soirees->fetch()){ ?>
+                                        <tr>
+                                            <th scope="row"><?=$all_soirees_infos["id_soiree"]?></th>
+                                            <td><?=$all_soirees_infos["email_createur"]?></td>
+                                            <td><?=$all_soirees_infos["nom_soiree"]?></td>
+                                            <td><?=$all_soirees_infos["LEFT(description_soiree, 50)"]?></td>
+                                            <td><?=$all_soirees_infos["genre_soiree"]?></td>
+                                            <td><?=$all_soirees_infos["nb_personne_max"]?></td>
+                                            <td><?=$all_soirees_infos["date_debut"]?></td>
+                                            <td><?=$all_soirees_infos["date_fin"]?></td>
+                                            <td><?=$all_soirees_infos["date_limite_vote"]?></td>
+                                            <td><?=$all_soirees_infos["film_choisi_ou_non_nom"]?></td>
+                                            <td><?=$all_soirees_infos["lieu_choisi_ou_non_nom"]?></td>
+                                            <td> <a target="_blank" class="btn btn-ctm-red" href="../private/soiree_delete?id_soiree=<?=$allSoirees_infos["id_soiree"]?>">Supprimer</td>
+                                        </tr>
+                                        <?php } ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
+            </div>
 
-                <script>
-                $(document).ready(function() {
-                    $("button[name='search_movie']").css('display','none');
-                    $("button[name='movie_empty']").click(function() {
-                        $("#temp_div").empty();
-                        $("button[name='search_movie']").css('display','block');
-                    })
-                });
-                </script>
+            <div class="accordion mx-5" id="accordion_utilisateurs">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#tous_les_utilisateurs" aria-expanded="false" aria-controls="element1">
+                            <span class="fw-bold bouton_close">Tous les utilisateurs</span>
+                        </button>
+                    </h2>
 
-                
-                
-            <?php } ?>
+                    <div id="tous_les_utilisateurs" class="accordion-collapse collapse" data-bs-parent="#accordion1">
+                        <div class="accordion-body">
+                            <div class="table-responsive">
+                                <table class="table py-5 table-dark">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">id</th>
+                                            <th scope="col">Nom</th>
+                                            <th scope="col">Prénom</th>
+                                            <th scope="col">E-mail</th>
+                                            <th scope="col">Administrateur</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php while($all_utilisateurs_infos = $all_utilisateurs->fetch()){ ?>
+                                        <tr>
+                                            <th scope="row"><?=$all_utilisateurs_infos["id_utilisateur"]?></th>
+                                            <td><?=$all_utilisateurs_infos["nom_utilisateur"]?></td>
+                                            <td><?=$all_utilisateurs_infos["prenom_utilisateur"]?></td>
+                                            <td><?=$all_utilisateurs_infos["email"]?></td>
+                                            <td><?=$all_utilisateurs_infos["is_admin_display"]?></td>
+                                        </tr>
+                                        <?php } ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+
     </main>
     <!-- Footer avec les liens vers instagram, discord, facebook, mentions légales -->
     <footer id="footer_popco" class="container-fluid py-3 rounded-top-5 bg-ctm-primary-color">
@@ -327,7 +360,7 @@ if (isset($_POST['movie_create'])) {
             </div>
             <div class="col-4 text-center">
                 <img src="../assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
-                <!--Insertion de l'icône du logo PopCo -->
+                <!-- Insertion de l'icône du logo PopCo -->
             </div>
             <div class="col-4 py-3 text-start d-lg-block text-end pe-4">
                 <a class="text-decoration-none link-ctm-terciary-color-subtle" data-bs-toggle="modal" href="#popco_ml" role="button">

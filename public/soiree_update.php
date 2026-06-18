@@ -48,6 +48,7 @@ function update($nomSoireeUPDATE, $descriptionSoireeUPDATE, $genreSoireeUPDATE, 
 
     $time= date('YmdHis');
     $filename = $time . basename($_FILES["formFile"]["name"]);
+    $filename = str_replace(' ', '_', $filename);
 
     if ($date_debut > $date_fin) {
         echo 'La date de début de soirée est supérieur à la date de fin.';
@@ -360,12 +361,12 @@ $(document).ready(function(){
 
                 <div class="mb-3">
                     <label for="date_fin">Date de fin de la soirée :</label>
-                    <input type="datetime-local" id="date_limite" name="date_limite" min="2026-06-01" max="2099-12-31" value= "<?= $UPDATE_soiree_dateE; ?>" required />
+                    <input type="datetime-local" id="date_fin" name="date_fin" min="2026-06-01" max="2099-12-31" value= "<?= $UPDATE_soiree_dateE; ?>" required />
                 </div>
 
                 <div class="mb-3">
                     <label for="date_fin">Date limite de vote de la soirée :</label>
-                    <input type="datetime-local" id="date_fin" name="date_fin" min="2026-06-01" max="2099-12-31" value= "<?= $UPDATE_soiree_dateVL; ?>" required />
+                    <input type="datetime-local" id="date_limite" name="date_limite" min="2026-06-01" max="2099-12-31" value= "<?= $UPDATE_soiree_dateVL; ?>" required />
                 </div>
 
                 <div class="mb-3">

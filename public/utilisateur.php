@@ -33,13 +33,13 @@ $soiree_votee_requete->execute(array($utilisateur_infos['id_utilisateur']));
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../styles/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Dongle&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" sizes="32x32" href="../assets/icons/PopCo_favicon.ico">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/style.css">
     <!-- Font Awesome pour les icônes -->
         <script src="https://kit.fontawesome.com/4b69bc6b92.js" crossorigin="anonymous"></script>
     <!-- Bootstrap Icons  -->
@@ -205,7 +205,7 @@ $soiree_votee_requete->execute(array($utilisateur_infos['id_utilisateur']));
             ?>
             <div class="col-12 col-sm-6 col-lg-4 col-xl-3" >
                     <div class="card p-0 h-auto">
-                        <img src="<?= $soiree_votee['image_soiree'];?>" alt="...">
+                        <img src="<?= $soiree_votee['image_soiree'];?>" class='card-img-top object-fit-cover' alt="...">
 
                         <div class="card-body bg-ctm-primary-color-subtle">
                             <h5 class="card-title"><?= $soiree_votee['nom_soiree'];?></h5>

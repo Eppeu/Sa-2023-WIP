@@ -41,7 +41,7 @@ function add($nomSoireePOST, $descriptionSoireePOST, $genreSoireePOST, $choixFil
         !empty($choixFilm3POST) && !empty($choixFilm4POST) && !empty($choixFilm5POST) &&
         !empty($nb_personne_maxPOST) && !empty($date_debut) && !empty($date_fin) && !empty($date_limite) &&
         !empty($choixLieu1POST) && !empty($choixLieu2POST) && !empty($choixLieu3POST))
-    { 
+    {
         // Déplacement de l'image
         $path_directory = "../assets/public/";
         $file_directory = $path_directory . $filename;
@@ -109,169 +109,169 @@ if (isset($_POST["party_confirm"])) {
     <title>Créer une soirée</title>
 
 <script>
-$(document).ready(function(){
-    let movie_selection = 1;
-    let place_selection = 1;
+    $(document).ready(function(){
+        let movie_selection = 1;
+        let place_selection = 1;
 
-    $("#livesearch").keyup(function() {
-        var result = $("#livesearch").val();
-        
-        if(result != "") {
-            $.ajax({
-                url: "../private/livesearch",
-                type: "POST",
-                data:{result_search:result},
-                success: function(data) {
-                    $("#dynamic_search").html(data)
-                }
-            });
-        }
+        $("#livesearch").keyup(function() {
+            var result = $("#livesearch").val();
+            
+            if(result != "") {
+                $.ajax({
+                    url: "../private/livesearch",
+                    type: "POST",
+                    data:{result_search:result},
+                    success: function(data) {
+                        $("#dynamic_search").html(data)
+                    }
+                });
+            }
 
-        if ($("#livesearch").val() == "") {
-            $("#dynamic_search").html("");
-        }
+            if ($("#livesearch").val() == "") {
+                $("#dynamic_search").html("");
+            }
+        });
+
+        $("#livesearch").change(function(){
+            if ($("#livesearch").val() == "") {
+                $("#dynamic_search").html("");
+            }
+        });
+
+        $(document).on ("click", ".card-click", function(){
+            var filmId = $(this).data("id_film"); // récupère l'id du film cliqué
+
+            switch (movie_selection) {
+                case 1:
+                    $("#movie_select_1").html($(this).html()).addClass("card p-0 m-2");
+                    $("#hidden_film_1").val(filmId); // remplit l'input caché
+                    movie_selection = 2;
+                    break;
+            
+                case 2:
+                    if ( $(this).html() == $("#movie_select_1").html() ) {
+                        $(this).addClass("border-4 border-danger")
+                    } else {
+                        $("#movie_select_2").html($(this).html()).addClass("card p-0 m-2");
+                        $("#hidden_film_2").val(filmId); // remplit l'input caché
+                        movie_selection = 3;
+                    }
+                    break;
+
+                case 3:
+                    if ( $(this).html() == $("#movie_select_1").html() || $(this).html() == $("#movie_select_2").html() ) {
+                        $(this).addClass("border-4 border-danger")
+                    } else {
+                        $("#movie_select_3").html($(this).html()).addClass("card p-0 m-2");
+                        $("#hidden_film_3").val(filmId); // remplit l'input caché
+                        movie_selection = 4;
+                    }
+                    break;
+
+                case 4:
+                    if ( $(this).html() == $("#movie_select_1").html() || $(this).html() == $("#movie_select_2").html() || $(this).html() == $("#movie_select_3").html() ) {
+                        $(this).addClass("border-4 border-danger")
+                    } else {
+                        $("#movie_select_4").html($(this).html()).addClass("card p-0 m-2");
+                        $("#hidden_film_4").val(filmId); // remplit l'input caché
+                        movie_selection = 5;
+                    }
+                    break;
+
+                case 5:
+                    if ( $(this).html() == $("#movie_select_1").html() || $(this).html() == $("#movie_select_2").html() || $(this).html() == $("#movie_select_3").html() || $(this).html() == $("#movie_select_4").html() ) {
+                        $(this).addClass("border-4 border-danger")
+                    } else {
+                        $("#movie_select_5").html($(this).html()).addClass("card p-0 m-2");
+                        $("#hidden_film_5").val(filmId); // remplit l'input caché
+                        movie_selection = 6;
+                    }
+                    break;
+            }
+        });
+
+        // Suppression en cliquant sur un slot film - version corrigée
+        $("#movie_select_1").click(function(){
+            if ($(this).html() == "") return;
+            $("#movie_select_1").html($("#movie_select_2").html());
+            $("#hidden_film_1").val($("#hidden_film_2").val());
+            $("#movie_select_2").html($("#movie_select_3").html());
+            $("#hidden_film_2").val($("#hidden_film_3").val());
+            $("#movie_select_3").html($("#movie_select_4").html());
+            $("#hidden_film_3").val($("#hidden_film_4").val());
+            $("#movie_select_4").html($("#movie_select_5").html());
+            $("#hidden_film_4").val($("#hidden_film_5").val());
+            $("#movie_select_5").html("").removeClass("card p-0 m-2");
+            $("#hidden_film_5").val("");
+            if (movie_selection > 1) movie_selection--;
+        });
+
+        $("#movie_select_2").click(function(){
+            if ($(this).html() == "") return;
+            $("#movie_select_2").html($("#movie_select_3").html());
+            $("#hidden_film_2").val($("#hidden_film_3").val());
+            $("#movie_select_3").html($("#movie_select_4").html());
+            $("#hidden_film_3").val($("#hidden_film_4").val());
+            $("#movie_select_4").html($("#movie_select_5").html());
+            $("#hidden_film_4").val($("#hidden_film_5").val());
+            $("#movie_select_5").html("").removeClass("card p-0 m-2");
+            $("#hidden_film_5").val("");
+            if (movie_selection > 2) movie_selection--;
+        });
+
+        $("#movie_select_3").click(function(){
+            if ($(this).html() == "") return;
+            $("#movie_select_3").html($("#movie_select_4").html());
+            $("#hidden_film_3").val($("#hidden_film_4").val());
+            $("#movie_select_4").html($("#movie_select_5").html());
+            $("#hidden_film_4").val($("#hidden_film_5").val());
+            $("#movie_select_5").html("").removeClass("card p-0 m-2");
+            $("#hidden_film_5").val("");
+            if (movie_selection > 3) movie_selection--;
+        });
+
+        $("#movie_select_4").click(function(){
+            if ($(this).html() == "") return;
+            $("#movie_select_4").html($("#movie_select_5").html());
+            $("#hidden_film_4").val($("#hidden_film_5").val());
+            $("#movie_select_5").html("").removeClass("card p-0 m-2");
+            $("#hidden_film_5").val("");
+            if (movie_selection > 4) movie_selection--;
+        });
+
+        $("#movie_select_5").click(function(){
+            if ($(this).html() == "") return;
+            $("#movie_select_5").html("").removeClass("card p-0 m-2");
+            $("#hidden_film_5").val("");
+            if (movie_selection > 5) movie_selection--;
+        });
+
+        $("#add_place").click(function() {
+            if ($("#place").val() == "") {
+                return;
+            }
+            if (place_selection <= 4) {
+                $("button[name='party_confirm']").attr('disabled','true');
+                var tache = $("#place").val();
+                var nouvelItem = $("<li>",{text:tache}).addClass("list-group-item list-group-item-danger");
+                nouvelItem.append('<input type="hidden" name="choixLieu'+place_selection+'" value="'+tache+'">');
+                $("ol").append(nouvelItem);
+                $("#place").val("").focus();
+                place_selection++;
+            } 
+            if (place_selection == 4) {
+                $("#add_place").attr('disabled','true');
+                $("button[name='party_confirm']").removeAttr('disabled');
+            } 
+        });
+        $("#remove_place").click(function() {
+            $("ol").empty();
+            $("#add_place").removeAttr('disabled');
+            $("button[name='party_confirm']").attr('disabled','true');
+            place_selection = 1;
+        });	
+
     });
-
-    $("#livesearch").change(function(){
-        if ($("#livesearch").val() == "") {
-            $("#dynamic_search").html("");
-        }
-    });
-
-    $(document).on ("click", ".card-click", function(){
-        var filmId = $(this).data("id_film"); // récupère l'id du film cliqué
-
-        switch (movie_selection) {
-            case 1:
-                $("#movie_select_1").html($(this).html()).addClass("card p-0 m-2");
-                $("#hidden_film_1").val(filmId); // remplit l'input caché
-                movie_selection = 2;
-                break;
-        
-            case 2:
-                if ( $(this).html() == $("#movie_select_1").html() ) {
-                    $(this).addClass("border-4 border-danger")
-                } else {
-                    $("#movie_select_2").html($(this).html()).addClass("card p-0 m-2");
-                    $("#hidden_film_2").val(filmId); // remplit l'input caché
-                    movie_selection = 3;
-                }
-                break;
-
-            case 3:
-                if ( $(this).html() == $("#movie_select_1").html() || $(this).html() == $("#movie_select_2").html() ) {
-                    $(this).addClass("border-4 border-danger")
-                } else {
-                    $("#movie_select_3").html($(this).html()).addClass("card p-0 m-2");
-                    $("#hidden_film_3").val(filmId); // remplit l'input caché
-                    movie_selection = 4;
-                }
-                break;
-
-            case 4:
-                if ( $(this).html() == $("#movie_select_1").html() || $(this).html() == $("#movie_select_2").html() || $(this).html() == $("#movie_select_3").html() ) {
-                    $(this).addClass("border-4 border-danger")
-                } else {
-                    $("#movie_select_4").html($(this).html()).addClass("card p-0 m-2");
-                    $("#hidden_film_4").val(filmId); // remplit l'input caché
-                    movie_selection = 5;
-                }
-                break;
-
-            case 5:
-                if ( $(this).html() == $("#movie_select_1").html() || $(this).html() == $("#movie_select_2").html() || $(this).html() == $("#movie_select_3").html() || $(this).html() == $("#movie_select_4").html() ) {
-                    $(this).addClass("border-4 border-danger")
-                } else {
-                    $("#movie_select_5").html($(this).html()).addClass("card p-0 m-2");
-                    $("#hidden_film_5").val(filmId); // remplit l'input caché
-                    movie_selection = 6;
-                }
-                break;
-        }
-    });
-
-    // Suppression en cliquant sur un slot film - version corrigée
-$("#movie_select_1").click(function(){
-    if ($(this).html() == "") return;
-    $("#movie_select_1").html($("#movie_select_2").html());
-    $("#hidden_film_1").val($("#hidden_film_2").val());
-    $("#movie_select_2").html($("#movie_select_3").html());
-    $("#hidden_film_2").val($("#hidden_film_3").val());
-    $("#movie_select_3").html($("#movie_select_4").html());
-    $("#hidden_film_3").val($("#hidden_film_4").val());
-    $("#movie_select_4").html($("#movie_select_5").html());
-    $("#hidden_film_4").val($("#hidden_film_5").val());
-    $("#movie_select_5").html("").removeClass("card p-0 m-2");
-    $("#hidden_film_5").val("");
-    if (movie_selection > 1) movie_selection--;
-});
-
-$("#movie_select_2").click(function(){
-    if ($(this).html() == "") return;
-    $("#movie_select_2").html($("#movie_select_3").html());
-    $("#hidden_film_2").val($("#hidden_film_3").val());
-    $("#movie_select_3").html($("#movie_select_4").html());
-    $("#hidden_film_3").val($("#hidden_film_4").val());
-    $("#movie_select_4").html($("#movie_select_5").html());
-    $("#hidden_film_4").val($("#hidden_film_5").val());
-    $("#movie_select_5").html("").removeClass("card p-0 m-2");
-    $("#hidden_film_5").val("");
-    if (movie_selection > 2) movie_selection--;
-});
-
-$("#movie_select_3").click(function(){
-    if ($(this).html() == "") return;
-    $("#movie_select_3").html($("#movie_select_4").html());
-    $("#hidden_film_3").val($("#hidden_film_4").val());
-    $("#movie_select_4").html($("#movie_select_5").html());
-    $("#hidden_film_4").val($("#hidden_film_5").val());
-    $("#movie_select_5").html("").removeClass("card p-0 m-2");
-    $("#hidden_film_5").val("");
-    if (movie_selection > 3) movie_selection--;
-});
-
-$("#movie_select_4").click(function(){
-    if ($(this).html() == "") return;
-    $("#movie_select_4").html($("#movie_select_5").html());
-    $("#hidden_film_4").val($("#hidden_film_5").val());
-    $("#movie_select_5").html("").removeClass("card p-0 m-2");
-    $("#hidden_film_5").val("");
-    if (movie_selection > 4) movie_selection--;
-});
-
-$("#movie_select_5").click(function(){
-    if ($(this).html() == "") return;
-    $("#movie_select_5").html("").removeClass("card p-0 m-2");
-    $("#hidden_film_5").val("");
-    if (movie_selection > 5) movie_selection--;
-});
-
-$("#add_place").click(function() {
-    if ($("#place").val() == "") {
-        return;
-    }
-    if (place_selection <= 4) {
-        $("button[name='party_confirm']").attr('disabled','true');
-        var tache = $("#place").val();
-        var nouvelItem = $("<li>",{text:tache}).addClass("list-group-item list-group-item-danger");
-        nouvelItem.append('<input type="hidden" name="choixLieu'+place_selection+'" value="'+tache+'">');
-        $("ol").append(nouvelItem);
-        $("#place").val("").focus();
-        place_selection++;
-    } 
-    if (place_selection == 4) {
-        $("#add_place").attr('disabled','true');
-        $("button[name='party_confirm']").removeAttr('disabled');
-    } 
-});
-$("#remove_place").click(function() {
-    $("ol").empty();
-    $("#add_place").removeAttr('disabled');
-    $("button[name='party_confirm']").attr('disabled','true');
-    place_selection = 1;
-});	
-
-});
 </script>
 
 </head>
@@ -505,7 +505,7 @@ $("#remove_place").click(function() {
                 </div>
 
                 <div class="mb-3">
-                    <label for="date_fin" class="">Date limite de vote :</label>
+                    <label for="date_limite" class="">Date limite de vote :</label>
                     <input type="datetime-local" id="date_limite" name="date_limite" value="2026-06-01T00:00" min="2026-06-01" max="2099-12-31" required />
                 </div>
 
