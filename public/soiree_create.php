@@ -1,3 +1,9 @@
+<!-- 
+soiree_create.php - Créer une soirée 
+Sur cette page, un utilisateur qui est connectée peut créeer une soirée ou il doit remplir différents chammps avant de créer 
+la soirée.
+-->
+
 <?php
 session_start();
 // Si l'utilisateur n'est pas connecté, il est renvoyé à la page de connexion
@@ -17,8 +23,14 @@ if(isset($_SESSION['email'])){
 
 $allSoirees = $bdd->query('SELECT * FROM film');
 
-function add($nomSoireePOST, $descriptionSoireePOST, $genreSoireePOST, $choixFilm1POST, $choixFilm2POST, $choixFilm3POST, $choixFilm4POST, $choixFilm5POST, $choixLieu1POST, $choixLieu2POST, $choixLieu3POST, $nb_personne_maxPOST, $date_debutPOST, $date_finPOST,$date_limitPOST) {
 
+// Fonction qui permet d'ajouter la soirée rempli dans le formulaire dans la base de donnée en utilisant 
+// de la PDO.
+function add($nomSoireePOST, $descriptionSoireePOST, $genreSoireePOST, $choixFilm1POST, 
+$choixFilm2POST, $choixFilm3POST, $choixFilm4POST, $choixFilm5POST, $choixLieu1POST, $choixLieu2POST, 
+$choixLieu3POST, $nb_personne_maxPOST, $date_debutPOST, $date_finPOST,$date_limitPOST) {
+
+    // Appel global car la variable a été créée avant.
     global $bdd;
 
     $nomSoiree= nl2br(htmlspecialchars($nomSoireePOST));
@@ -29,12 +41,28 @@ function add($nomSoireePOST, $descriptionSoireePOST, $genreSoireePOST, $choixFil
     $date_fin = str_replace('T', ' ', $date_finPOST);
     $date_limite = str_replace('T', ' ', $date_limitPOST);
 
-
+    // Pour éviter que le nom de l'image soient la même, 
+    // on fait en sorte que le fichier aie son temps avant
     $time= date('YmdHis');
     $filename = $time . basename($_FILES["formFile"]["name"]);
+    $filename = str_replace(' ', '_', $filename);
 
+
+    // Condition au niveau des dates pour éviter d'avoir des dates impossiblie 
     if ($date_debut > $date_fin) {
-        echo 'La date de début de soirée est supérieur à la date de fin.';
+        echo
+        '
+            <div class="alert alert-light" role="alert">
+            La date de début de la soirée est supérieur à la date de fin.
+            </div>
+        '; 
+    } else if ($date_debut < $date_limite) {
+        echo
+        '
+            <div class="alert alert-light" role="alert">
+            La date de début de la soirée est supérieur à la date de vote limite.
+            </div>
+        '; 
     }
     
     if (!empty($nomSoiree) && !empty($descriptionSoiree) && !empty($choixFilm1POST) && !empty($choixFilm2POST) &&
@@ -81,7 +109,12 @@ function add($nomSoireePOST, $descriptionSoireePOST, $genreSoireePOST, $choixFil
         exit();
 
     } else {
-        echo "Veuillez compléter tous les champs.";
+        echo
+        '
+            <div class="alert alert-light" role="alert">
+            Veuillez remplir tous les champs.
+            </div>
+        '; 
     }
 }
 
@@ -110,9 +143,13 @@ if (isset($_POST["party_confirm"])) {
 
 <script>
     $(document).ready(function(){
+        // Variable qui sont néccéssaire afin de savoir à quel film 
+        // l'utilisateur est afin ne pas en ajouter plus.
         let movie_selection = 1;
         let place_selection = 1;
 
+        // AJAX qui permet de faire une recherche en temps réelle de la base donnée afin d'ajouter un film parmi
+        // 5 obligatoire à la création d'une soirée. Cette fonction se lance uniquement quand une touche est appuyée.
         $("#livesearch").keyup(function() {
             var result = $("#livesearch").val();
             
@@ -127,20 +164,27 @@ if (isset($_POST["party_confirm"])) {
                 });
             }
 
+            // Si la barre de recherche n'a pas de caractères, tout les films sont retirés 
             if ($("#livesearch").val() == "") {
                 $("#dynamic_search").html("");
             }
         });
 
+        // Même effet que l'autre mais le fait à chaque changement de la barre. 
+        // Obligatoire à avoir sinon il y a des fois où les films ne sont pas retiré.
         $("#livesearch").change(function(){
             if ($("#livesearch").val() == "") {
                 $("#dynamic_search").html("");
             }
         });
 
+        // Quand on clique sur une carte (film), on utilise cette méthode pour cliquer étant donnée que
+        // $(".card-clikc").click ne marche pas car les éléments utilisés sont dynamique.
         $(document).on ("click", ".card-click", function(){
             var filmId = $(this).data("id_film"); // récupère l'id du film cliqué
 
+            // Switch permettenant de savoir quel film on choisi et le limiter à 5.
+            // Si un film est ajoutée alors qu'il est déjà dans la sélection, il devient rouge (bordure)
             switch (movie_selection) {
                 case 1:
                     $("#movie_select_1").html($(this).html()).addClass("card p-0 m-2");
@@ -190,7 +234,7 @@ if (isset($_POST["party_confirm"])) {
             }
         });
 
-        // Suppression en cliquant sur un slot film - version corrigée
+        // Suppression en cliquant sur un slot film 
         $("#movie_select_1").click(function(){
             if ($(this).html() == "") return;
             $("#movie_select_1").html($("#movie_select_2").html());
@@ -246,6 +290,7 @@ if (isset($_POST["party_confirm"])) {
             if (movie_selection > 5) movie_selection--;
         });
 
+        // élément repris du TP JQuery et modifié pour PopCo: Permet d'ajouter 3 lieu à une soirée.
         $("#add_place").click(function() {
             if ($("#place").val() == "") {
                 return;
@@ -264,6 +309,8 @@ if (isset($_POST["party_confirm"])) {
                 $("button[name='party_confirm']").removeAttr('disabled');
             } 
         });
+
+        // Le boutton submit peut être appuyé que lorsque les 3 lieu sont ajoutés.
         $("#remove_place").click(function() {
             $("ol").empty();
             $("#add_place").removeAttr('disabled');
@@ -290,7 +337,7 @@ if (isset($_POST["party_confirm"])) {
                             <!-- navbar sous mode collapse avec justify content between -->
                             <ul class="navbar-nav mb-2 mb-lg-0 d-none d-md-flex">
                                  <!-- class de la barre de navigation (navbar) avec une marge de bas de 2 et de 0 à partir du breakpoint large -->
-                                <li class="nav-item active">
+                                <li class="nav-item">
                                     <!-- item de navigation actif -->
                                     <a class="nav-link" href="../public/index.php">Accueil</a>
                                     <!-- lien de navigation -->
@@ -305,12 +352,16 @@ if (isset($_POST["party_confirm"])) {
                                 </li>
                                 <?php if(isset($_SESSION['email'])) { ?>
                                 <li class="nav-item">
-                                    <a class="nav-link bootstrap_nav_item_color" href="../public/soiree_create.php">Créer une soirée</a>
+                                    <a class="nav-link bootstrap_nav_item_color active" href="../public/soiree_create.php">Créer une soirée</a>
                                     <!-- lien de navigation -->
                                 </li> 
                                     <?php if(isset($_SESSION['is_admin']) && $_SESSION['is_admin']==TRUE) { ?>
                                     <li class="nav-item">
                                         <a class="nav-link bootstrap_nav_item_color" href="../private/film_create">Ajouter un film</a>
+                                        <!-- lien de navigation -->
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link bootstrap_nav_item_color" href="../private/dashboard_admin">Dashboard administrateur</a>
                                         <!-- lien de navigation -->
                                     </li>
                                     <?php } ?>
@@ -348,7 +399,7 @@ if (isset($_POST["party_confirm"])) {
                         <?php } ?>
 
                         <a class="fs-1 d-flex align-self-end d-md-none text-success" data-bs-toggle="offcanvas" href="#menu_phone" aria-controls="offcanvasExample">
-                        <i class="bi bi-list link-ctm-terciary-color"></i>
+                            <i class="bi bi-list link-ctm-terciary-color"></i>
                         </a>
                         <div class="offcanvas-md d-md-none offcanvas-end bg-ctm-terciary-color" tabindex="-1" id="menu_phone" aria-labelledby="menu_phoneLabel">
                             <div class="offcanvas-header">
@@ -358,24 +409,26 @@ if (isset($_POST["party_confirm"])) {
                             </div>
                             <div class="offcanvas-body d-flex flex-column justify-content-between px-0">
                                 <ul class="list-group">
-                                    <a href="./index" class="list-group-item list-group-item-action active list-group-item-ctm-terciary-color-subtle" aria-current="true">
+                                    <a href="./index" class="list-group-item list-group-item-action" aria-current="true">
                                         Accueil
-                                        <!-- list group actif -->
                                     </a>
                                     <a href="./soirees" class="list-group-item list-group-item-action">
-                                        Les soirées
+                                        Soirées
                                     </a>
                                     <a href="./films.php" class="list-group-item list-group-item-action">
-                                        Films proposés
+                                        Films
                                     </a>
                                     <?php if(isset($_SESSION['email'])) { ?>
-                                    <a href="../public/soiree_create" class="list-group-item list-group-item-action">
-                                        Film
+                                    <a href="../public/soiree_create" class="list-group-item list-group-item-action active list-group-item-ctm-terciary-color-subtle">
+                                        Créer une soirée
                                     </a>
                                     <?php } ?>
                                     <?php if(isset($_SESSION['is_admin']) && $_SESSION['is_admin']==TRUE) { ?>
                                         <a class="list-group-item list-group-item-action" href="../private/film_create">
                                             Ajouter un film
+                                        </a>
+                                        <a class="list-group-item list-group-item-action" href="../private/dashboard_admin">
+                                            Dashboard administrateur
                                         </a>
                                     <?php } ?>
                                 </ul>
@@ -535,72 +588,9 @@ if (isset($_POST["party_confirm"])) {
 
         </div>
     </main>
-    <!-- Footer avec les liens vers instagram, discord, facebook, mentions légales -->
+    <!-- Footer via un include afin de ne pas avoir de code répété  -->
     <footer id="footer_popco" class="container-fluid py-3 rounded-top-5 bg-ctm-primary-color">
-        <div class="row g-1 d-flex align-items-center">
-            <div class="col-4 fs-2 ps-4">
-                <a href="" target="_blank" class="text-decoration-none link-ctm-terciary-color-subtle">
-                    <i class="fab fa-instagram bootstrap_nav_item_color"></i>
-                </a>
-                <a href="" target="_blank" class="text-decoration-none link-ctm-terciary-color-subtle">
-                    <i class="fab fa-facebook bootstrap_nav_item_color"></i>
-                </a>
-                <a href="" target="_blank" class="text-decoration-none link-ctm-terciary-color-subtle">
-                    <i class="fab fa-discord bootstrap_nav_item_color"></i>
-                </a>
-                
-            </div>
-            <div class="col-4 text-center">
-                <img src="../assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
-                <!--Insertion de l'icône du logo PopCo -->
-            </div>
-            <div class="col-4 py-3 text-start d-lg-block text-end pe-4">
-                <a class="text-decoration-none link-ctm-terciary-color-subtle" data-bs-toggle="modal" href="#popco_ml" role="button">
-                Mentions légales
-                </a>
-                <!-- partie mentions légales sous la forme d'un modal -->
-                <div class="modal fade" id="popco_ml" tabindex="-1" aria-labelledby="popco_mlLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content bg-ctm-terciary-color">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="popco_mlLabel">MENTIONS LÉGALES</h1>
-                            <button type="button" class="btn-close link-ctm-primary-color-subtle" data-bs-dismiss="modal" aria-label="Close"></button>
-                            <!-- bouton pour fermer les mentions légales (en forme de X)-->
-                        </div>
-                        <div class="modal-body text-center lh-sm">
-                            <p>
-                                Conformément aux dispositions de la loi n° 2004-575 du 21 juin 2004 pour la confiance en l'économie numérique, il est précisé aux utilisateurs du site PopCo l'identité des différents intervenants dans le cadre de sa réalisation et de son suivi.
-                            </p>
-                            <h5>Edition du site</h5>
-                            <p>
-                                Le présent site, accessible à l’URL https://PopCo.fr (le « Site »), est édité par :<br>
-                                Astrid CALAIS, résidant Tarbes 65000, de nationalité Française (France), né(e) le 20/10/2003,
-                            </p>
-                            <h5>Hébergement</h5>
-                            <p>
-                                Le Site est hébergé par la société IUT de Tarbes, situé 1 Rue Lautréamont, 65000 Tarbes, (contact téléphonique ou email : +33562444200).
-                            </p>
-                            <h5>Directeur de publication</h5>
-                            <p>
-                                Le Directeur de la publication du Site est Astrid CALAIS.
-                            </p>
-                            <h5>Nous contacter</h5>
-                            <p>
-                                Par téléphone : +33739393939<br>
-                                Par email : astrid.migu@cfm.fr<br>
-                                Par courrier : Tarbes 65000<br><br>
-                                Génération des mentions légales par Legalstart.
-                            </p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-ctm-secondary-color-subtle" data-bs-dismiss="modal">Close</button>
-                            <!-- bouton pour fermer les mentions légales "Close"-->
-                        </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <?php include("../include_code/footer.php");?>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

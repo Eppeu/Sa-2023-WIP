@@ -1,3 +1,8 @@
+<!-- 
+vote.php - Vote
+Cette page permet de voter à propos d'une certaine soirée, l'utilsateur doit voter un lieu et une soirée.
+-->
+
 <?php
 session_start();
 
@@ -61,34 +66,34 @@ else{
 }
 
 
-    function add_vote($vote_film, $vote_lieu, $id_soiree, $id_utilisateur) {
-        global $bdd;
+function add_vote($vote_film, $vote_lieu, $id_soiree, $id_utilisateur) {
+    global $bdd;
 
-        if (!empty($vote_film) && !empty($vote_lieu)) {
-            $creer = $bdd->prepare("INSERT INTO vote(id_soiree, id_utilisateur, choix_film, choix_lieu) VALUES(?, ?, ?, ?)");
-            if ($creer->execute([$id_soiree, $id_utilisateur, $vote_film, $vote_lieu])) {
-                header('Location: ./soiree_infos.php?id_soiree='.$id_soiree);
-                exit();
-            } else {
-                echo "Erreur lors de l'enregistrement du vote.";
-            }
+    if (!empty($vote_film) && !empty($vote_lieu)) {
+        $creer = $bdd->prepare("INSERT INTO vote(id_soiree, id_utilisateur, choix_film, choix_lieu) VALUES(?, ?, ?, ?)");
+        if ($creer->execute([$id_soiree, $id_utilisateur, $vote_film, $vote_lieu])) {
+            header('Location: ./soiree_infos.php?id_soiree='.$id_soiree);
+            exit();
         } else {
-            echo "Veuillez compléter tous les champs.";
+            echo "Erreur lors de l'enregistrement du vote.";
         }
+    } else {
+        echo "Veuillez compléter tous les champs.";
     }
+}
 
-    if (isset($_POST['vote_complet'])) {
-        add_vote(
-            $_POST['vote_film'],
-            $_POST['vote_lieu'],
-            $id_soiree_get,
-            $utilisateur_infos['id_utilisateur']
-        );
-    }
+if (isset($_POST['vote_complet'])) {
+    add_vote(
+        $_POST['vote_film'],
+        $_POST['vote_lieu'],
+        $id_soiree_get,
+        $utilisateur_infos['id_utilisateur']
+    );
+}
 
-    if (isset($_POST['vote_complet'])) {
-        add_vote($_POST['vote_film'], $_POST['vote_lieu']);
-    }
+if (isset($_POST['vote_complet'])) {
+    add_vote($_POST['vote_film'], $_POST['vote_lieu']);
+}
 ?>
 
 <!DOCTYPE html>
@@ -108,7 +113,7 @@ else{
         <script src="https://kit.fontawesome.com/4b69bc6b92.js" crossorigin="anonymous"></script>
     <!-- Bootstrap Icons  -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <title>Les soirées</title>
+    <title>Voter ! </title>
 </head>
 
 <body class="bg-ctm-terciary-color">
@@ -148,6 +153,10 @@ else{
                                         <a class="nav-link bootstrap_nav_item_color" href="../private/film_create">Ajouter un film</a>
                                         <!-- lien de navigation -->
                                     </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link bootstrap_nav_item_color" href="../private/dashboard_admin">Dashboard administrateur</a>
+                                        <!-- lien de navigation -->
+                                    </li>
                                     <?php } ?>
                                 <?php } ?>
 
@@ -183,7 +192,7 @@ else{
                         <?php } ?>
 
                         <a class="fs-1 d-flex align-self-end d-md-none text-success" data-bs-toggle="offcanvas" href="#menu_phone" aria-controls="offcanvasExample">
-                        <i class="bi bi-list link-ctm-terciary-color"></i>
+                            <i class="bi bi-list link-ctm-terciary-color"></i>
                         </a>
                         <div class="offcanvas-md d-md-none offcanvas-end bg-ctm-terciary-color" tabindex="-1" id="menu_phone" aria-labelledby="menu_phoneLabel">
                             <div class="offcanvas-header">
@@ -195,22 +204,24 @@ else{
                                 <ul class="list-group">
                                     <a href="./index" class="list-group-item list-group-item-action active list-group-item-ctm-terciary-color-subtle" aria-current="true">
                                         Accueil
-                                        <!-- list group actif -->
                                     </a>
                                     <a href="./soirees" class="list-group-item list-group-item-action">
-                                        Les soirées
+                                        Soirées
                                     </a>
                                     <a href="./films.php" class="list-group-item list-group-item-action">
-                                        Films proposés
+                                        Films
                                     </a>
                                     <?php if(isset($_SESSION['email'])) { ?>
                                     <a href="../public/soiree_create" class="list-group-item list-group-item-action">
-                                        Film
+                                        Créer une soirée
                                     </a>
                                     <?php } ?>
                                     <?php if(isset($_SESSION['is_admin']) && $_SESSION['is_admin']==TRUE) { ?>
                                         <a class="list-group-item list-group-item-action" href="../private/film_create">
                                             Ajouter un film
+                                        </a>
+                                        <a class="list-group-item list-group-item-action" href="../private/dashboard_admin">
+                                            Dashboard administrateur
                                         </a>
                                     <?php } ?>
                                 </ul>
@@ -257,7 +268,7 @@ else{
             <div class="container d-flex justify-content-between flex-wrap gap-3">
 
                 <div class="col-12 col-md-6 col-lg-2">
-                    <input type="radio" class="btn-check" id="btn-film-1" autocomplete="off" name="vote_film" value="<?= $soiree_infos['film1_id_film'] ?>">
+                    <input type="radio" required class="btn-check" id="btn-film-1" autocomplete="off" name="vote_film" value="<?= $soiree_infos['film1_id_film'] ?>">
                     <label class="btn btn-lg w-100" for="btn-film-1">
                         <figure>
                             <img src="<?= $soiree_infos['film1_affiche'] ?>" class="figure-img img-fluid object-fit-cover" alt="">
@@ -267,7 +278,7 @@ else{
                 </div>
 
                 <div class="col-12 col-md-6 col-lg-2">
-                    <input type="radio" class="btn-check" id="btn-film-2" autocomplete="off" name="vote_film" value="<?= $soiree_infos['film2_id_film'] ?>">
+                    <input type="radio" required class="btn-check" id="btn-film-2" autocomplete="off" name="vote_film" value="<?= $soiree_infos['film2_id_film'] ?>">
                     <label class="btn btn-lg w-100" for="btn-film-2">
                         <figure>
                             <img src="<?= $soiree_infos['film2_affiche'] ?>" class="figure-img img-fluid object-fit-cover" alt="">
@@ -277,7 +288,7 @@ else{
                 </div>
 
                 <div class="col-12 col-md-6 col-lg-2">
-                    <input type="radio" class="btn-check" id="btn-film-3" autocomplete="off" name="vote_film" value="<?= $soiree_infos['film3_id_film'] ?>">
+                    <input type="radio" required class="btn-check" id="btn-film-3" autocomplete="off" name="vote_film" value="<?= $soiree_infos['film3_id_film'] ?>">
                     <label class="btn btn-lg w-100" for="btn-film-3">
                         <figure>
                             <img src="<?= $soiree_infos['film3_affiche'] ?>" class="figure-img img-fluid object-fit-cover" alt="">
@@ -287,7 +298,7 @@ else{
                 </div>
 
                 <div class="col-12 col-md-6 col-lg-2">
-                    <input type="radio" class="btn-check" id="btn-film-4" autocomplete="off" name="vote_film" value="<?= $soiree_infos['film4_id_film'] ?>">
+                    <input type="radio" required class="btn-check" id="btn-film-4" autocomplete="off" name="vote_film" value="<?= $soiree_infos['film4_id_film'] ?>">
                     <label class="btn btn-lg w-100" for="btn-film-4">
                         <figure>
                             <img src="<?= $soiree_infos['film4_affiche'] ?>" class="figure-img img-fluid object-fit-cover" alt="">
@@ -297,7 +308,7 @@ else{
                 </div>
 
                 <div class="col-12 col-md-6 col-lg-2">
-                    <input type="radio" class="btn-check" id="btn-film-5" autocomplete="off" name="vote_film" value="<?= $soiree_infos['film5_id_film'] ?>">
+                    <input type="radio" required class="btn-check" id="btn-film-5" autocomplete="off" name="vote_film" value="<?= $soiree_infos['film5_id_film'] ?>">
                     <label class="btn btn-lg w-100" for="btn-film-5">
                         <figure>
                             <img src="<?= $soiree_infos['film5_affiche'] ?>" class="figure-img img-fluid object-fit-cover" alt="">
@@ -313,21 +324,21 @@ else{
             <div class="container d-flex justify-content-start flex-wrap gap-3">
 
                 <div class="col-12 col-md-4 col-lg-3">
-                    <input type="radio" class="btn-check" id="btn-lieu-1" autocomplete="off" name="vote_lieu" value="<?= $soiree_infos['lieu1_id'] ?>">
+                    <input type="radio" required class="btn-check" id="btn-lieu-1" autocomplete="off" name="vote_lieu" value="<?= $soiree_infos['lieu1_id'] ?>">
                     <label class="btn btn-outline-primary btn-lg w-100" for="btn-lieu-1">
                         <?= $soiree_infos['lieu1_adresse'] ?>
                     </label>
                 </div>
 
                 <div class="col-12 col-md-4 col-lg-3">
-                    <input type="radio" class="btn-check" id="btn-lieu-2" autocomplete="off" name="vote_lieu" value="<?= $soiree_infos['lieu2_id'] ?>">
+                    <input type="radio" required class="btn-check" id="btn-lieu-2" autocomplete="off" name="vote_lieu" value="<?= $soiree_infos['lieu2_id'] ?>">
                     <label class="btn btn-outline-primary btn-lg w-100" for="btn-lieu-2">
                         <?= $soiree_infos['lieu2_adresse'] ?>
                     </label>
                 </div>
 
                 <div class="col-12 col-md-4 col-lg-3">
-                    <input type="radio" class="btn-check" id="btn-lieu-3" autocomplete="off" name="vote_lieu" value="<?= $soiree_infos['lieu3_id'] ?>">
+                    <input type="radio" required class="btn-check" id="btn-lieu-3" autocomplete="off" name="vote_lieu" value="<?= $soiree_infos['lieu3_id'] ?>">
                     <label class="btn btn-outline-primary btn-lg w-100" for="btn-lieu-3">
                         <?= $soiree_infos['lieu3_adresse'] ?>
                     </label>
@@ -341,71 +352,9 @@ else{
         </div>
     </main>
     
-    <!-- Footer avec les liens vers instagram, discord, facebook, mentions légales -->
+    <!-- Footer via un include afin de ne pas avoir de code répété  -->
     <footer id="footer_popco" class="container-fluid py-3 rounded-top-5 bg-ctm-primary-color">
-        <div class="row g-1 d-flex align-items-center">
-            <div class="col-4 fs-2 ps-4">
-                <a href="" target="_blank" class="text-decoration-none link-ctm-terciary-color-subtle">
-                    <i class="fab fa-instagram bootstrap_nav_item_color"></i>
-                </a>
-                <a href="" target="_blank" class="text-decoration-none link-ctm-terciary-color-subtle">
-                    <i class="fab fa-facebook bootstrap_nav_item_color"></i>
-                </a>
-                <a href="" target="_blank" class="text-decoration-none link-ctm-terciary-color-subtle">
-                    <i class="fab fa-discord bootstrap_nav_item_color"></i>
-                </a>
-                
-            </div>
-            <div class="col-4 text-center">
-                <img src="../assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
-            </div>
-            <div class="col-4 py-3 text-start d-lg-block text-end pe-4">
-                <a class="text-decoration-none link-ctm-terciary-color-subtle" data-bs-toggle="modal" href="#popco_ml" role="button">
-                Mentions légales
-                </a>
-                <!-- partie mentions légales sous la forme d'un modal -->
-                <div class="modal fade" id="popco_ml" tabindex="-1" aria-labelledby="popco_mlLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content bg-ctm-terciary-color">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="popco_mlLabel">MENTIONS LÉGALES</h1>
-                            <button type="button" class="btn-close link-ctm-primary-color-subtle" data-bs-dismiss="modal" aria-label="Close"></button>
-                            <!-- bouton pour fermer les mentions légales (en forme de X)-->
-                        </div>
-                        <div class="modal-body text-center lh-sm">
-                            <p>
-                                Conformément aux dispositions de la loi n° 2004-575 du 21 juin 2004 pour la confiance en l'économie numérique, il est précisé aux utilisateurs du site PopCo l'identité des différents intervenants dans le cadre de sa réalisation et de son suivi.
-                            </p>
-                            <h5>Edition du site</h5>
-                            <p>
-                                Le présent site, accessible à l’URL https://PopCo.fr (le « Site »), est édité par :<br>
-                                Astrid CALAIS, résidant Tarbes 65000, de nationalité Française (France), né(e) le 20/10/2003,
-                            </p>
-                            <h5>Hébergement</h5>
-                            <p>
-                                Le Site est hébergé par la société IUT de Tarbes, situé 1 Rue Lautréamont, 65000 Tarbes, (contact téléphonique ou email : +33562444200).
-                            </p>
-                            <h5>Directeur de publication</h5>
-                            <p>
-                                Le Directeur de la publication du Site est Astrid CALAIS.
-                            </p>
-                            <h5>Nous contacter</h5>
-                            <p>
-                                Par téléphone : +33739393939<br>
-                                Par email : astrid.migu@cfm.fr<br>
-                                Par courrier : Tarbes 65000<br><br>
-                                Génération des mentions légales par Legalstart.
-                            </p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-ctm-secondary-color-subtle" data-bs-dismiss="modal">Close</button>
-                            <!-- bouton pour fermer les mentions légales "Close"-->
-                        </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <?php include("../include_code/footer.php");?>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

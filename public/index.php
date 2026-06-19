@@ -1,12 +1,14 @@
+<!-- 
+Index.php - Page d'acceuil 
+Cette page est la page principale du site PopCo, elle permet de voir les dernières soirées créées
+mais aussi les soirées populaire, c'est de ici que les utilisateurs peuvent acceder aux autres pages
+et à la connexion.
+-->
+
 <?php
-// Débute une session, nécessaire pour vérifier la connexion utilisateur à l'aide des variables globales comme $_SESSION['quelque_chose']
-session_start();
+include('../include_code/connect_db.php');
 
-// $bdd permet de se connecter à la base de données (PHPMyAdmin)
-require_once '../bdd/bdd_connexion.php';
-$bdd = connectBDS();
-
-// Sélection de tous les soirées (films)
+// Sélection de tous les soirées (films) - Populaire et toute les 10 dernière soirées
 $all_soirees = $bdd->query('SELECT *,LEFT(description_soiree, 200) FROM soiree WHERE date_fin > NOW() ORDER BY id_soiree DESC LIMIT 10;');
 $soirees_populaire = $bdd->query("SELECT soiree.* FROM vote JOIN soiree ON vote.id_soiree  = soiree.id_soiree WHERE soiree.date_fin > NOW() GROUP BY soiree.id_soiree ORDER BY COUNT(vote.choix_film) DESC LIMIT 10;");
 
@@ -16,13 +18,8 @@ $count_soirees = $bdd->prepare('SELECT * FROM soiree');
 $count_soirees->execute();
 $count = $count_soirees->rowCount();
 
-// Récupère les informations de l'utilisateur s'il est connecté
-if(isset($_SESSION['email'])){
-    $utilisateur_infos_requete = $bdd->prepare("SELECT * FROM utilisateur WHERE email=?");
-    $utilisateur_infos_requete->execute(array($_SESSION['email']));
-    $utilisateur_infos = $utilisateur_infos_requete->fetch();
-}
-
+// Cette fonction permet de générer un bloc de code assez conséquent, il englobe une ligne, un slider et
+// les différentes cartes de la soirée avec la requête SQL définie plus haut.
 function generateCard($DBData) {
     echo 
     '<div class="row mx-3">
@@ -67,6 +64,10 @@ function generateCard($DBData) {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <title>PopCo - Accueil</title>
 
+    <!-- 
+    Script qui permet de changer les images à la condition où l'image originale prévue pour 
+    la balise a une erreur.
+    -->
     <script>
         $(document).ready(function(){
             $(".replace-img").on('error', function() {
@@ -114,6 +115,10 @@ function generateCard($DBData) {
                                         <a class="nav-link bootstrap_nav_item_color" href="../private/film_create">Ajouter un film</a>
                                         <!-- lien de navigation -->
                                     </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link bootstrap_nav_item_color" href="../private/dashboard_admin">Dashboard administrateur</a>
+                                        <!-- lien de navigation -->
+                                    </li>
                                     <?php } ?>
                                 <?php } ?>
 
@@ -149,7 +154,7 @@ function generateCard($DBData) {
                         <?php } ?>
 
                         <a class="fs-1 d-flex align-self-end d-md-none text-success" data-bs-toggle="offcanvas" href="#menu_phone" aria-controls="offcanvasExample">
-                        <i class="bi bi-list link-ctm-terciary-color"></i>
+                            <i class="bi bi-list link-ctm-terciary-color"></i>
                         </a>
                         <div class="offcanvas-md d-md-none offcanvas-end bg-ctm-terciary-color" tabindex="-1" id="menu_phone" aria-labelledby="menu_phoneLabel">
                             <div class="offcanvas-header">
@@ -161,22 +166,24 @@ function generateCard($DBData) {
                                 <ul class="list-group">
                                     <a href="./index" class="list-group-item list-group-item-action active list-group-item-ctm-terciary-color-subtle" aria-current="true">
                                         Accueil
-                                        <!-- list group actif -->
                                     </a>
                                     <a href="./soirees" class="list-group-item list-group-item-action">
-                                        Les soirées
+                                        Soirées
                                     </a>
                                     <a href="./films.php" class="list-group-item list-group-item-action">
-                                        Films proposés
+                                        Films
                                     </a>
                                     <?php if(isset($_SESSION['email'])) { ?>
                                     <a href="../public/soiree_create" class="list-group-item list-group-item-action">
-                                        Film
+                                        Créer une soirée
                                     </a>
                                     <?php } ?>
                                     <?php if(isset($_SESSION['is_admin']) && $_SESSION['is_admin']==TRUE) { ?>
                                         <a class="list-group-item list-group-item-action" href="../private/film_create">
                                             Ajouter un film
+                                        </a>
+                                        <a class="list-group-item list-group-item-action" href="../private/dashboard_admin">
+                                            Dashboard administrateur
                                         </a>
                                     <?php } ?>
                                 </ul>
@@ -213,6 +220,11 @@ function generateCard($DBData) {
 
     <main class="container-fluid px-0">
         
+        <!-- 
+        Si l'utilisateur se connecte, il n'y a pas d'utilité de montrer la partie 
+        d'introduction du site, elle est présente uniquement quand l'utilisateur n'est
+        pas connecter au site.
+        -->
         <?php if(!isset($_SESSION['email'])) { ?>
             <div class="bgImage1"></div>
             <div class="text-center py-5 callToAction">
@@ -228,83 +240,18 @@ function generateCard($DBData) {
         <?php } ?>
         <!-- texte de présentation du site PopCo -->
         <div class="mainPart py-5 z-0">
-
+            <!-- Utilisation de la fonction créée précédement afin d'afficher les cartes, uniquement le h5 n'est pas englobée
+            étant donné qu'elle a des classes différentes et un texte différent aussi. -->
             <h5 class="ms-5 fs-3 text-ctm-primary-color-subtle">Les soirées récemment ajoutées !</h5>
-            <!-- Titre h5 -->
             <?php generateCard($all_soirees); ?>
-            <!-- card pour les soirées récemment ajoutées avec une barre de défilement -->
             <h5 class="ms-5 mt-4 fs-3">Les soirées populaires</h5>
-                <?php generateCard($soirees_populaire); ?>
-            <!-- card pour les soirées populaires avec une barre de défilement-->
+            <?php generateCard($soirees_populaire); ?>
         </div>
     </main>
 
-    <!-- Footer avec les liens vers instagram, discord, facebook, mentions légales -->
+    <!-- Footer via un include afin de ne pas avoir de code répété  -->
     <footer id="footer_popco" class="container-fluid py-3 rounded-top-5 bg-ctm-primary-color">
-        <div class="row g-1 d-flex align-items-center">
-            <div class="col-4 fs-2 ps-4">
-                <a href="" target="_blank" class="text-decoration-none link-ctm-terciary-color-subtle">
-                    <i class="fab fa-instagram bootstrap_nav_item_color"></i>
-                </a>
-                <a href="" target="_blank" class="text-decoration-none link-ctm-terciary-color-subtle">
-                    <i class="fab fa-facebook bootstrap_nav_item_color"></i>
-                </a>
-                <a href="" target="_blank" class="text-decoration-none link-ctm-terciary-color-subtle">
-                    <i class="fab fa-discord bootstrap_nav_item_color"></i>
-                </a>
-                
-            </div>
-            <div class="col-4 text-center">
-                <img src="../assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
-                <!-- Insertion de l'icône du logo PopCo -->
-            </div>
-            <div class="col-4 py-3 text-start d-lg-block text-end pe-4">
-                <a class="text-decoration-none link-ctm-terciary-color-subtle" data-bs-toggle="modal" href="#popco_ml" role="button">
-                Mentions légales
-                </a>
-                <div class="modal fade" id="popco_ml" tabindex="-1" aria-labelledby="popco_mlLabel" aria-hidden="true">
-                    <!-- partie mentions légales sous la forme d'un modal -->
-                    <div class="modal-dialog">
-                        <div class="modal-content bg-ctm-terciary-color">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="popco_mlLabel">MENTIONS LÉGALES</h1>
-                            <button type="button" class="btn-close link-ctm-primary-color-subtle" data-bs-dismiss="modal" aria-label="Close"></button>
-                            <!-- bouton pour fermer les mentions légales (en forme de X)-->
-                        </div>
-                        <div class="modal-body text-center lh-sm">
-                            <p>
-                                Conformément aux dispositions de la loi n° 2004-575 du 21 juin 2004 pour la confiance en l'économie numérique, il est précisé aux utilisateurs du site PopCo l'identité des différents intervenants dans le cadre de sa réalisation et de son suivi.
-                            </p>
-                            <h5>Edition du site</h5>
-                            <p>
-                                Le présent site, accessible à l’URL https://PopCo.fr (le « Site »), est édité par :<br>
-                                Astrid CALAIS, résidant Tarbes 65000, de nationalité Française (France), né(e) le 20/10/2003,
-                            </p>
-                            <h5>Hébergement</h5>
-                            <p>
-                                Le Site est hébergé par la société IUT de Tarbes, situé 1 Rue Lautréamont, 65000 Tarbes, (contact téléphonique ou email : +33562444200).
-                            </p>
-                            <h5>Directeur de publication</h5>
-                            <p>
-                                Le Directeur de la publication du Site est Astrid CALAIS.
-                            </p>
-                            <h5>Nous contacter</h5>
-                            <p>
-                                Par téléphone : +33739393939<br>
-                                Par email : astrid.migu@cfm.fr<br>
-                                Par courrier : Tarbes 65000<br><br>
-                                Génération des mentions légales par Legalstart.
-                            </p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-ctm-secondary-color-subtle" data-bs-dismiss="modal">Close</button>
-                            <!-- bouton pour fermer les mentions légales "Close"-->
-                        </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <?php include("../include_code/footer.php");?>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

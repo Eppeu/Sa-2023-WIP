@@ -1,3 +1,9 @@
+<!-- 
+decison_choix.php - Décision
+Cette page permet de savoir quel film et lieu ont gagné avant une soirée.
+Si il y a une égalité, le film sera décidé au hazard.
+-->
+
 <?php
 
 require_once '../bdd/bdd_connexion.php';

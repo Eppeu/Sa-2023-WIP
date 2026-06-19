@@ -1,3 +1,9 @@
+<!-- 
+utilisateur_create.php - Création de compte
+Cette page sert à créer le compte d'un utilisateur et l'ajouter à la 
+base de donnée.
+-->
+
 <?php
 session_start();
 

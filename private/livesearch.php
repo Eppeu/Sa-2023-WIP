@@ -1,29 +1,28 @@
+<!-- 
+livesearch.php - Recherche d'un film 
+Cette sous-page permet de faire une recherche en temps réelle de tout
+les films de la base de donnée pour qu'un utilisateur puisse faire la 
+recherche de film dessus pour les chosiie
+-->
+
 <?php
-// session_start();
-// if(!isset($_SESSION['is_admin']) && $_SESSION['is_admin'] != TRUE) header("Location: ../public/index.php");
-
-include("../bdd/db_infos.php");
-
+require_once '../bdd/bdd_connexion.php';
+$bdd = connectBDS();
 if(isset($_POST['result_search'])) {
 
+    // l'asterix agit comme un % pour les LIKE mais pour les BOOLEAN MODE
     $result_get = $_POST['result_search'] . '*';
-    
     $sql_command= "SELECT * FROM film WHERE MATCH(nom_film) AGAINST (? IN BOOLEAN MODE)";
 
-    $exeCom = mysqli_prepare($connect,$sql_command);
+    $query_db = $bdd->prepare($sql_command);
+    $query_db->execute(array($result_get));
 
-    mysqli_stmt_bind_param($exeCom, 's', $result_get);
-    mysqli_stmt_execute($exeCom);
-
-    $query_db = mysqli_stmt_get_result($exeCom); 
-
-
-    if ($query_db && mysqli_num_rows($query_db) > 0) {
+    if ($query_db->rowcount() > 0) {
     ?>
         <div id="scrollbar" class="col-12 overflow-x-scroll me-5">
             <div id ="img-resize" class="row row-cols-2 row-cols-md-5 ms-1 my-3 g-5 flex-nowrap gap-3">
                 <?php
-                while($fetchDB = mysqli_fetch_assoc($query_db)) {
+                while($fetchDB = $query_db->fetch()) {
                 ?>
                 <div class="card-click card p-0 m-0" data-id_film="<?= $fetchDB['id_film']?>">
                     <img src=<?= $fetchDB['affiche'];?> class="card-img-top object-fit-cover" alt="...">
@@ -35,4 +34,4 @@ if(isset($_POST['result_search'])) {
             </div>
         </div>
     <?php } ?>
-<?php mysqli_close($connect); } ?>
+<?php } ?>

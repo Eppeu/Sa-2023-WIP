@@ -1,15 +1,12 @@
+<!-- 
+soiree_delete.php - Supprimer une soirée
+Cette page est un intermédiare de page différentes afin de pouvoir supprimer une soirée.
+Uniquement l'admin et la personne ayant crée une soirée peuvent y accéder.
+-->
+
+
 <?php
-session_start();
-
-require_once '../bdd/bdd_connexion.php';
-$bdd = connectBDS();
-
-// Récupère les informations de l'utilisateur s'il est connecté
-if(isset($_SESSION['email'])){
-    $utilisateur_infos_requete = $bdd->prepare("SELECT * FROM utilisateur WHERE email=?");
-    $utilisateur_infos_requete->execute(array($_SESSION['email']));
-    $utilisateur_infos = $utilisateur_infos_requete->fetch();
-}
+include('../include_code/connect_db.php');
 
 if(isset($_GET['id_soiree']) AND !empty($_GET['id_soiree'])){
     // Récupère l'id de l'élément voulu depuis l'URL
@@ -23,9 +20,14 @@ if(isset($_GET['id_soiree']) AND !empty($_GET['id_soiree'])){
 
     $delete_soiree_db = $bdd->prepare('DELETE FROM soiree WHERE id_soiree = ?;');
     $delete_soiree_db->execute(array($id_soiree_get));
-    header("Location: ./soirees");
+
+    // Si c'est un admin qui a supprimé la soirée depuis le dashboard, il y est ramené. Si c'est un utilisateur classique, il est renvoyé aux soirées.
+    if(!isset($_SESSION['is_admin']) && $_SESSION['is_admin'] != TRUE){
+        header("Location: ../private/dashboard_admin");
+        exit();
+    }else{
+        header("Location: ../public/soirees");
+        exit();
+    }
 }
-
-
-
 ?>

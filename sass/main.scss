@@ -1,6 +1,12 @@
+// Main.scss :
+// Suite à vouloir étendre notre personalisation de boostrap, nous l'avons build en local
+// et ce SASS nous permet d'ajouter des couleurs de components directement à bootstrap
+
 @import "../node_modules/bootstrap/scss/functions";
 @import "../node_modules/bootstrap/scss/variables";
 
+
+// Ajoute des couleurs en plus a Bootstrap
 $custom_color: (
     "ctm-red": #ee3535,
     "ctm-red-subtle": #EC7B75,
@@ -11,10 +17,16 @@ $custom_color: (
     "ctm-terciary-color": #292019,
     "ctm-terciary-color-subtle": #55473C
 );
+// Permet de fussionner la map actuelle de bootstrap à la notre afin de les
+// utiliser sur PopCo.
 $theme-colors: map-merge($theme-colors, $custom_color);
 
 @import "../node_modules/bootstrap/scss/bootstrap";
 
+// --------Modification plus classique de CSS de nos valeurs créées au dessus---------
+
+// Change la classe custom de btn-ctm-red afin de modifier la couleur en la passant de
+// noir à blanc.
 .btn-ctm-red {
     @include button-variant(
         $background: map-get($theme-colors, "ctm-red"),
@@ -25,6 +37,7 @@ $theme-colors: map-merge($theme-colors, $custom_color);
     );
 }
 
+// De même pour sa variante subtle.
 .btn-ctm-red-subtle {
     @include button-variant(
         $background: map-get($theme-colors, "ctm-red-subtle"),
@@ -35,6 +48,8 @@ $theme-colors: map-merge($theme-colors, $custom_color);
     );
 }
 
+
+// Change la couleur en hover, active et focus de tm-terciary-color-subtle
 .list-group-item-ctm-terciary-color-subtle {
     color: #55473C;
     &.list-group-item-action:hover,

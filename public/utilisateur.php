@@ -1,3 +1,9 @@
+<!-- 
+utlisateur.php - Compte utilisateur 
+Cette page permet de voir les informations du compte où on s'est connecter mais aussi 
+les soirées où ce dernier a voté (inscrit).
+-->
+
 <!-- CONNEXION A LA BASE DE DONNEE-->
 <?php
 session_start();
@@ -44,7 +50,7 @@ $soiree_votee_requete->execute(array($utilisateur_infos['id_utilisateur']));
         <script src="https://kit.fontawesome.com/4b69bc6b92.js" crossorigin="anonymous"></script>
     <!-- Bootstrap Icons  -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <title>Les soirées</title>
+    <title>PopCo - utilisateur</title>
 </head>
 
 <body class="bg-ctm-terciary-color">
@@ -84,6 +90,10 @@ $soiree_votee_requete->execute(array($utilisateur_infos['id_utilisateur']));
                                         <a class="nav-link bootstrap_nav_item_color" href="../private/film_create">Ajouter un film</a>
                                         <!-- lien de navigation -->
                                     </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link bootstrap_nav_item_color" href="../private/dashboard_admin">Dashboard administrateur</a>
+                                        <!-- lien de navigation -->
+                                    </li>
                                     <?php } ?>
                                 <?php } ?>
 
@@ -119,7 +129,7 @@ $soiree_votee_requete->execute(array($utilisateur_infos['id_utilisateur']));
                         <?php } ?>
 
                         <a class="fs-1 d-flex align-self-end d-md-none text-success" data-bs-toggle="offcanvas" href="#menu_phone" aria-controls="offcanvasExample">
-                        <i class="bi bi-list link-ctm-terciary-color"></i>
+                            <i class="bi bi-list link-ctm-terciary-color"></i>
                         </a>
                         <div class="offcanvas-md d-md-none offcanvas-end bg-ctm-terciary-color" tabindex="-1" id="menu_phone" aria-labelledby="menu_phoneLabel">
                             <div class="offcanvas-header">
@@ -131,22 +141,24 @@ $soiree_votee_requete->execute(array($utilisateur_infos['id_utilisateur']));
                                 <ul class="list-group">
                                     <a href="./index" class="list-group-item list-group-item-action active list-group-item-ctm-terciary-color-subtle" aria-current="true">
                                         Accueil
-                                        <!-- list group actif -->
                                     </a>
                                     <a href="./soirees" class="list-group-item list-group-item-action">
-                                        Les soirées
+                                        Soirées
                                     </a>
                                     <a href="./films.php" class="list-group-item list-group-item-action">
-                                        Films proposés
+                                        Films
                                     </a>
                                     <?php if(isset($_SESSION['email'])) { ?>
                                     <a href="../public/soiree_create" class="list-group-item list-group-item-action">
-                                        Film
+                                        Créer une soirée
                                     </a>
                                     <?php } ?>
                                     <?php if(isset($_SESSION['is_admin']) && $_SESSION['is_admin']==TRUE) { ?>
                                         <a class="list-group-item list-group-item-action" href="../private/film_create">
                                             Ajouter un film
+                                        </a>
+                                        <a class="list-group-item list-group-item-action" href="../private/dashboard_admin">
+                                            Dashboard administrateur
                                         </a>
                                     <?php } ?>
                                 </ul>
@@ -204,7 +216,7 @@ $soiree_votee_requete->execute(array($utilisateur_infos['id_utilisateur']));
                 while($soiree_votee = $soiree_votee_requete->fetch()){
             ?>
             <div class="col-12 col-sm-6 col-lg-4 col-xl-3" >
-                    <div class="card p-0 h-auto">
+                    <div class="card p-0">
                         <img src="<?= $soiree_votee['image_soiree'];?>" class='card-img-top object-fit-cover' alt="...">
 
                         <div class="card-body bg-ctm-primary-color-subtle">
@@ -225,76 +237,9 @@ $soiree_votee_requete->execute(array($utilisateur_infos['id_utilisateur']));
         </div>
     </main>
 
+    <!-- Footer via un include afin de ne pas avoir de code répété  -->
     <footer id="footer_popco" class="container-fluid py-3 rounded-top-5 bg-ctm-primary-color">
-        <!-- Footer avec les liens vers instagram, discord, facebook, mentions légales -->
-        <div class="row g-1 d-flex align-items-center">
-            <div class="col-4 fs-2 ps-4">
-                <a href="" target="_blank" class="text-decoration-none link-ctm-terciary-color-subtle">
-                    <i class="fab fa-instagram bootstrap_nav_item_color"></i>
-                </a>
-                <a href="" target="_blank" class="text-decoration-none link-ctm-terciary-color-subtle">
-                    <i class="fab fa-facebook bootstrap_nav_item_color"></i>
-                </a>
-                <a href="" target="_blank" class="text-decoration-none link-ctm-terciary-color-subtle">
-                    <i class="fab fa-discord bootstrap_nav_item_color"></i>
-                </a>
-                
-            </div>
-            <!-- icone lien vers les réseaux sociaux -->
-            <div class="col-4 text-center">
-                <img src="../assets/icons/PopCo_logo.png" alt="Logo PopCo - Accueil" width="80" height="80">
-                <!-- Insertion de l'icône du logo PopCo -->
-            </div>
-            <!-- logo bas de page ramenant a la page d'accueil -->
-            <div class="col-4 py-3 text-start d-lg-block text-end pe-4">
-                <a class="text-decoration-none link-ctm-terciary-color-subtle" data-bs-toggle="modal" href="#popco_ml" role="button">
-                Mentions légales
-                </a>
-                <!-- bouton pop up mentions légales -->
-                <div class="modal fade" id="popco_ml" tabindex="-1" aria-labelledby="popco_mlLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content bg-ctm-terciary-color">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="popco_mlLabel">MENTIONS LÉGALES</h1>
-                            <button type="button" class="btn-close link-ctm-primary-color-subtle" data-bs-dismiss="modal" aria-label="Close"></button>
-                            <!-- bouton pour fermer les mentions légales (en forme de X)-->
-                        </div>
-                        <!-- mise en forme des mentions légales -->
-                        <div class="modal-body text-center lh-sm">
-                            <p>
-                                Conformément aux dispositions de la loi n° 2004-575 du 21 juin 2004 pour la confiance en l'économie numérique, il est précisé aux utilisateurs du site PopCo l'identité des différents intervenants dans le cadre de sa réalisation et de son suivi.
-                            </p>
-                            <h5>Edition du site</h5>
-                            <p>
-                                Le présent site, accessible à l’URL https://PopCo.fr (le « Site »), est édité par :<br>
-                                Astrid CALAIS, résidant Tarbes 65000, de nationalité Française (France), né(e) le 20/10/2003,
-                            </p>
-                            <h5>Hébergement</h5>
-                            <p>
-                                Le Site est hébergé par la société IUT de Tarbes, situé 1 Rue Lautréamont, 65000 Tarbes, (contact téléphonique ou email : +33562444200).
-                            </p>
-                            <h5>Directeur de publication</h5>
-                            <p>
-                                Le Directeur de la publication du Site est Astrid CALAIS.
-                            </p>
-                            <h5>Nous contacter</h5>
-                            <p>
-                                Par téléphone : +33739393939<br>
-                                Par email : astrid.migu@cfm.fr<br>
-                                Par courrier : Tarbes 65000<br><br>
-                                Génération des mentions légales par Legalstart.
-                            </p>
-                        </div>
-                        <!-- contenus des mentions légales -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-ctm-secondary-color-subtle" data-bs-dismiss="modal">Close</button>
-                        </div>
-                        <!-- bouton de fermeture des mentions légales -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <?php include("../include_code/footer.php");?>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
